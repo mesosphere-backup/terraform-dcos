@@ -43,7 +43,7 @@ For CoreOS 835.13.0:
 
 ```bash
 terraform init github.com/bernadinm/terraform-dcos/aws
-terraform plan --var os=coreos_835.13.0
+terraform plan --var os=coreos_835.13.0 --var dcos_overlay_enable=disable # This OS cannot support docker networking
 ```
 
 For Centos 7.2:
