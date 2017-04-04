@@ -50,7 +50,7 @@ For Centos 7.2:
 
 ```bash
 terraform init github.com/bernadinm/terraform-dcos/aws
-terraform plan --var os=coreos_835.13.0
+terraform plan --var os=centos_7.2
 ```
 
 Once `terraform plan` completes successfully you can deploy it by simply doing replacing `plan` with `apply`. Read more for more information.
