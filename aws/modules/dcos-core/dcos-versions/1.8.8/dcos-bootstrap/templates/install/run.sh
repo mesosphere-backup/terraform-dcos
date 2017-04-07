@@ -44,13 +44,10 @@ ${dcos_telemetry_enabled== "" ? "" : "telemetry_enabled: ${dcos_telemetry_enable
 ${dcos_zk_super_credentials== "" ? "" : "zk_super_credentials: ${dcos_zk_super_credentials}"}
 ${dcos_zk_master_credentials== "" ? "" : "zk_master_credentials: ${dcos_zk_master_credentials}"}
 ${dcos_zk_agent_credentials== "" ? "" : "zk_agent_credentials: ${dcos_zk_agent_credentials}"}
-${dcos_overlay_enable== "" ? "" : "overlay_enable: ${dcos_overlay_enable}"}
-${dcos_overlay_config_attempts== "" ? "" : "overlay_config_attempts: ${dcos_overlay_config_attempts}"}
-${dcos_overlay_mtu== "" ? "" : "overlay_mtu: ${dcos_overlay_mtu}"}
-${dcos_overlay_network== "" ? "" : "overlay_network: ${dcos_overlay_network}"}
-${dcos_vtep_subnet== "" ? "" : "vtep_subnet: ${dcos_vtep_subnet}"}
-${dcos_vtep_mac_oui== "" ? "" : "vtep_mac_oui: ${dcos_vtep_mac_oui}"}
-${dcos_overlays== "" ? "" : "overlays: ${dcos_overlays}"}
+${dcos_overlay_enable== "" ? "" : "dcos_overlay_enable: ${dcos_overlay_enable}"}
+${dcos_overlay_config_attempts== "" ? "" : "dcos_overlay_config_attempts: ${dcos_overlay_config_attempts}"}
+${dcos_overlay_mtu== "" ? "" : "dcos_overlay_mtu: ${dcos_overlay_mtu}"}
+${dcos_overlay_network== "" ? "" : "dcos_overlay_network: ${dcos_overlay_network}"}
 ${dcos_dns_search== "" ? "" : "dns_search: ${dcos_dns_search}"}
 ${dcos_master_dns_bindall== "" ? "" : "master_dns_bindall: ${dcos_master_dns_bindall}"}
 ${dcos_use_proxy== "" ? "" : "use_proxy: ${dcos_use_proxy}"}
@@ -58,6 +55,7 @@ ${dcos_http_proxy== "" ? "" : "http_proxy: ${dcos_http_proxy}"}
 ${dcos_https_proxy== "" ? "" : "https_proxy: ${dcos_https_proxy}"}
 ${dcos_no_proxy== "" ? "" : "no_proxy: ${dcos_no_proxy}"}
 ${dcos_check_time== "" ? "" : "check_time: ${dcos_check_time}"}
+${dcos_ip_detect_public_contents== "" ? "" : "ip_detect_public_contents: ${dcos_ip_detect_public_contents}"}
 ${dcos_docker_remove_delay== "" ? "" : "docker_remove_delay: ${dcos_docker_remove_delay}"}
 ${dcos_audit_logging== "" ? "" : "audit_logging: ${dcos_audit_logging}"}
 ${dcos_gc_delay== "" ? "" : "gc_delay: ${dcos_gc_delay}"}
@@ -67,6 +65,10 @@ ${dcos_cluster_docker_credentials== "" ? "" : "cluster_docker_credentials: ${dco
 ${dcos_cluster_docker_credentials_dcos_owned== "" ? "" : "cluster_docker_credentials_dcos_owned: ${dcos_cluster_docker_credentials_dcos_owned}"}
 ${dcos_cluster_docker_credentials_write_to_etc== "" ? "" : "cluster_docker_credentials_write_to_etc: ${dcos_cluster_docker_credentials_write_to_etc}"}
 ${dcos_cluster_docker_credentials_enabled== "" ? "" : "cluster_docker_credentials_enabled: ${dcos_cluster_docker_credentials_enabled}"}
+${dcos_cluster_docker_registry_url == "" ? "" : "cluster_docker_registry_url: ${dcos_cluster_docker_registry_url}"}
+${dcos_cluster_docker_registry_enabled == "" ? "" : "cluster_docker_registry_enabled: ${dcos_cluster_docker_registry_enabled}"}
+${dcos_cluster_docker_registry_enabled == "" ? "" : "cluster_docker_registry_enabled: ${dcos_cluster_docker_registry_enabled}"}
+${dcos_rexray_config == "" ? "" : "rexray_config: ${dcos_rexray_config}"}
 ''' | sed '/^$/d' | sudo tee genconf/config.yaml
 sudo cp /tmp/ip-detect genconf/.
 sudo bash dcos_generate_config.${dcos_version}.sh
