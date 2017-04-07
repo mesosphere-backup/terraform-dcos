@@ -282,22 +282,10 @@ variable "dcos_overlay_mtu" {
  description = "This parameter specifies the maximum transmission unit (MTU) of the Virtual Ethernet (vEth) on the containers that are launched on the overlay."
 }
 
+# Example how to set an overlay network below
+# default = "{\"vtep_mac_oui\": \"70:B3:D5:00:00:00\", \"overlays\": [{\"name\": \"dcos\", \"subnet\": \"9.0.0.0/8\", \"prefix\": 26}], \"vtep_subnet\": \"44.128.0.0/20\"}"
+
 variable "dcos_overlay_network" {
- default = ""
- description = "This group of parameters define an virtual network for DC/OS. "
-}
-
-variable "dcos_vtep_subnet" {
- default = ""
- description = "This parameter specifies a dedicated address space that is used for the VxLAN backend for the virtual network. "
-}
-
-variable "dcos_vtep_mac_oui" {
- default = ""
- description = "This parameter specifies the MAC address of the interface connecting to it in the public node. Important: The last 3 bytes must be 00."
-}
-
-variable "dcos_overlays" {
  default = ""
  description = "Specify this in line in a new line (\\n) fashion. See https://docs.mesosphere.com/1.8/administration/installing/custom/configuration-parameters/ for more information"
 }
@@ -390,6 +378,24 @@ variable "dcos_cluster_docker_credentials_write_to_etc" {
 variable "dcos_cluster_docker_credentials_enabled" {
  default = ""
  description = "This parameter specifies whether to pass the Mesos --docker_config option to Mesos."
+}
+
+variable "dcos_cluster_docker_registry_enabled" {
+ default = ""
+ description = "This parameter specifies whether to pass the Mesos --docker_config option to Mesos."
+}
+
+variable "dcos_cluster_docker_registry_url" {
+ default = ""
+ description = "This parameter specifies a custom URL that Mesos uses to pull Docker images from. If set, it will configure the Mesos’ --docker_registry flag to the specified URL. This changes the default URL Mesos uses for pulling Docker images. By default https://registry-1.docker.io is used."
+}
+
+
+# Example value on how to configure rexray below
+# default = "{\"rexray\": {\"modules\": {\"default-docker\": {\"disabled\": true}, \"default-admin\": {\"host\": \"tcp://127.0.0.1:61003\"}}, \"loglevel\": \"info\"}}"
+
+variable "dcos_rexray_config" {
+ default = ""
 }
 
 variable "state" {

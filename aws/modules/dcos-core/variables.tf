@@ -8,7 +8,7 @@ variable "dcos_install_mode" {
 }
 
 variable "dcos_version" {
-   default = "1.9.0-rc2"
+   default = "1.9.0"
 }
 
 variable "role" {
@@ -184,18 +184,6 @@ variable "dcos_overlay_network" {
    default = ""
 }
 
-variable "dcos_vtep_subnet" {
-   default = ""
-}
-
-variable "dcos_vtep_mac_oui" {
-   default = ""
-}
-
-variable "dcos_overlays" {
-   default = ""
-}
-
 variable "dcos_dns_search" {
    default = ""
 }
@@ -274,6 +262,18 @@ variable "dcos_agent_list" {
 
 variable "dcos_bootstrap_port" {
    default = "80"
+}
+
+variable "dcos_ip_detect_public_contents" {
+  default = ""
+}
+
+variable "dcos_rexray_config" {
+  default = ""
+}
+
+variable "dcos_cluster_docker_registry_url" {
+  default = ""
 }
 
 variable "custom_dcos_download_path" {
