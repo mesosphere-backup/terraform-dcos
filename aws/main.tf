@@ -751,7 +751,6 @@ resource "aws_instance" "bootstrap" {
     dcos_overlay_enable = "${var.dcos_overlay_enable}"
     dcos_overlay_mtu = "${var.dcos_overlay_mtu}"
     dcos_overlay_network = "${var.dcos_overlay_network}"
-    dcos_overlays = "${var.dcos_overlays}"
     dcos_process_timeout = "${var.dcos_process_timeout}"
     dcos_agent_list = "\n - ${join("\n - ", aws_instance.agent.*.private_ip)}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
@@ -766,11 +765,13 @@ resource "aws_instance" "bootstrap" {
     dcos_superuser_username = "${var.dcos_superuser_username}"
     dcos_telemetry_enabled = "${var.dcos_telemetry_enabled}"
     dcos_use_proxy = "${var.dcos_use_proxy}"
-    dcos_vtep_mac_oui = "${var.dcos_vtep_mac_oui}"
-    dcos_vtep_subnet = "${var.dcos_vtep_subnet}"
     dcos_zk_agent_credentials = "${var.dcos_zk_agent_credentials}"
     dcos_zk_master_credentials = "${var.dcos_zk_master_credentials}"
     dcos_zk_super_credentials = "${var.dcos_zk_super_credentials}"    
+    dcos_cluster_docker_registry_url = "${var.dcos_cluster_docker_registry_url}"
+    dcos_rexray_config = "${var.dcos_rexray_config}"
+    dcos_ip_detect_public_contents = "${var.dcos_ip_detect_public_contents}"
+    dcos_cluster_docker_registry_enabled = "${var.dcos_cluster_docker_registry_enabled}"
  }
 
 resource "null_resource" "bootstrap" {
@@ -842,6 +843,8 @@ resource "null_resource" "bootstrap" {
     dcos_zk_super_credentials = "${var.dcos_zk_super_credentials}"
     dcos_cluster_docker_registry_url = "${var.dcos_cluster_docker_registry_url}"
     dcos_rexray_config = "${var.dcos_rexray_config}"
+    dcos_ip_detect_public_contents = "${var.dcos_ip_detect_public_contents}"
+    dcos_cluster_docker_registry_enabled = "${var.dcos_cluster_docker_registry_enabled}"
   }
 
   # Bootstrap script can run on any instance of the cluster

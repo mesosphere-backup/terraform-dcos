@@ -13,3 +13,7 @@ output "Private Agent Public IP Address" {
 output "Public Agent Public IP Address" {
   value = ["${aws_instance.public-agent.*.public_ip}"]
 }
+
+output "Bootstrap Public IP Address" {
+  value = "${aws_instance.bootstrap.public_ip}"
+}

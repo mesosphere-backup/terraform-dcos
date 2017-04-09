@@ -279,3 +279,7 @@ variable "dcos_cluster_docker_registry_url" {
 variable "custom_dcos_download_path" {
    default = ""
 }
+
+variable "dcos_cluster_docker_registry_enabled" {
+  default = ""
+}

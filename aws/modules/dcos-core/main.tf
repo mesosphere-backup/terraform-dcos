@@ -69,6 +69,8 @@ template = "${file("${path.module}/dcos-versions/${var.dcos_version}/${var.role}
     dcos_zk_super_credentials = "${var.dcos_zk_super_credentials}"
     dcos_cluster_docker_registry_url = "${var.dcos_cluster_docker_registry_url}"
     dcos_rexray_config = "${var.dcos_rexray_config}"
+    dcos_ip_detect_public_contents = "${var.dcos_ip_detect_public_contents}"    
+    dcos_cluster_docker_registry_enabled = "${var.dcos_cluster_docker_registry_enabled}"
   }
 }
 
