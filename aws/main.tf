@@ -464,7 +464,7 @@ resource "aws_instance" "master" {
   }
 
   count = "${var.num_of_masters}"
-  instance_type = "${var.aws_instance_type}"
+  instance_type = "${var.aws_master_instance_type}"
 
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
@@ -524,7 +524,7 @@ resource "aws_instance" "agent" {
   }
 
   count = "${var.num_of_private_agents}"
-  instance_type = "${var.aws_instance_type}"
+  instance_type = "${var.aws_agent_instance_type}"
 
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
@@ -583,7 +583,7 @@ resource "aws_instance" "public-agent" {
   }
 
   count = "${var.num_of_public_agents}"
-  instance_type = "${var.aws_instance_type}"
+  instance_type = "${var.aws_public_agent_instance_type}"
 
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
@@ -642,7 +642,7 @@ resource "aws_instance" "bootstrap" {
     volume_size = "${var.instance_disk_size}"
   }
 
-  instance_type = "${var.aws_instance_type}"
+  instance_type = "${var.aws_bootstrap_instance_type}"
 
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
