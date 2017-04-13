@@ -1,4 +1,4 @@
-# DC/OS on AWS with Terraform
+# Enterprise DC/OS on AWS with Terraform
 
 ## Getting Started
 
@@ -35,21 +35,24 @@ There is a module called `dcos-tested-aws-oses` that contains all the tested scr
 
 For CoreOS 1235.9.0:
 ```bash
-terraform init github.com/bernadinm/terraform-dcos/aws
+terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
+terraform get
 terraform plan --var os=coreos_1235.9.0
 ```
 
 For CoreOS 835.13.0:
 
 ```bash
-terraform init github.com/bernadinm/terraform-dcos/aws
+terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
+terraform get
 terraform plan --var os=coreos_835.13.0 --var dcos_overlay_enable=disable # This OS cannot support docker networking
 ```
 
 For Centos 7.2:
 
 ```bash
-terraform init github.com/bernadinm/terraform-dcos/aws
+terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
+terraform get
 terraform plan --var os=centos_7.2
 ```
 
