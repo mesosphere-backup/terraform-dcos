@@ -18,9 +18,24 @@ variable "os" {
   description = "Recommended DC/OS OSs are centos_7.2, coreos_1235.9.0, coreos_835.13.0"
 }
 
-variable "aws_instance_type" {
-  description = "AWS default instance type"
+variable "aws_master_instance_type" {
+  description = "AWS DC/OS master instance type"
   default = "m3.xlarge"
+}
+
+variable "aws_agent_instance_type" {
+  description = "AWS DC/OS Private Agent instance type"
+  default = "m3.xlarge"
+}
+
+variable "aws_public_agent_instance_type" {
+  description = "AWS DC/OS Public instance type"
+  default = "m3.xlarge"
+}
+
+variable "aws_bootstrap_instance_type" {
+  description = "AWS DC/OS Bootstrap instance type"
+  default = "m3.large"
 }
 
 variable "num_of_private_agents" {
