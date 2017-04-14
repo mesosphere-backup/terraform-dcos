@@ -1,3 +1,5 @@
+&#x1F536; **Disclaimer: For Internal Mesosphere Employees Usage. Not for external users or customers at this time.** &#x1F536;
+
 # Enterprise DC/OS on AWS with Terraform
 
 ## Getting Started
