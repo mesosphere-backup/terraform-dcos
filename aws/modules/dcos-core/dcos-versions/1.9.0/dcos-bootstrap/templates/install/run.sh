@@ -25,8 +25,8 @@ ${dcos_aws_access_key_id== "" ? "" : "aws_access_key_id: ${dcos_aws_access_key_i
 ${dcos_aws_region== "" ? "" : "aws_region: ${dcos_aws_region}"}
 ${dcos_aws_secret_access_key== "" ? "" : "aws_secret_access_key: ${dcos_aws_secret_access_key}"}
 ${dcos_exhibitor_explicit_keys== "" ? "" : "exhibitor_explicit_keys: ${dcos_exhibitor_explicit_keys}"}
-${dcos_s3_bucket== "" ? "" : "s3_bucket: ${dcos_s3_bucket}"}
-${dcos_s3_prefix== "" ? "" : "s3_prefix: ${dcos_s3_prefix}"}
+${dcos_exhibitor_storage_backend == "aws_s3" ? dcos_s3_bucket== "" ? "" : "s3_bucket: ${dcos_s3_bucket}" : ""}
+${dcos_exhibitor_storage_backend == "aws_s3" ? dcos_s3_prefix== "" ? "" : "s3_prefix: ${dcos_s3_prefix}" : ""}
 ${dcos_exhibitor_azure_account_name== "" ? "" : "exhibitor_azure_account_name: ${dcos_exhibitor_azure_account_name}"}
 ${dcos_exhibitor_azure_account_key== "" ? "" : "exhibitor_azure_account_key: ${dcos_exhibitor_azure_account_key}"}
 ${dcos_exhibitor_azure_prefix== "" ? "" : "exhibitor_azure_prefix: ${dcos_exhibitor_azure_prefix}"}

@@ -3,16 +3,6 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-# Allow overrides of the owner variable or default to whoami.sh
-data "template_file" "cluster-name" {
- template = "$${username}-tf$${uuid}"
-
-  vars {
-    uuid = "${element(split("-",uuid()), 1)}"
-    username = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
-  }
-}
-
 # Runs a local script to return the current user in bash
 data "external" "whoami" {
   program = ["scripts/local/whoami.sh"]
@@ -22,13 +12,30 @@ data "external" "whoami" {
 resource "aws_vpc" "default" {
   cidr_block = "10.0.0.0/16"
 
+tags {
+   Name = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
+  }
+}
+
+# Allow overrides of the owner variable or default to whoami.sh
+data "template_file" "cluster-name" {
+ template = "$${username}-tf$${uuid}"
+
+  vars {
+    uuid = "${substr(md5(aws_vpc.default.id),0,4)}"
+    username = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
+  }
+}
+
+# Create DCOS Bucket regardless of what exhibitor backend was chosen
+resource "aws_s3_bucket" "dcos_bucket" {
+  bucket = "${data.template_file.cluster-name.rendered}-bucket"
+  acl    = "private"
+  force_destroy = "true"
+
   tags {
-   Name = "${data.template_file.cluster-name.rendered}-vpc"
+   Name = "${data.template_file.cluster-name.rendered}-bucket"
    cluster = "${data.template_file.cluster-name.rendered}"
-  } 
-  
-  lifecycle {
-    ignore_changes = ["tags.Name", "tags.cluster"]
   }
 }
 
@@ -306,7 +313,7 @@ resource "aws_elb" "internal-master-elb" {
   name = "${data.template_file.cluster-name.rendered}-int-master-elb"
 
   subnets         = ["${aws_subnet.public.id}"]
-  security_groups = ["${aws_security_group.master.id}"]
+  security_groups = ["${aws_security_group.master.id}","${aws_security_group.public_slave.id}", "${aws_security_group.private_slave.id}"]
   instances       = ["${aws_instance.master.*.id}"]
 
   listener {
@@ -469,8 +476,8 @@ resource "aws_instance" "master" {
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
-   Name = "${aws_vpc.default.tags.cluster}-master-${count.index + 1}"
-   cluster = "${aws_vpc.default.tags.cluster}"
+   Name = "${data.template_file.cluster-name.rendered}-master-${count.index + 1}"
+   cluster = "${data.template_file.cluster-name.rendered}"
   }
 
   # Lookup the correct AMI based on the region
@@ -529,8 +536,8 @@ resource "aws_instance" "agent" {
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
-   Name =  "${aws_vpc.default.tags.cluster}-pvtagt-${count.index + 1}"
-   cluster = "${aws_vpc.default.tags.cluster}"
+   Name =  "${data.template_file.cluster-name.rendered}-pvtagt-${count.index + 1}"
+   cluster = "${data.template_file.cluster-name.rendered}"
   }
   # Lookup the correct AMI based on the region
   # we specified
@@ -588,8 +595,8 @@ resource "aws_instance" "public-agent" {
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
-   Name =  "${aws_vpc.default.tags.cluster}-pubagt-${count.index + 1}"
-   cluster = "${aws_vpc.default.tags.cluster}"
+   Name =  "${data.template_file.cluster-name.rendered}-pubagt-${count.index + 1}"
+   cluster = "${data.template_file.cluster-name.rendered}"
   }
   # Lookup the correct AMI based on the region
   # we specified
@@ -647,8 +654,8 @@ resource "aws_instance" "bootstrap" {
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
-   Name = "${aws_vpc.default.tags.cluster}-bootstrap"
-   cluster = "${aws_vpc.default.tags.cluster}"
+   Name = "${data.template_file.cluster-name.rendered}-bootstrap"
+   cluster = "${data.template_file.cluster-name.rendered}"
   }
 
   # Lookup the correct AMI based on the region
@@ -709,7 +716,7 @@ resource "aws_instance" "bootstrap" {
     dcos_audit_logging = "${var.dcos_audit_logging}"
     dcos_auth_cookie_secure_flag = "${var.dcos_auth_cookie_secure_flag}"
     dcos_aws_access_key_id = "${var.dcos_aws_access_key_id}"
-    dcos_aws_region = "${var.dcos_aws_region}"
+    dcos_aws_region = "${coalesce(var.dcos_aws_region, var.aws_region)}"
     dcos_aws_secret_access_key = "${var.dcos_aws_secret_access_key}"
     dcos_aws_template_storage_access_key_id = "${var.dcos_aws_template_storage_access_key_id}"
     dcos_aws_template_storage_bucket = "${var.dcos_aws_template_storage_bucket}"
@@ -758,8 +765,8 @@ resource "aws_instance" "bootstrap" {
     dcos_resolvers  = "\n - ${join("\n - ", var.dcos_resolvers)}"
     dcos_rexray_config_filename = "${var.dcos_rexray_config_filename}"
     dcos_rexray_config_method = "${var.dcos_rexray_config_method}"
-    dcos_s3_bucket = "${var.dcos_s3_bucket}"
-    dcos_s3_prefix = "${var.dcos_s3_prefix}"
+    dcos_s3_bucket = "${coalesce(var.dcos_s3_bucket, aws_s3_bucket.dcos_bucket.id)}"
+    dcos_s3_prefix = "${coalesce(var.dcos_s3_prefix, aws_s3_bucket.dcos_bucket.id)}"
     dcos_security  = "${var.dcos_security}"
     dcos_superuser_password_hash = "${var.dcos_superuser_password_hash}"
     dcos_superuser_username = "${var.dcos_superuser_username}"
@@ -784,7 +791,7 @@ resource "null_resource" "bootstrap" {
     dcos_audit_logging = "${var.dcos_audit_logging}"
     dcos_auth_cookie_secure_flag = "${var.dcos_auth_cookie_secure_flag}"
     dcos_aws_access_key_id = "${var.dcos_aws_access_key_id}"
-    dcos_aws_region = "${var.dcos_aws_region}"
+    dcos_aws_region = "${coalesce(var.dcos_aws_region, var.aws_region)}"
     dcos_aws_secret_access_key = "${var.dcos_aws_secret_access_key}"
     dcos_aws_template_storage_access_key_id = "${var.dcos_aws_template_storage_access_key_id}"
     dcos_aws_template_storage_bucket = "${var.dcos_aws_template_storage_bucket}"
@@ -831,8 +838,8 @@ resource "null_resource" "bootstrap" {
     dcos_resolvers  = "\n - ${join("\n - ", var.dcos_resolvers)}"
     dcos_rexray_config_filename = "${var.dcos_rexray_config_filename}"
     dcos_rexray_config_method = "${var.dcos_rexray_config_method}"
-    dcos_s3_bucket = "${var.dcos_s3_bucket}"
-    dcos_s3_prefix = "${var.dcos_s3_prefix}"
+    dcos_s3_bucket = "${coalesce(var.dcos_s3_bucket, aws_s3_bucket.dcos_bucket.id)}"
+    dcos_s3_prefix = "${coalesce(var.dcos_s3_prefix, aws_s3_bucket.dcos_bucket.id)}"
     dcos_security  = "${var.dcos_security}"
     dcos_superuser_password_hash = "${var.dcos_superuser_password_hash}"
     dcos_superuser_username = "${var.dcos_superuser_username}"
