@@ -14,13 +14,9 @@ brew install terraform
 
 If you want to leverage the terraform installer, feel free to check out https://www.terraform.io/downloads.html.
 
-#### Configure your Cloud Provider Credentials
+### Configure your Cloud Provider Credentials
 
-##### AWS
-
-You can use an AWS credentials file to specify your credentials. The default location is `$HOME/.aws/credentials` on Linux and OS X, or `"%USERPROFILE%\.aws\credentials"` for Windows users.
-
-**Configure your AWS Keys**
+**Configure your AWS ssh Keys**
 
 In the `variable.tf` there is a `key_name` variable. This key must be added to your host machine running your terraform script as it will be used to log into the machines to run setup scripts. The default is `default`. You can find aws documentation that talks about this [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws)
 
@@ -29,36 +25,46 @@ When you have your key available, you can use ssh-add.
 ```bash
 ssh-add ~/.ssh/path_to_you_key.pem
 ```
+**Configure your IAM AWS Keys**
+
+You will need your AWS aws_access_key_id and aws_secret_access_key. If you dont have one yet, you can get them from the AWS documetnation [here](
+http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). When you finally get them, you can install it in your home directory. The default location is `$HOME/.aws/credentials` on Linux and OS X, or `"%USERPROFILE%\.aws\credentials"` for Windows users.
+
+Here is an example of the output when you're done:
+
+```bash
+$ cat ~/.aws/credentials
+[default]
+aws_access_key_id = ACHEHS71DG712w7EXAMPLE
+aws_secret_access_key = /R8SHF+SHFJaerSKE83awf4ASyrF83sa471DHSEXAMPLE
+```
+
+### Example Terraform Deployments
 
 **Pull down the DC/OS terraform scripts below**
 
-There is a module called `dcos-tested-aws-oses` that contains all the tested scripts per operating system. The deployment strategy is a base AMI coupled with a prereq `script.sh` to get it ready to install dcos-core components. Its simple to add other operating systems by adding the ami, region, and install scripts to meet the dcos specifications that can be found [here](https://dcos.io/docs/1.9/administration/installing/custom/system-requirements/) and [here](https://dcos.io/docs/1.9/administration/installing/custom/system-requirements/install-docker-centos/) as an example.
+There is a module called `dcos-tested-aws-oses` that contains all the tested scripts per operating system. The deployment strategy is a base AMI coupled with a prereq `script.sh` to get it ready to install dcos-core components. Its simple to add other operating systems by adding the ami, region, and install scripts to meet the dcos specifications that can be found [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/) and [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/install-docker-centos/) as an example.
 
 
 For CoreOS 1235.9.0:
 ```bash
-terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
-terraform get
+terraform init http://github.com/bernadinm/terraform-dcos/aws
 terraform plan --var os=coreos_1235.9.0
 ```
 
 For CoreOS 835.13.0:
 
 ```bash
-terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
-terraform get
-terraform plan --var os=coreos_835.13.0 --var dcos_overlay_enable=disable # This OS cannot support docker networking
+terraform init http://github.com/bernadinm/terraform-dcos/aws
+terraform plan --var os=coreos_835.13.0
 ```
 
 For Centos 7.2:
 
 ```bash
-terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
-terraform get
+terraform init http://github.com/bernadinm/terraform-dcos/aws
 terraform plan --var os=centos_7.2
 ```
-
-Once `terraform plan` completes successfully you can deploy it by simply doing replacing `plan` with `apply`. Read more for more information.
 
 ## Pro-tip: Use Terraform’s -var-file
 
@@ -109,6 +115,28 @@ terraform apply -var dcos_version=1.9.0
 terraform apply
 ```
 
+### Config.yaml Modification
+
+You can modify all the DC/OS config.yaml flags via terraform. Here is an example of using the master_http_loadbalancer for cloud deployments. **master_http_loadbalancer is is recommended for production**. You will be able to replace your masters in a multi master environment. Using the default static backend will not give you this option. 
+
+Here is an example default profile that will allow you to do this. 
+
+```bash
+$ cat desired_cluster_profile
+num_of_masters = "3"
+num_of_private_agents = "2"
+num_of_public_agents = "1"
+dcos_security = "permissive"
+dcos_version = "1.8.8"
+dcos_aws_access_key_id = "ACHEHS71DG712w7EXAMPLE"
+dcos_aws_secret_access_key = "/R8SHF+SHFJaerSKE83awf4ASyrF83sa471DHSEXAMPLE"
+dcos_master_discovery = "master_http_loadbalancer"
+dcos_exhibitor_storage_backend = "aws_s3"
+dcos_exhibitor_explicit_keys = "true"
+```
+
+**NOTE:** This will append your aws_access_key_id and aws_secret_access_key key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the aws_s3 bucket. 
+
 ## Upgrading DC/OS  
 
 You can upgrade your DC/OS cluster with a single command. This terraform script was built to perform installs and upgrade from the inception of this project. With the upgrade procedures below, you can also have finer control on how masters or agents upgrade at a given time. This will give you the ability to change the parallelism of master or agent upgrades.
@@ -127,18 +155,28 @@ If you take this route, you can use a few more commands but this will allow you 
 
 **Master upgrade sequentially one at a time**
 ```bash
-terraform apply --var os=coreos_1235.9.0 --var dcos_version=1.8.8  --var state=upgrade --var dcos_security=disabled -parallelism=1 -target=null_resource.master
+terraform apply \
+--var os=coreos_1235.9.0 \
+--var dcos_version=1.8.8 \
+--var state=upgrade \
+--var dcos_security=disabled \
+-parallelism=1 \
+-target=null_resource.master
  ```
 
 **Upgrade everything else in parallel**
  ```bash
-terraform apply --var os=coreos_1235.9.0 --var dcos_version=1.8.8  --var state=upgrade --var dcos_security=disabled
+terraform apply \
+--var os=coreos_1235.9.0 \
+--var dcos_version=1.8.8 \
+--var state=upgrade \
+--var dcos_security=disabled
   ```
   
   *NOTE: the default for parallelism is 10. You can change this value to control how many nodes you want upgraded at any given time*
 
 
-  ### DC/OS 1.8 Security Changes
+  ### Upgrading with DC/OS 1.8 Security Changes
 
   **Important**: DC/OS will is not designed to upgrade directly from disabled to strict. Please be responsible when using automation tools.
 
@@ -147,7 +185,10 @@ terraform apply --var os=coreos_1235.9.0 --var dcos_version=1.8.8  --var state=u
   On DC/OS 1.8 clusters, testing shows that you can actually upgrade the masters simultaneously from DC/OS 1.8 and 1.9, (not 1.7). So going forward, we can drop the `--parallelism=1` entirely. If this changes on a new version, I will be sure to call this out. To go from DC/OS 1.8 Disbaled to DC/OS 1.8 Permissive, you can upgrade by running this command below. Notice the `state` is still upgrade, because we're still doing an inplace upgrade to the same version. This allows you to make DC/OS cluster-wide changes on your cluster.
 
   ```bash
-  terraform apply --var dcos_version=1.8.8 --var state=upgrade --var dcos_security=permissive
+  terraform apply \
+  --var dcos_version=1.8.8 \
+  --var state=upgrade \
+  --var dcos_security=permissive
   ```
 
   #### Upgrading DC/OS 1.8 Permissive to DC/OS 1.8 Strict
@@ -155,7 +196,10 @@ terraform apply --var os=coreos_1235.9.0 --var dcos_version=1.8.8  --var state=u
   This command below will upgrade you from DC/OS permissive to DC/OS strict mode
 
   ```bash
-  terraform apply --var dcos_version=1.8.8 --var state=upgrade --var dcos_security=strict
+  terraform apply \
+  --var dcos_version=1.8.8 \
+  --var state=upgrade \
+  --var dcos_security=strict
   ```
 
   ### DC/OS 1.9 Upgrades
@@ -165,19 +209,28 @@ terraform apply --var os=coreos_1235.9.0 --var dcos_version=1.8.8  --var state=u
   #### Upgrading DC/OS 1.8 Disabled to DC/OS 1.9 Disabled
 
   ```bash
-  terraform apply --var dcos_version=1.9.0 --var state=upgrade --var dcos_security=disabled
+  terraform apply \
+  --var dcos_version=1.9.0 \
+  --var state=upgrade \
+  --var dcos_security=disabled
   ```
 
   #### Upgrading DC/OS 1.8 Permissive to DC/OS 1.9 Permissive
 
   ```bash
-  terraform apply --var dcos_version=1.9.0 --var state=upgrade --var dcos_security=permissive
+  terraform apply \
+  --var dcos_version=1.9.0 \
+  --var state=upgrade \
+  --var dcos_security=permissive
   ```
 
   #### Upgrading DC/OS 1.8 Strict to DC/OS 1.9 Strict
 
   ```bash
-  terraform apply --var dcos_version=1.9.0 --var state=upgrade --var dcos_security=strict
+  terraform apply \
+  --var dcos_version=1.9.0 \
+  --var state=upgrade \
+  --var dcos_security=strict
   ```
 
 ## Maintenance
@@ -187,13 +240,19 @@ If you would like to add more or remove (private) agents or public agents from y
 ### Adding Agents
 
 ```bash
-terraform apply -var-file desired_cluster_profile --var num_of_private_agents=5 --var num_of_public_agents=3
+terraform apply \
+-var-file desired_cluster_profile \
+--var num_of_private_agents=5 \
+--var num_of_public_agents=3
 ```
 
 ### Removing Agents
 
 ```bash
-terraform apply -var-file desired_cluster_profile --var num_of_private_agents=1 --var num_of_public_agents=1
+terraform apply \
+-var-file desired_cluster_profile \
+--var num_of_private_agents=1 \
+--var num_of_public_agents=1
 ```
 
 **Important**: Always remember to save your desired state in your `desired_cluster_profile`
@@ -209,6 +268,7 @@ If you wanted to redeploy a problematic agent, (ie. storage filled up, not respo
 
 ```bash
 terraform taint aws_instance.agent.0 # The number represents the agent in the list 
+terraform taint null_resource.agent.0 # The number represents the agent in the list 
 ```
 
 **Redeploy Agent**
@@ -224,6 +284,7 @@ terraform apply -var-file desired_cluster_profile
 
 ```bash
 terraform taint aws_instance.public-agent.0 # The number represents the agent in the list 
+terraform taint null_resource.public-agent.0 # The number represents the agent in the list 
 ```
 
 **Redeploy Agent**
@@ -232,7 +293,13 @@ terraform taint aws_instance.public-agent.0 # The number represents the agent in
 terraform apply -var-file desired_cluster_profile
 ```
 
+### Destroy Cluster
 
+You can shutdown/destroy all resources from your environment by running this command below
+
+```bash
+terraform destroy
+```
 
   # Roadmaps
 
