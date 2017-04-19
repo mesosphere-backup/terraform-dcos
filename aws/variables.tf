@@ -405,6 +405,21 @@ variable "dcos_cluster_docker_registry_url" {
  description = "This parameter specifies a custom URL that Mesos uses to pull Docker images from. If set, it will configure the Mesos’ --docker_registry flag to the specified URL. This changes the default URL Mesos uses for pulling Docker images. By default https://registry-1.docker.io is used."
 }
 
+variable "dcos_enable_docker_gc" {
+ default = ""
+ description = "This parameter specifies whether to run the docker-gc script, a simple Docker container and image garbage collection script, once every hour to clean up stray Docker containers. You can configure the runtime behavior by using the /etc/ config. For more information, see the documentation"
+}
+
+variable "dcos_staged_package_storage_uri" {
+ default = ""
+ description = "This parameter specifies where to temporarily store DC/OS packages while they are being added. The value must be a file URL, for example, file:///var/lib/dcos/cosmos/staged-packages."
+}
+
+variable "dcos_package_storage_uri" {
+ default = ""
+ description = "This parameter specifies where to permanently store DC/OS packages. The value must be a file URL, for example, file:///var/lib/dcos/cosmos/packages."
+}
+
 
 # Example value on how to configure rexray below
 # default = "{\"rexray\": {\"modules\": {\"default-docker\": {\"disabled\": true}, \"default-admin\": {\"host\": \"tcp://127.0.0.1:61003\"}}, \"loglevel\": \"info\"}}"

@@ -68,6 +68,9 @@ ${dcos_cluster_docker_credentials_enabled== "" ? "" : "cluster_docker_credential
 ${dcos_cluster_docker_registry_url == "" ? "" : "cluster_docker_registry_url: ${dcos_cluster_docker_registry_url}"}
 ${dcos_cluster_docker_registry_enabled == "" ? "" : "cluster_docker_registry_enabled: ${dcos_cluster_docker_registry_enabled}"}
 ${dcos_rexray_config == "" ? "" : "rexray_config: ${dcos_rexray_config}"}
+${dcos_staged_package_storage_uri == "" ? "" : dcos_package_storage_uri == "" ? "" : "cosmos_config:"}
+${dcos_staged_package_storage_uri == "" ? "" : "  staged_package_storage_uri: ${dcos_staged_package_storage_uri}"}
+${dcos_package_storage_uri == "" ? "" : "  package_storage_uri: ${dcos_package_storage_uri}"}
 ''' | sed '/^$/d' | sudo tee genconf/config.yaml
 sudo cp /tmp/ip-detect genconf/.
 sudo bash dcos_generate_config.${dcos_version}.sh

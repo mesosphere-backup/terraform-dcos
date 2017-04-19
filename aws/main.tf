@@ -779,6 +779,9 @@ resource "aws_instance" "bootstrap" {
     dcos_rexray_config = "${var.dcos_rexray_config}"
     dcos_ip_detect_public_contents = "${var.dcos_ip_detect_public_contents}"
     dcos_cluster_docker_registry_enabled = "${var.dcos_cluster_docker_registry_enabled}"
+    dcos_enable_docker_gc = "${var.dcos_enable_docker_gc}"
+    dcos_staged_package_storage_uri = "${var.dcos_staged_package_storage_uri}"
+    dcos_package_storage_uri = "${var.dcos_package_storage_uri}"
  }
 
 resource "null_resource" "bootstrap" {
@@ -824,7 +827,6 @@ resource "null_resource" "bootstrap" {
     dcos_master_dns_bindall = "${var.dcos_master_dns_bindall}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
     # Workaround is to flatten the list as a string below. Fix when this is closed.
-    dcos_master_list = "\n - ${join("\n - ", aws_instance.master.*.private_ip)}"
     dcos_no_proxy = "${var.dcos_no_proxy}"
     dcos_num_masters = "${var.num_of_masters}"
     dcos_oauth_enabled = "${var.dcos_oauth_enabled}"
@@ -852,6 +854,9 @@ resource "null_resource" "bootstrap" {
     dcos_rexray_config = "${var.dcos_rexray_config}"
     dcos_ip_detect_public_contents = "${var.dcos_ip_detect_public_contents}"
     dcos_cluster_docker_registry_enabled = "${var.dcos_cluster_docker_registry_enabled}"
+    dcos_enable_docker_gc = "${var.dcos_enable_docker_gc}"
+    dcos_staged_package_storage_uri = "${var.dcos_staged_package_storage_uri}"
+    dcos_package_storage_uri = "${var.dcos_package_storage_uri}"
   }
 
   # Bootstrap script can run on any instance of the cluster

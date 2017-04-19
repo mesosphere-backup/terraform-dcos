@@ -283,3 +283,15 @@ variable "custom_dcos_download_path" {
 variable "dcos_cluster_docker_registry_enabled" {
   default = ""
 }
+
+variable "dcos_enable_docker_gc" {
+ default = ""
+}
+
+variable "dcos_staged_package_storage_uri" {
+ default = ""
+}
+
+variable "dcos_package_storage_uri" {
+ default = ""
+}
