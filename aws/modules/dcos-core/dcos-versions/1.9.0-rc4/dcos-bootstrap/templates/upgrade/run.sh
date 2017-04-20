@@ -25,13 +25,13 @@ ${dcos_aws_access_key_id== "" ? "" : "aws_access_key_id: ${dcos_aws_access_key_i
 ${dcos_aws_region== "" ? "" : "aws_region: ${dcos_aws_region}"}
 ${dcos_aws_secret_access_key== "" ? "" : "aws_secret_access_key: ${dcos_aws_secret_access_key}"}
 ${dcos_exhibitor_explicit_keys== "" ? "" : "exhibitor_explicit_keys: ${dcos_exhibitor_explicit_keys}"}
-${dcos_s3_bucket== "" ? "" : "s3_bucket: ${dcos_s3_bucket}"}
-${dcos_s3_prefix== "" ? "" : "s3_prefix: ${dcos_s3_prefix}"}
+${dcos_exhibitor_storage_backend == "aws_s3" ? dcos_s3_bucket== "" ? "" : "s3_bucket: ${dcos_s3_bucket}" : ""}
+${dcos_exhibitor_storage_backend == "aws_s3" ? dcos_s3_prefix== "" ? "" : "s3_prefix: ${dcos_s3_prefix}" : ""}
 ${dcos_exhibitor_azure_account_name== "" ? "" : "exhibitor_azure_account_name: ${dcos_exhibitor_azure_account_name}"}
 ${dcos_exhibitor_azure_account_key== "" ? "" : "exhibitor_azure_account_key: ${dcos_exhibitor_azure_account_key}"}
 ${dcos_exhibitor_azure_prefix== "" ? "" : "exhibitor_azure_prefix: ${dcos_exhibitor_azure_prefix}"}
-${dcos_exhibitor_address== "" ? "" : "exhibitor_address: ${dcos_exhibitor_address}"}
 ${dcos_master_discovery == "master_http_loadbalancer" ? dcos_num_masters == "" ? "" : "num_masters: ${dcos_num_masters}" : ""}
+${dcos_master_discovery == "master_http_loadbalancer" ? dcos_exhibitor_address== "" ? "" : "exhibitor_address: ${dcos_exhibitor_address}" : ""}
 ${dcos_master_discovery == "static" ? dcos_master_list== "" ? "" : "master_list: ${dcos_master_list}" : ""}
 ${dcos_customer_key== "" ? "" : "customer_key: ${dcos_customer_key}"}
 ${dcos_rexray_config_method== "" ? "" : "rexray_config_method: ${dcos_rexray_config_method}"}
@@ -68,6 +68,9 @@ ${dcos_cluster_docker_credentials_enabled== "" ? "" : "cluster_docker_credential
 ${dcos_cluster_docker_registry_url == "" ? "" : "cluster_docker_registry_url: ${dcos_cluster_docker_registry_url}"}
 ${dcos_cluster_docker_registry_enabled == "" ? "" : "cluster_docker_registry_enabled: ${dcos_cluster_docker_registry_enabled}"}
 ${dcos_rexray_config == "" ? "" : "rexray_config: ${dcos_rexray_config}"}
+${dcos_staged_package_storage_uri == "" ? "" : dcos_package_storage_uri == "" ? "" : "cosmos_config:"}
+${dcos_staged_package_storage_uri == "" ? "" : "  staged_package_storage_uri: ${dcos_staged_package_storage_uri}"}
+${dcos_package_storage_uri == "" ? "" : "  package_storage_uri: ${dcos_package_storage_uri}"}
 ''' | sed '/^$/d' | sudo tee genconf/config.yaml
 sudo cp /tmp/ip-detect genconf/.
 sudo bash dcos_generate_config.${dcos_version}.sh --generate-node-upgrade-script $PREVIOUS_DCOS_VERSION 
