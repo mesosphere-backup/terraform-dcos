@@ -71,6 +71,9 @@ template = "${file("${path.module}/dcos-versions/${var.dcos_version}/${var.role}
     dcos_rexray_config = "${var.dcos_rexray_config}"
     dcos_ip_detect_public_contents = "${var.dcos_ip_detect_public_contents}"    
     dcos_cluster_docker_registry_enabled = "${var.dcos_cluster_docker_registry_enabled}"
+    dcos_enable_docker_gc = "${var.dcos_enable_docker_gc}"
+    dcos_staged_package_storage_uri = "${var.dcos_staged_package_storage_uri}"
+    dcos_package_storage_uri = "${var.dcos_package_storage_uri}"
   }
 }
 
