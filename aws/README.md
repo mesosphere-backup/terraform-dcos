@@ -48,21 +48,24 @@ There is a module called `dcos-tested-aws-oses` that contains all the tested scr
 
 For CoreOS 1235.9.0:
 ```bash
-terraform init http://github.com/bernadinm/terraform-dcos/aws
+terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
+terraform get
 terraform plan --var os=coreos_1235.9.0
 ```
 
 For CoreOS 835.13.0:
 
 ```bash
-terraform init http://github.com/bernadinm/terraform-dcos/aws
-terraform plan --var os=coreos_835.13.0
+terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
+terraform get
+terraform plan --var os=coreos_835.13.0 --var dcos_overlay_enable=disable # This OS cannot support docker networking
 ```
 
 For Centos 7.2:
 
 ```bash
-terraform init http://github.com/bernadinm/terraform-dcos/aws
+terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
+terraform get
 terraform plan --var os=centos_7.2
 ```
 
@@ -292,6 +295,17 @@ terraform taint null_resource.public-agent.0 # The number represents the agent i
 ```bash
 terraform apply -var-file desired_cluster_profile
 ```
+
+### Expiration Tags (Cloud Cluster)
+
+If you have [cloudcleaner](https://github.com/mesosphere/cloudcleaner), you can take advantge of the expiration and owner variable. At Mesosphere, we have this setup in our environment. If you dont have it in yours, you can ignore this. It will simply tag your instances with expiration, but it will never destroy your cluster. 
+
+```bash
+terraform apply --var expiration=3h --var owner=mbernadin
+```
+
+By default, the expiration is `1h` and terraform will try to run `whoami` to determine who the owner is automatically. You can always change your expiration and let terraform do the rest.
+
 
 ### Destroy Cluster
 
