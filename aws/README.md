@@ -318,14 +318,15 @@ As of Mesos 1.0, which now supports GPU agents, you can experiment with them imm
 
 ```bash
 mv dcos-gpu-agents.tf.disabled dcos-gpu-agents.tf
-terraform apply -var-file desired_cluster_profile --var num_of_gpu_agents=3
+terraform get
+terraform apply --var num_of_gpu_agents=3
 ```
 
 ##### Remove GPU Private Agents
 
 ```bash
 mv dcos-gpu-agents.tf dcos-gpu-agents.tf.disabled
-terraform apply -var-file desired_cluster_profile
+terraform apply
 ```
 
 ### Destroy Cluster
