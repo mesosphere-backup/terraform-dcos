@@ -312,7 +312,7 @@ By default, the expiration is `1h` and terraform will try to run `whoami` to det
 
 *NOTE: Best used with DC/OS 1.9*
 
-As of Mesos 1.0, which now supports GPU agents, you can experiment with them immediately by simply removing `.disabled` from `dcos-gpu-agents.tf.disabled`. Once you do that, you can simply perform `terraform apply` and the agents will be deployed and configure and automatically join your mesos cluster. The default of `num_of_gpu_agents` is `1`. You can also remove GPU agents by simply adding `.disabled` and it will exit as well.
+As of Mesos 1.0 which now supports GPU agents, you can experiment with them on your DC/OS cluster immediately by simply removing `.disabled` from `dcos-gpu-agents.tf.disabled`. Once completed, you can simply perform `terraform apply` and the agents will be deployed and configure and automatically join your mesos cluster. The default of `num_of_gpu_agents` is `1`. You can also remove GPU agents by simply adding `.disabled` and they will exit from the cluster as well.
 
 ##### Add GPU Private Agents
 
