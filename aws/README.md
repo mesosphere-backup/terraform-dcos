@@ -296,7 +296,7 @@ terraform taint null_resource.public-agent.0 # The number represents the agent i
 terraform apply -var-file desired_cluster_profile
 ```
 
-### Expiration Tags (Cloud Cluster)
+### Optional Mesosphere AWS Expiration Tags (Cloud Cluster)
 
 If you have [cloudcleaner](https://github.com/mesosphere/cloudcleaner), you can take advantge of the expiration and owner variable. At Mesosphere, we have this setup in our environment. If you dont have it in yours, you can ignore this. It will simply tag your instances with expiration, but it will never destroy your cluster. 
 
@@ -306,6 +306,25 @@ terraform apply --var expiration=3h --var owner=mbernadin
 
 By default, the expiration is `1h` and terraform will try to run `whoami` to determine who the owner is automatically. You can always change your expiration and let terraform do the rest.
 
+### Experimental
+
+#### Adding GPU Private Agents
+
+As of Mesos 1.0, which now supports GPU agents, you can experiment with them immediately by simply removing `.disabled` from `dcos-gpu-agents.tf.disabled`. Once you do that, you can simply perform `terraform apply` and the agents will be deployed and configure and automatically join your mesos cluster. The default of `num_of_gpu_agents` is `1`. You can also remove GPU agents by simply adding `.disabled` and it will exit as well.
+
+##### Add GPU Private Agents
+
+```bash
+mv dcos-gpu-agents.tf.disabled dcos-gpu-agents.tf
+terraform apply -var-file desired_cluster_profile --var num_of_gpu_agents=3
+```
+
+##### Remove GPU Private Agents
+
+```bash
+mv dcos-gpu-agents.tf dcos-gpu-agents.tf.disabled
+terraform apply -var-file desired_cluster_profile
+```
 
 ### Destroy Cluster
 
@@ -328,5 +347,6 @@ terraform destroy
   - [ ] Support for RHEL
   - [ ] Secondary support for specific versions of RHEL
   - [ ] Multi AZ Support
+
 
 
