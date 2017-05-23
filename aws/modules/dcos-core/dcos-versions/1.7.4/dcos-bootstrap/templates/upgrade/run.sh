@@ -75,4 +75,5 @@ ${dcos_package_storage_uri == "" ? "" : "  package_storage_uri: ${dcos_package_s
 sudo cp /tmp/ip-detect genconf/.
 sudo bash dcos_generate_config.${dcos_version}.sh
 sudo docker rm -f $(docker ps -a -q -f ancestor=nginx)
+sed -i -e "s/systemctl restart systemd-journald//g" -e "s/systemctl restart docker//g" genconf/serve/dcos_install.sh
 sudo docker run -d -p ${dcos_bootstrap_port}:80 -v $PWD/genconf/serve:/usr/share/nginx/html:ro nginx
