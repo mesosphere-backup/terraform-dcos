@@ -260,6 +260,26 @@ terraform apply \
 
 **Important**: Always remember to save your desired state in your `desired_cluster_profile`
 
+## Redeploy an existing Master
+
+If you wanted to redeploy a problematic master (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle. 
+
+**NOTE:** This only applies to DC/OS clusters that have set their `dcos_master_discovery` to `master_http_loadbalancer` and not `static`.
+
+### Master Node
+
+**Taint Master Node**
+
+```bash
+terraform taint aws_instance.master.0 # The number represents the agent in the list 
+```
+
+**Redeploy Master Node**
+
+```bash
+terraform apply -var-file desired_cluster_profile
+```
+
 ## Redeploy an existing Agent
 
 If you wanted to redeploy a problematic agent, (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle. 
@@ -271,7 +291,6 @@ If you wanted to redeploy a problematic agent, (ie. storage filled up, not respo
 
 ```bash
 terraform taint aws_instance.agent.0 # The number represents the agent in the list 
-terraform taint null_resource.agent.0 # The number represents the agent in the list 
 ```
 
 **Redeploy Agent**
@@ -287,7 +306,6 @@ terraform apply -var-file desired_cluster_profile
 
 ```bash
 terraform taint aws_instance.public-agent.0 # The number represents the agent in the list 
-terraform taint null_resource.public-agent.0 # The number represents the agent in the list 
 ```
 
 **Redeploy Agent**
