@@ -304,7 +304,7 @@ resource "aws_security_group" "private_slave" {
 resource "aws_elb_attachment" "internal-master-elb" {
   count    = "${var.num_of_masters}"
   elb      = "${aws_elb.internal-master-elb.id}"
-  instance = "${element(aws_instance.master.*.id, count.index)}"
+  instance = "${aws_instance.master.*.id[count.index]}"
 }
 
 # Internal Load Balancer Access
@@ -367,7 +367,7 @@ resource "aws_elb" "internal-master-elb" {
 resource "aws_elb_attachment" "public-master-elb" {
   count    = "${var.num_of_masters}"
   elb      = "${aws_elb.public-master-elb.id}"
-  instance = "${element(aws_instance.master.*.id, count.index)}"
+  instance = "${aws_instance.master.*.id[count.index]}"
 }
 
 # Public Master Load Balancer Access
@@ -410,7 +410,7 @@ resource "aws_elb" "public-master-elb" {
 resource "aws_elb_attachment" "public-agent-elb" {
   count    = "${var.num_of_public_agents}"
   elb      = "${aws_elb.public-agent-elb.id}"
-  instance = "${element(aws_instance.public-agent.*.id, count.index)}"
+  instance = "${aws_instance.public-agent.*.id[count.index]}"
 }
 
 # Public Agent Load Balancer Access
@@ -778,7 +778,6 @@ resource "aws_instance" "bootstrap" {
     dcos_cluster_docker_registry_url = "${var.dcos_cluster_docker_registry_url}"
     dcos_rexray_config = "${var.dcos_rexray_config}"
     dcos_ip_detect_public_contents = "${var.dcos_ip_detect_public_contents}"
-    dcos_cluster_docker_registry_enabled = "${var.dcos_cluster_docker_registry_enabled}"
     dcos_enable_docker_gc = "${var.dcos_enable_docker_gc}"
     dcos_staged_package_storage_uri = "${var.dcos_staged_package_storage_uri}"
     dcos_package_storage_uri = "${var.dcos_package_storage_uri}"
@@ -853,7 +852,6 @@ resource "null_resource" "bootstrap" {
     dcos_cluster_docker_registry_url = "${var.dcos_cluster_docker_registry_url}"
     dcos_rexray_config = "${var.dcos_rexray_config}"
     dcos_ip_detect_public_contents = "${var.dcos_ip_detect_public_contents}"
-    dcos_cluster_docker_registry_enabled = "${var.dcos_cluster_docker_registry_enabled}"
     dcos_enable_docker_gc = "${var.dcos_enable_docker_gc}"
     dcos_staged_package_storage_uri = "${var.dcos_staged_package_storage_uri}"
     dcos_package_storage_uri = "${var.dcos_package_storage_uri}"
@@ -898,8 +896,8 @@ resource "null_resource" "master" {
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
+    current_ec2_instance_id = "${aws_instance.master.*.id[count.index]}"
   }
-
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case
   connection {
@@ -952,8 +950,8 @@ resource "null_resource" "agent" {
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
+    current_ec2_instance_id = "${aws_instance.agent.*.id[count.index]}"
   }
-
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case
   connection {
@@ -999,6 +997,7 @@ resource "null_resource" "public-agent" {
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
+    current_ec2_instance_id = "${aws_instance.public-agent.*.id[count.index]}"
   }
 
   # Bootstrap script can run on any instance of the cluster
