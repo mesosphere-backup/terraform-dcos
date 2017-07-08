@@ -473,6 +473,8 @@ resource "aws_instance" "master" {
   count = "${var.num_of_masters}"
   instance_type = "${var.aws_master_instance_type}"
 
+  ebs_optimized = "true"
+
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
@@ -533,6 +535,8 @@ resource "aws_instance" "agent" {
   count = "${var.num_of_private_agents}"
   instance_type = "${var.aws_agent_instance_type}"
 
+  ebs_optimized = "true"
+
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
@@ -591,6 +595,8 @@ resource "aws_instance" "public-agent" {
 
   count = "${var.num_of_public_agents}"
   instance_type = "${var.aws_public_agent_instance_type}"
+
+  ebs_optimized = "true"
 
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
