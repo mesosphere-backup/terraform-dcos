@@ -36,6 +36,8 @@ resource "aws_instance" "gpu-agent" {
 
   count = "${var.num_of_gpu_agents}"
   instance_type = "${var.aws_gpu_agent_instance_type}"
+  
+  ebs_optimized = "true"
 
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
@@ -105,8 +107,6 @@ resource "null_resource" "gpu-agent" {
   }
 
   count = "${var.num_of_gpu_agents}"
-
-  ebs_optimized = "true"
 
   # Generate and upload Agent script to node
   provisioner "file" {
