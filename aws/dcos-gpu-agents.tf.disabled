@@ -108,8 +108,6 @@ resource "null_resource" "gpu-agent" {
 
   count = "${var.num_of_gpu_agents}"
 
-  ebs_optimized = "true"
-
   # Generate and upload Agent script to node
   provisioner "file" {
     content     = "${module.dcos-mesos-agent.script}"
