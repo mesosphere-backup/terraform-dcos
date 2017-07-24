@@ -311,6 +311,7 @@ resource "aws_elb_attachment" "internal-master-elb" {
 # Mesos Master, Zookeeper, Exhibitor, Adminrouter, Marathon
 resource "aws_elb" "internal-master-elb" {
   name = "${data.template_file.cluster-name.rendered}-int-master-elb"
+  internal = "true"
 
   subnets         = ["${aws_subnet.public.id}"]
   security_groups = ["${aws_security_group.master.id}","${aws_security_group.public_slave.id}", "${aws_security_group.private_slave.id}"]
