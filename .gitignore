@@ -1,2 +1,5 @@
 .DS_Store
 aws/.DS_Store
+aws/.terraform
+aws/terraform.tfstate
+aws/terraform.tfstate.backup
