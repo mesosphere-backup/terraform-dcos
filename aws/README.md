@@ -350,7 +350,7 @@ terraform destroy
   - [X] Support for specific versions of CoreOS
   - [X] Support for Centos
   - [X] Secondary support for specific versions of Centos
-  - [ ] Support for RHEL
+  - [X] Support for RHEL
   - [ ] Secondary support for specific versions of RHEL
   - [ ] Multi AZ Support
 
