@@ -25,7 +25,7 @@ ssh-add ~/.ssh/path_to_you_key.pem
 ```
 **Configure your IAM AWS Keys**
 
-You will need your AWS aws_access_key_id and aws_secret_access_key. If you dont have one yet, you can get them from the AWS documetnation [here](
+You will need your AWS aws_access_key_id and aws_secret_access_key. If you dont have one yet, you can get them from the AWS documentation [here](
 http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). When you finally get them, you can install it in your home directory. The default location is `$HOME/.aws/credentials` on Linux and OS X, or `"%USERPROFILE%\.aws\credentials"` for Windows users.
 
 Here is an example of the output when you're done:
