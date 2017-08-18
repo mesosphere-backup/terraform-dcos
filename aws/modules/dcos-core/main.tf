@@ -76,8 +76,3 @@ template = "${file("${path.module}/dcos-versions/${var.dcos_version}/${var.role}
     dcos_package_storage_uri = "${var.dcos_package_storage_uri}"
   }
 }
-
-output "script" {
-   value = "${data.template_file.script.rendered}"
- }
-
