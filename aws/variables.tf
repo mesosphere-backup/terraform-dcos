@@ -434,8 +434,8 @@ variable "state" {
 }
 
 variable "dcos_ip_detect_public_contents" {
- default = "\"\\x27#!/bin/sh\\\\n\\\\n  set -o nounset -o errexit\\\\n\\\\n\\\\n  curl -fsSL http://169.254.169.254/latest/meta-data/public-ipv4\\\\n\\\\n   \\x27\\\\n\""
- description = "Used for AWS to determine the public IP. Note: single quotes was subsututed for hex x27 as it cannot be used. Currently escapes will need to be performed twice. DC/OS bug requires this variable instead of a file see https://jira.mesosphere.com/browse/DCOS_OSS-905 for more information."
+ default = "\"'#!/bin/sh\\n\\n  set -o nounset -o errexit\\n\\n\\n  curl -fsSL http://169.254.169.254/latest/meta-data/public-ipv4\\n\\n   '\\n\""
+ description = "Used for AWS to determine the public IP. DC/OS bug requires this variable instead of a file see https://jira.mesosphere.com/browse/DCOS_OSS-905 for more information."
 }
 
 # Core OS
