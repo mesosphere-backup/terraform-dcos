@@ -172,18 +172,6 @@ resource "azurerm_virtual_machine" "bootstrap" {
     }    
   }
 
-  # DCOS ip detect script
-  provisioner "file" {
-   source = "${var.ip-detect["azure"]}"
-   destination = "/tmp/ip-detect"
-
-   connection {
-    type = "ssh"
-    user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
-    host = "${azurerm_public_ip.bootstrap_public_ip.fqdn}"
-    }
-   }
-
   # OS init script
   provisioner "file" {
    content = "${module.azure-tested-oses.os-setup}"
@@ -380,6 +368,18 @@ resource "null_resource" "bootstrap" {
     host = "${element(azurerm_public_ip.bootstrap_public_ip.*.fqdn, 0)}"
     user = "${module.azure-tested-oses.user}"
   }
+
+  # DCOS ip detect script
+  provisioner "file" {
+   source = "${var.ip-detect["azure"]}"
+   destination = "/tmp/ip-detect"
+
+   connection {
+    type = "ssh"
+    user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
+    host = "${azurerm_public_ip.bootstrap_public_ip.fqdn}"
+    }
+   }
 
   # Generate and upload bootstrap script to node
   provisioner "file" {

@@ -434,7 +434,7 @@ variable "state" {
 }
 
 variable "dcos_ip_detect_public_contents" {
- default = "\"'#!/bin/sh\\n\\n  curl -H Metadata:true \\\"http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/publicIpAddress?api-version=2017-04-02&format=text\\\"\\n\\n   '\\n\""
+ default = "\"'#!/bin/sh\\n\\n  curl -H Metadata:true -fsSL \\\"http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/publicIpAddress?api-version=2017-04-02&format=text\\\"\\n\\n   '\\n\""
  description = "Used for AWS to determine the public IP. Note: single quotes was subsututed for hex x27 as it cannot be used. Currently escapes will need to be performed twice. DC/OS bug requires this variable instead of a file see https://jira.mesosphere.com/browse/DCOS_OSS-905 for more information."
 }
 
