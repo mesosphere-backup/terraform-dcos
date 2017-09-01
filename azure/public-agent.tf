@@ -13,11 +13,11 @@ resource "azurerm_managed_disk" "public_agent_managed_disk" {
 
 # Public IP addresses for the Public Front End load Balancer
 resource "azurerm_public_ip" "public_agent_load_balancer_public_ip" {
-  name                         = "${data.template_file.cluster-name.rendered}-lb-ip"
+  name                         = "${data.template_file.cluster-name.rendered}-public-lb-ip"
   location                     = "${var.azure_region}"
   resource_group_name          = "${azurerm_resource_group.dcos.name}"
   public_ip_address_allocation = "dynamic"
-  domain_name_label = "${data.template_file.cluster-name.rendered}"
+  domain_name_label = "public-agent-${data.template_file.cluster-name.rendered}"
 
   tags {
    Name       = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
@@ -73,7 +73,7 @@ resource "azurerm_lb_rule" "agent_public_load_balancer_http_rule" {
   protocol                       = "Tcp"
   frontend_port                  = 80
   backend_port                   = 80
-  frontend_ip_configuration_name = "${data.template_file.cluster-name.rendered}-public-ip-config"
+  frontend_ip_configuration_name = "${data.template_file.cluster-name.rendered}-public-agent-ip-config"
   backend_address_pool_id        = "${azurerm_lb_backend_address_pool.external_public_agent_backend_pool.id}"
   probe_id                       = "${azurerm_lb_probe.agent_load_balancer_http_probe.id}"
   depends_on                     = ["azurerm_lb_probe.agent_load_balancer_http_probe"]
@@ -87,7 +87,7 @@ resource "azurerm_lb_rule" "agent_public_load_balancer_https_rule" {
   protocol                       = "Tcp"
   frontend_port                  = 443
   backend_port                   = 443
-  frontend_ip_configuration_name = "${data.template_file.cluster-name.rendered}-public-ip-config"
+  frontend_ip_configuration_name = "${data.template_file.cluster-name.rendered}-public-agent-ip-config"
   backend_address_pool_id        = "${azurerm_lb_backend_address_pool.external_public_agent_backend_pool.id}"
   probe_id                       = "${azurerm_lb_probe.agent_load_balancer_https_probe.id}"
   depends_on                     = ["azurerm_lb_probe.agent_load_balancer_https_probe"]

@@ -176,6 +176,12 @@ resource "azurerm_virtual_machine" "bootstrap" {
   provisioner "file" {
    source = "${var.ip-detect["azure"]}"
    destination = "/tmp/ip-detect"
+
+   connection {
+    type = "ssh"
+    user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
+    host = "${azurerm_public_ip.bootstrap_public_ip.fqdn}"
+    }
    }
 
   # OS init script

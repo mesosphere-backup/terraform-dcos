@@ -13,11 +13,11 @@ resource "azurerm_managed_disk" "master_managed_disk" {
 
 # Public IP addresses for the Public Front End load Balancer
 resource "azurerm_public_ip" "master_load_balancer_public_ip" {
-  name                         = "${data.template_file.cluster-name.rendered}-lb-ip"
+  name                         = "${data.template_file.cluster-name.rendered}-master-lb-ip"
   location                     = "${var.azure_region}"
   resource_group_name          = "${azurerm_resource_group.dcos.name}"
   public_ip_address_allocation = "dynamic"
-  domain_name_label = "${data.template_file.cluster-name.rendered}"
+  domain_name_label = "master-${data.template_file.cluster-name.rendered}"
 
   tags {
    Name       = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
