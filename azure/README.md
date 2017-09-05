@@ -143,7 +143,7 @@ dcos_exhibitor_storage_backend = "azure"
 ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
 ```
 
-**NOTE:** This will append your aws_access_key_id and aws_secret_access_key key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the aws_s3 bucket. 
+**NOTE:** This will append your exhibitor_azure_account_name, exhibitor_azure_account_key and exhibitor_azure_prefix key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the azure storage backend. 
 
 ## Upgrading DC/OS  
 
@@ -276,7 +276,7 @@ If you wanted to redeploy a problematic master (ie. storage filled up, not respo
 **Taint Master Node**
 
 ```bash
-terraform taint aws_instance.master.0 # The number represents the agent in the list 
+terraform taint azurerm_virtual_machine.master.0 # The number represents the agent in the list 
 ```
 
 **Redeploy Master Node**
@@ -295,7 +295,7 @@ If you wanted to redeploy a problematic agent, (ie. storage filled up, not respo
 **Taint Private Agent**
 
 ```bash
-terraform taint aws_instance.agent.0 # The number represents the agent in the list 
+terraform taint azurerm_virtual_machine.agent.0 # The number represents the agent in the list 
 ```
 
 **Redeploy Agent**
@@ -310,7 +310,7 @@ terraform apply -var-file desired_cluster_profile
 **Taint Private Agent**
 
 ```bash
-terraform taint aws_instance.public-agent.0 # The number represents the agent in the list 
+terraform taint azurerm_virtual_machine.public-agent.0 # The number represents the agent in the list 
 ```
 
 **Redeploy Agent**
