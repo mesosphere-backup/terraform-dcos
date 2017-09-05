@@ -127,6 +127,8 @@ terraform apply
 
 ### Config.yaml Modification
 
+#### Recommended Configuration
+
 You can modify all the DC/OS config.yaml flags via terraform. Here is an example of using the master_http_loadbalancer for cloud deployments. **master_http_loadbalancer is recommended for production**. You will be able to replace your masters in a multi master environment. Using the default static backend will not give you this option. 
 
 Here is an example default profile that will allow you to do this. 
@@ -144,6 +146,54 @@ ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
 ```
 
 **NOTE:** This will append your exhibitor_azure_account_name, exhibitor_azure_account_key and exhibitor_azure_prefix key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the azure storage backend. 
+
+#### Advance YAML Configuration 
+
+Here are the YAML flags examples where you can simply paste your YAML configuration in your desired_cluster_profile. The alternative to YAML is to convert it to JSON.  
+
+_*Note*: It is required to have at least one space when inserting your YAML settings_
+
+```bash
+$ cat desired_cluster_profile
+dcos_version = "1.9.2"
+num_of_masters = "3"
+num_of_private_agents = "2"
+num_of_public_agents = "1"
+expiration = "6h"
+dcos_security = "permissive"
+dcos_cluster_docker_credentials_enabled =  "true"
+dcos_cluster_docker_credentials_write_to_etc = "true"
+dcos_cluster_docker_credentials_dcos_owned = "false"
+dcos_cluster_docker_registry_url = "https://index.docker.io"
+dcos_overlay_network = <<EOF
+# YAML
+    vtep_subnet: 44.128.0.0/20
+    vtep_mac_oui: 70:B3:D5:00:00:00
+    overlays:
+      - name: dcos
+        subnet: 12.0.0.0/8
+        prefix: 26
+EOF
+dcos_rexray_config = <<EOF
+# YAML
+  rexray:
+    loglevel: warn
+    modules:
+      default-admin:
+        host: tcp://127.0.0.1:61003
+    storageDrivers:
+    - ec2
+    volume:
+      unmount:
+        ignoreusedcount: true
+EOF
+dcos_cluster_docker_credentials = <<EOF
+# YAML 
+  auths:
+    'https://index.docker.io/v1/':
+      auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
+EOF
+```
 
 ## Upgrading DC/OS  
 
