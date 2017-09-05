@@ -18,17 +18,32 @@ If you want to leverage the terraform installer, feel free to check out https://
 
 **Configure your Azure ssh Keys**
 
-TODO
+Set the private key that you will be you will be using to your ssh-agent and set public key in terraform.
 
 ```bash
-ssh-add ~/.ssh/path_to_you_key.pem
+ssh-add ~/.ssh/your_private_key.pem
 ```
+
+```bash
+cat desired_cluster_profile
+...
+ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
+...
+```
+
 **Configure your Azure ID Keys**
 
-TODO 
+Follow the Terraform instructions [here](https://www.terraform.io/docs/providers/azurerm/#creating-credentials) to setup your Azure credentials to provide to terraform. 
+
+When you've successfully retrieved your output of `az account list`, create a source file to easily run your credentials in the future. 
+
 
 ```bash
 $ cat ~/.azure/credentials
+export ARM_TENANT_ID=45ef06c1-a57b-40d5-967f-88cf8example
+export ARM_CLIENT_SECRET=Lqw0kyzWXyEjfha9hfhs8dhasjpJUIGQhNFExAmPLE
+export ARM_CLIENT_ID=80f99c3a-cd7d-4931-9405-8b614example
+export ARM_SUBSCRIPTION_ID=846d9e22-a320-488c-92d5-41112example
 $ source ~/.azure/credentials
 ```
 
@@ -36,13 +51,12 @@ $ source ~/.azure/credentials
 
 **Pull down the DC/OS terraform scripts below**
 
-There is a module called `dcos-tested-aws-oses` that contains all the tested scripts per operating system. The deployment strategy is a base AMI coupled with a prereq `script.sh` to get it ready to install dcos-core components. Its simple to add other operating systems by adding the ami, region, and install scripts to meet the dcos specifications that can be found [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/) and [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/install-docker-centos/) as an example.
+There is a module called `dcos-tested-azure-oses` that contains all the tested scripts per operating system. The deployment strategy is based on a bare image coupled with a prereq `script.sh` to get it ready to install dcos-core components. Its simple to add other operating systems by adding the ami, region, and install scripts to meet the dcos specifications that can be found [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/) and [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/install-docker-centos/) as an example.
 
 
 For CoreOS 1235.9.0:
 ```bash
 terraform init -from-module git@github.com:mesosphere/terraform-dcos-enterprise//azure
-terraform get
 terraform plan --var os=coreos_1235.9.0
 ```
 
@@ -50,7 +64,6 @@ For CoreOS 835.13.0:
 
 ```bash
 terraform init -from-module git@github.com:mesosphere/terraform-dcos-enterprise//azure
-terraform get
 terraform plan --var os=coreos_835.13.0 --var dcos_overlay_enable=disable # This OS cannot support docker networking
 ```
 
@@ -58,7 +71,6 @@ For Centos 7.2:
 
 ```bash
 terraform init -from-module git@github.com:mesosphere/terraform-dcos-enterprise//azure
-terraform get
 terraform plan --var os=centos_7.2
 ```
 
@@ -73,6 +85,7 @@ This command below already has the flags on what I need to install such has:
 * Masters 3
 * Private Agents 2
 * Public Agents 1
+* SSH Public Key <Testing Pub Key> 
 
 ```bash
 terraform apply -var-file desired_cluster_profile
@@ -87,6 +100,7 @@ num_of_private_agents = "2"
 num_of_public_agents = "1"
 dcos_security = "permissive"
 dcos_version = "1.8.8"
+ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
 ```
 
 When reading the instructions below regarding installing and upgrading, you can always use your `--var-file` instead to keep track of all the changes you've made. It's easy to share this file with others if you want them to deploy your same cluster. Never save `state=upgrade` in your `--var-file`, it should be only used for upgrades or one time file changes.
@@ -124,11 +138,9 @@ num_of_private_agents = "2"
 num_of_public_agents = "1"
 dcos_security = "permissive"
 dcos_version = "1.8.8"
-dcos_aws_access_key_id = "ACHEHS71DG712w7EXAMPLE"
-dcos_aws_secret_access_key = "/R8SHF+SHFJaerSKE83awf4ASyrF83sa471DHSEXAMPLE"
 dcos_master_discovery = "master_http_loadbalancer"
-dcos_exhibitor_storage_backend = "aws_s3"
-dcos_exhibitor_explicit_keys = "true"
+dcos_exhibitor_storage_backend = "azure"
+ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
 ```
 
 **NOTE:** This will append your aws_access_key_id and aws_secret_access_key key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the aws_s3 bucket. 
@@ -321,24 +333,7 @@ By default, the expiration is `1h` and terraform will try to run `whoami` to det
 
 #### Adding GPU Private Agents
 
-*NOTE: Best used with DC/OS 1.9*
-
-As of Mesos 1.0 which now supports GPU agents, you can experiment with them on your DC/OS cluster immediately by simply removing `.disabled` from `dcos-gpu-agents.tf.disabled`. Once completed, you can simply perform `terraform apply` and the agents will be deployed and configure and automatically join your mesos cluster. The default of `num_of_gpu_agents` is `1`. You can also remove GPU agents by simply adding `.disabled` and they will exit from the cluster as well.
-
-##### Add GPU Private Agents
-
-```bash
-mv dcos-gpu-agents.tf.disabled dcos-gpu-agents.tf
-terraform get
-terraform apply --var num_of_gpu_agents=3
-```
-
-##### Remove GPU Private Agents
-
-```bash
-mv dcos-gpu-agents.tf dcos-gpu-agents.tf.disabled
-terraform apply
-```
+Coming soon!
 
 ### Destroy Cluster
 
@@ -350,7 +345,7 @@ terraform destroy
 
   # Roadmaps
 
-  - [X] Support for AWS
+  - [X] Support for Azure
   - [X] Support for CoreOS
   - [X] Support for Public Agents
   - [X] Support for expanding Private Agents
@@ -358,9 +353,6 @@ terraform destroy
   - [X] Support for specific versions of CoreOS
   - [X] Support for Centos
   - [X] Secondary support for specific versions of Centos
-  - [ ] Support for RHEL
-  - [ ] Secondary support for specific versions of RHEL
-  - [ ] Multi AZ Support
-
-
-
+  - [X] Support for RHEL
+  - [X] Secondary support for specific versions of RHEL
+  - [X] Multi AZ support via Availibility Sets
