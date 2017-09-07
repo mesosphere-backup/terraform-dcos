@@ -72,10 +72,3 @@ resource "azurerm_storage_account" "dcos-exhibitor-account" {
    expiration = "${var.expiration}"
   }
 }
-
-resource "azurerm_storage_container" "dcos-exhibitor-container" {
-  name                  = "sc-dcos-exhibitor"
-  resource_group_name   = "${azurerm_resource_group.dcos.name}"
-  storage_account_name  = "${azurerm_storage_account.dcos-exhibitor-account.name}"
-  container_access_type = "private"
-}
