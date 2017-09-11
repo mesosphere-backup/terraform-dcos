@@ -20,14 +20,19 @@ brew install terraform
 
 If you want to leverage the terraform installer, feel free to check out https://www.terraform.io/downloads.html.
 
-## AWS
+## Cloud Providers 
 
-You can find aws terraform instructions in the aws page here: [AWS Terraform](./aws/README.md)
+You can find aws terraform instructions for the respective clouds below:
 
+ - [AWS Terraform](./aws/README.md)
+ - [Azure Terraform](./azure/README.md)
+
+## Azure
+
+You can find aws terraform instructions in the  page here: [AWS Terraform](./aws/README.md)
 
   # Roadmaps
 
   - [X] Support for AWS
+  - [X] Support for Azure
   - [ ] Support for GCP
-  - [ ] Support for Azure
-

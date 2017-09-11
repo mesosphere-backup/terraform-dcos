@@ -1,5 +1,5 @@
+*.bak
 .DS_Store
-aws/.DS_Store
-aws/.terraform
-aws/terraform.tfstate
-aws/terraform.tfstate.backup
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
