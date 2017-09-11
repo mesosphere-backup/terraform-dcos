@@ -54,7 +54,7 @@ $ source ~/.azure/credentials
 
 ### Example Terraform Deployments
 
-**Pull down the DC/OS terraform scripts below**
+#### Pull down the DC/OS terraform scripts below
 
 There is a module called `dcos-tested-azure-oses` that contains all the tested scripts per operating system. The deployment strategy is based on a bare image coupled with a prereq `script.sh` to get it ready to install dcos-core components. Its simple to add other operating systems by adding the ami, region, and install scripts to meet the dcos specifications that can be found [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/) and [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/install-docker-centos/) as an example.
 
@@ -328,13 +328,13 @@ If you wanted to redeploy a problematic master (ie. storage filled up, not respo
 
 ### Master Node
 
-**Taint Master Node**
+#### Taint Master Node
 
 ```bash
 terraform taint azurerm_virtual_machine.master.0 # The number represents the agent in the list 
 ```
 
-**Redeploy Master Node**
+#### Redeploy Master Node
 
 ```bash
 terraform apply -var-file desired_cluster_profile
@@ -347,13 +347,13 @@ If you wanted to redeploy a problematic agent, (ie. storage filled up, not respo
 
 ### Private Agents
 
-**Taint Private Agent**
+#### Taint Private Agent
 
 ```bash
 terraform taint azurerm_virtual_machine.agent.0 # The number represents the agent in the list 
 ```
 
-**Redeploy Agent**
+#### Redeploy Agent
 
 ```bash
 terraform apply -var-file desired_cluster_profile
@@ -362,13 +362,13 @@ terraform apply -var-file desired_cluster_profile
 
 ### Public Agents
 
-**Taint Private Agent**
+#### Taint Private Agent
 
 ```bash
 terraform taint azurerm_virtual_machine.public-agent.0 # The number represents the agent in the list 
 ```
 
-**Redeploy Agent**
+#### Redeploy Agent
 
 ```bash
 terraform apply -var-file desired_cluster_profile
