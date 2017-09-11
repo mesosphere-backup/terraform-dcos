@@ -14,7 +14,7 @@ If you want to leverage the terraform installer, feel free to check out https://
 
 ### Configure your Cloud Provider Credentials
 
-**Configure your Azure ssh Keys**
+#### Configure your Azure ssh Keys
 
 Set the private key that you will be you will be using to your ssh-agent and set public key in terraform.
 
@@ -29,7 +29,7 @@ ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
 ...
 ```
 
-**Configure your Azure ID Keys**
+#### Configure your Azure ID Keys
 
 Follow the Terraform instructions [here](https://www.terraform.io/docs/providers/azurerm/#creating-credentials) to setup your Azure credentials to provide to terraform. 
 
@@ -42,6 +42,13 @@ export ARM_TENANT_ID=45ef06c1-a57b-40d5-967f-88cf8example
 export ARM_CLIENT_SECRET=Lqw0kyzWXyEjfha9hfhs8dhasjpJUIGQhNFExAmPLE
 export ARM_CLIENT_ID=80f99c3a-cd7d-4931-9405-8b614example
 export ARM_SUBSCRIPTION_ID=846d9e22-a320-488c-92d5-41112example
+```
+
+#### Source Credentials
+
+Set your environment variables by sourcing the files before you run any terraform commands.
+
+```bash
 $ source ~/.azure/credentials
 ```
 
