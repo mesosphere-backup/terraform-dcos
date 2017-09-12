@@ -211,7 +211,7 @@ resource "null_resource" "agent" {
   # So we just choose the first in this case
   connection {
     host = "${element(azurerm_public_ip.agent_public_ip.*.fqdn, count.index)}"
-    user = "${module.azure-tested-oses.user}"
+    user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
   }
 
   count = "${var.num_of_private_agents}"
