@@ -1,3 +1,5 @@
+&#x1F4D9; **Disclaimer: This is currently unsupported by Mesosphere.**
+
 # Open DC/OS on AWS with Terraform
 
 ## Getting Started

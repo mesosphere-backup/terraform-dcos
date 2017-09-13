@@ -1,3 +1,5 @@
+&#x1F4D9; **Disclaimer: This is currently unsupported by Mesosphere.**
+
 # Deploy Open DC/OS using Terraform
 
 The purpose of this tool is to automate most of the manual efforts of managing and maintaining distributed systems. This project has a few important goals in mind since the inception of the project.
