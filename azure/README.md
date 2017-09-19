@@ -1,5 +1,3 @@
-&#x1F4D9; **Disclaimer: This is currently unsupported by Mesosphere.**
-
 # Open DC/OS on Azure with Terraform
 
 ## Getting Started
