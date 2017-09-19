@@ -422,7 +422,8 @@ variable "dcos_package_storage_uri" {
 
 variable "dcos_previous_version" {
  default = ""
- description = "Required by the DC/OS installer instructions to ensure the operator know what version they are upgrading from"}
+ description = "Required by the DC/OS installer instructions to ensure the operator know what version they are upgrading from"
+}
 
 # Example value on how to configure rexray below
 # default = "{\"rexray\": {\"modules\": {\"default-docker\": {\"disabled\": true}, \"default-admin\": {\"host\": \"tcp://127.0.0.1:61003\"}}, \"loglevel\": \"info\"}}"
