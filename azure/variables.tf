@@ -422,7 +422,7 @@ variable "dcos_package_storage_uri" {
 
 variable "dcos_previous_version" {
  default = ""
- description = "Required by the DC/OS installer instructions to ensure the operator know what version they are upgrading from"
+ description = "Required by the DC/OS installer instructions to ensure the operator know what version they are upgrading from."
 }
 
 # Example value on how to configure rexray below
