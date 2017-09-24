@@ -3,3 +3,5 @@
 .terraform
 terraform.tfstate
 terraform.tfstate.backup
+*.plan
+/aws/.terraform.tfstate.lock.info
