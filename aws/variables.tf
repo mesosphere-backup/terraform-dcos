@@ -370,6 +370,11 @@ variable "dcos_process_timeout" {
  description = "This parameter specifies the allowable amount of time, in seconds, for an action to begin after the process forks. This parameter is not the complete process time. The default value is 120 seconds."
 }
 
+variable "dcos_previous_version" {
+ default = ""
+ description = "Required by the DC/OS installer instructions to ensure the operator know what version they are upgrading from."
+}
+
 variable "dcos_version" {
  default = "1.10.0"
  description = "DCOS Version"

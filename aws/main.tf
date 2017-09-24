@@ -767,6 +767,7 @@ resource "aws_instance" "bootstrap" {
     dcos_overlay_mtu = "${var.dcos_overlay_mtu}"
     dcos_overlay_network = "${var.dcos_overlay_network}"
     dcos_process_timeout = "${var.dcos_process_timeout}"
+    dcos_previous_version = "${var.dcos_previous_version}"
     dcos_agent_list = "\n - ${join("\n - ", aws_instance.agent.*.private_ip)}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
     # Workaround is to flatten the list as a string below. Fix when this is closed.
@@ -842,6 +843,7 @@ resource "null_resource" "bootstrap" {
     dcos_overlay_mtu = "${var.dcos_overlay_mtu}"
     dcos_overlay_network = "${var.dcos_overlay_network}"
     dcos_process_timeout = "${var.dcos_process_timeout}"
+    dcos_previous_version = "${var.dcos_previous_version}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
     # Workaround is to flatten the list as a string below. Fix when this is closed.
     dcos_resolvers  = "\n - ${join("\n - ", var.dcos_resolvers)}"
