@@ -1,5 +1,6 @@
 # Specify the provider and access details
 provider "aws" {
+  profile = "${var.aws_profile}"
   region = "${var.aws_region}"
 }
 
