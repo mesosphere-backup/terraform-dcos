@@ -44,7 +44,7 @@ variable "num_of_private_agents" {
 }
 
 variable "num_of_public_agents" {
-  description = "DC/OS Private Agents Count"
+  description = "DC/OS Public Agents Count"
   default = 1
 }
 
@@ -73,7 +73,7 @@ variable "ip-detect" {
 }
 
 variable "os-init-script" {
- description = "Init Scripts that runs post-AMI deployment and pre-DC/OS install" 
+ description = "Init Scripts that runs post-AMI deployment and pre-DC/OS install"
  type = "map"
 
  default = {
@@ -308,7 +308,7 @@ variable "dcos_overlay_network" {
 variable "dcos_dns_search" {
  default = ""
  description = "This parameter specifies a space-separated list of domains that are tried when an unqualified domain is entered"
-} 
+}
 
 variable "dcos_master_dns_bindall" {
  default = ""

@@ -71,14 +71,14 @@ resource "aws_security_group" "any_access_internal" {
   description = "Manage all ports cluster level"
   vpc_id      = "${aws_vpc.default.id}"
 
- # full access internally 
+ # full access internally
  ingress {
   from_port = 0
   to_port = 0
   protocol = "-1"
   cidr_blocks = ["${aws_vpc.default.cidr_block}"]
   }
-  
+
  # full access internally
  egress {
   from_port = 0
@@ -140,7 +140,7 @@ resource "aws_security_group" "admin" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   # outbound internet access
   egress {
     from_port   = 0
@@ -150,7 +150,7 @@ resource "aws_security_group" "admin" {
   }
 }
 
-# A security group for the ELB so it is accessible via the web 
+# A security group for the ELB so it is accessible via the web
 # with some master ports for internal access only
 resource "aws_security_group" "master" {
   name        = "master-security-group"
@@ -188,7 +188,7 @@ resource "aws_security_group" "master" {
    protocol = "tcp"
    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
  }
- 
+
  # Exhibitor access from within the vpc
  ingress {
    to_port = 8181
@@ -219,7 +219,7 @@ resource "aws_security_group" "public_slave" {
   name        = "public-slave-security-group"
   description = "security group for slave public"
   vpc_id      = "${aws_vpc.default.id}"
- 
+
   # Allow ports within range
   ingress {
     to_port = 21
@@ -235,7 +235,7 @@ resource "aws_security_group" "public_slave" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
- 
+
   # Allow ports within range
   ingress {
     to_port = 32000
@@ -243,7 +243,7 @@ resource "aws_security_group" "public_slave" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
- 
+
   # Allow ports within range
   ingress {
     to_port = 21
@@ -251,7 +251,7 @@ resource "aws_security_group" "public_slave" {
     protocol = "udp"
     cidr_blocks = ["0.0.0.0/0"]
   }
- 
+
   # Allow ports within range
   ingress {
     to_port = 5050
@@ -259,7 +259,7 @@ resource "aws_security_group" "public_slave" {
     protocol = "udp"
     cidr_blocks = ["0.0.0.0/0"]
   }
- 
+
   # Allow ports within range
   ingress {
     to_port = 32000
@@ -290,7 +290,7 @@ resource "aws_security_group" "private_slave" {
    protocol = "-1"
    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
    }
- 
+
   # full access internally
   egress {
    from_port = 0
@@ -337,14 +337,14 @@ resource "aws_elb" "internal-master-elb" {
     lb_protocol       = "http"
     instance_protocol = "http"
   }
-  
+
   listener {
     lb_port           = 80
     instance_port     = 80
     lb_protocol       = "tcp"
     instance_protocol = "tcp"
   }
-  
+
   listener {
     lb_port           = 443
     instance_port     = 443
@@ -358,7 +358,7 @@ resource "aws_elb" "internal-master-elb" {
     lb_protocol       = "http"
     instance_protocol = "http"
   }
- 
+
   lifecycle {
     ignore_changes = ["name"]
   }
@@ -466,14 +466,14 @@ resource "aws_instance" "master" {
 
     # The connection will use the local SSH agent for authentication.
   }
-  
+
   root_block_device {
     volume_size = "${var.instance_disk_size}"
   }
 
   count = "${var.num_of_masters}"
   instance_type = "${var.aws_master_instance_type}"
-  
+
   ebs_optimized  = "true"
 
   tags {
@@ -485,7 +485,7 @@ resource "aws_instance" "master" {
 
   # Lookup the correct AMI based on the region
   # we specified
-  ami = "${module.aws-tested-oses.aws_ami}"      
+  ami = "${module.aws-tested-oses.aws_ami}"
 
   # The name of our SSH keypair we created above.
   key_name = "${var.key_name}"
@@ -546,7 +546,7 @@ resource "aws_instance" "agent" {
   }
   # Lookup the correct AMI based on the region
   # we specified
-  ami = "${module.aws-tested-oses.aws_ami}"      
+  ami = "${module.aws-tested-oses.aws_ami}"
 
   # The name of our SSH keypair we created above.
   key_name = "${var.key_name}"
@@ -598,7 +598,7 @@ resource "aws_instance" "public-agent" {
   instance_type = "${var.aws_public_agent_instance_type}"
 
   ebs_optimized = "true"
- 
+
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
@@ -607,7 +607,7 @@ resource "aws_instance" "public-agent" {
   }
   # Lookup the correct AMI based on the region
   # we specified
-  ami = "${module.aws-tested-oses.aws_ami}"      
+  ami = "${module.aws-tested-oses.aws_ami}"
 
   # The name of our SSH keypair we created above.
   key_name = "${var.key_name}"
@@ -667,7 +667,7 @@ resource "aws_instance" "bootstrap" {
 
   # Lookup the correct AMI based on the region
   # we specified
-  ami = "${module.aws-tested-oses.aws_ami}"      
+  ami = "${module.aws-tested-oses.aws_ami}"
 
   # The name of our SSH keypair we created above.
   key_name = "${var.key_name}"
@@ -701,7 +701,7 @@ resource "aws_instance" "bootstrap" {
       "sudo bash /tmp/os-setup.sh",
     ]
   }
- 
+
   lifecycle {
     ignore_changes = ["tags.Name"]
   }
@@ -719,7 +719,7 @@ resource "aws_instance" "bootstrap" {
     custom_dcos_download_path = "${var.custom_dcos_download_path}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
     # Workaround is to flatten the list as a string below. Fix when this is closed.
-    dcos_public_agent_list = "\n - ${join("\n - ", aws_instance.public-agent.*.private_ip)}" 
+    dcos_public_agent_list = "\n - ${join("\n - ", aws_instance.public-agent.*.private_ip)}"
     dcos_audit_logging = "${var.dcos_audit_logging}"
     dcos_auth_cookie_secure_flag = "${var.dcos_auth_cookie_secure_flag}"
     dcos_aws_access_key_id = "${var.dcos_aws_access_key_id}"
@@ -755,7 +755,7 @@ resource "aws_instance" "bootstrap" {
     dcos_log_directory = "${var.dcos_log_directory}"
     dcos_master_discovery = "${var.dcos_master_discovery}"
     dcos_master_dns_bindall = "${var.dcos_master_dns_bindall}"
-    # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings. 
+    # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
     # Workaround is to flatten the list as a string below. Fix when this is closed.
     dcos_master_list = "\n - ${join("\n - ", aws_instance.master.*.private_ip)}"
     dcos_no_proxy = "${var.dcos_no_proxy}"
@@ -781,7 +781,7 @@ resource "aws_instance" "bootstrap" {
     dcos_use_proxy = "${var.dcos_use_proxy}"
     dcos_zk_agent_credentials = "${var.dcos_zk_agent_credentials}"
     dcos_zk_master_credentials = "${var.dcos_zk_master_credentials}"
-    dcos_zk_super_credentials = "${var.dcos_zk_super_credentials}"    
+    dcos_zk_super_credentials = "${var.dcos_zk_super_credentials}"
     dcos_cluster_docker_registry_url = "${var.dcos_cluster_docker_registry_url}"
     dcos_rexray_config = "${var.dcos_rexray_config}"
     dcos_ip_detect_public_contents = "${var.dcos_ip_detect_public_contents}"
@@ -913,7 +913,7 @@ resource "null_resource" "master" {
   }
 
   count = "${var.num_of_masters}"
-  
+
   # Generate and upload Master script to node
   provisioner "file" {
     content     = "${module.dcos-mesos-master.script}"
@@ -923,7 +923,7 @@ resource "null_resource" "master" {
   # Wait for bootstrapnode to be ready
   provisioner "remote-exec" {
     inline = [
-     "until $(curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done" 
+     "until $(curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
     ]
   }
 
@@ -1037,4 +1037,3 @@ resource "null_resource" "public-agent" {
     ]
   }
 }
-

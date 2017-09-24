@@ -96,7 +96,7 @@ When reading the instructions below regarding installing and upgrading, you can 
 
 ## Installing DC/OS
 
-If you wanted to install a specific version of DC/OS you can either use the stable versions or early access. You can also pick and choose any version if you like when you're first starting out. On the section below, this will explain how you automate upgrades when you're ready along with changing what order you would like them upgraded. 
+If you wanted to install a specific version of DC/OS you can either use the stable versions or early access. You can also pick and choose any version if you like when you're first starting out. On the section below, this will explain how you automate upgrades when you're ready along with changing what order you would like them upgraded.
 
 ### DC/OS Stable (1.8.8)
 ```bash
@@ -115,9 +115,9 @@ terraform apply
 
 ### Config.yaml Modification
 
-You can modify all the DC/OS config.yaml flags via terraform. Here is an example of using the master_http_loadbalancer for cloud deployments. **master_http_loadbalancer is recommended for production**. You will be able to replace your masters in a multi master environment. Using the default static backend will not give you this option. 
+You can modify all the DC/OS config.yaml flags via terraform. Here is an example of using the master_http_loadbalancer for cloud deployments. **master_http_loadbalancer is recommended for production**. You will be able to replace your masters in a multi master environment. Using the default static backend will not give you this option.
 
-Here is an example default profile that will allow you to do this. 
+Here is an example default profile that will allow you to do this.
 
 ```bash
 $ cat desired_cluster_profile
@@ -133,9 +133,9 @@ dcos_exhibitor_storage_backend = "aws_s3"
 dcos_exhibitor_explicit_keys = "true"
 ```
 
-**NOTE:** This will append your aws_access_key_id and aws_secret_access_key key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the aws_s3 bucket. 
+**NOTE:** This will append your aws_access_key_id and aws_secret_access_key key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the aws_s3 bucket.
 
-## Upgrading DC/OS  
+## Upgrading DC/OS
 
 You can upgrade your DC/OS cluster with a single command. This terraform script was built to perform installs and upgrade from the inception of this project. With the upgrade procedures below, you can also have finer control on how masters or agents upgrade at a given time. This will give you the ability to change the parallelism of master or agent upgrades.
 
@@ -145,11 +145,11 @@ You can upgrade your DC/OS cluster with a single command. This terraform script 
 
 **Important**: DC/OS will is not designed to upgrade directly from disabled to strict. Please be responsible when using automation tools.
 
-This command below will upgrade your masters and agents one at a time. It takes roughly 5 minutes per node, so depending on how many nodes, you may want to consider changing your parallelism to change the speed of your upgrade. 
+This command below will upgrade your masters and agents one at a time. It takes roughly 5 minutes per node, so depending on how many nodes, you may want to consider changing your parallelism to change the speed of your upgrade.
 
 **Prioritise Master Upgrades First**
 
-If you take this route, you can use a few more commands but this will allow you upgrade your master nodes first, one at a time, then upgrade the agents simuanioustly with the next. Terraforms parallel algorithm will walk the graph in any order. It may do one agent first, a master second, etc. You would need to target your master resource so you can upgrade the masters first then change the parallelism back to any number for the agents. 
+If you take this route, you can use a few more commands but this will allow you upgrade your master nodes first, one at a time, then upgrade the agents simuanioustly with the next. Terraforms parallel algorithm will walk the graph in any order. It may do one agent first, a master second, etc. You would need to target your master resource so you can upgrade the masters first then change the parallelism back to any number for the agents.
 
 **Master upgrade sequentially one at a time**
 ```bash
@@ -170,7 +170,7 @@ terraform apply \
 --var state=upgrade \
 --var dcos_security=disabled
   ```
-  
+
   *NOTE: the default for parallelism is 10. You can change this value to control how many nodes you want upgraded at any given time*
 
 
@@ -233,7 +233,7 @@ terraform apply \
 
 ## Maintenance
 
-If you would like to add more or remove (private) agents or public agents from your cluster, you can do so by telling terraform your desired state and it will make sure it gets you there. For example, if I have 2 private agents and 1 public agent in my `-var-file` I can always override that flag by specifying the `-var` flag. It has higher priority than the `-var-file`. 
+If you would like to add more or remove (private) agents or public agents from your cluster, you can do so by telling terraform your desired state and it will make sure it gets you there. For example, if I have 2 private agents and 1 public agent in my `-var-file` I can always override that flag by specifying the `-var` flag. It has higher priority than the `-var-file`.
 
 ### Adding Agents
 
@@ -353,5 +353,3 @@ terraform destroy
   - [X] Support for RHEL
   - [ ] Secondary support for specific versions of RHEL
   - [ ] Multi AZ Support
-
-
