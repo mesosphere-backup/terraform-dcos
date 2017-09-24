@@ -18,6 +18,11 @@ variable "aws_profile" {
   default     = "default"
 }
 
+variable "admin_cidr" {
+  description = "Inbound Master Access"
+  default     = "0.0.0.0/0"
+}
+
 variable "os" {
   default = "coreos_1235.9.0"
   description = "Recommended DC/OS OSs are centos_7.2, coreos_1235.9.0, coreos_835.13.0"

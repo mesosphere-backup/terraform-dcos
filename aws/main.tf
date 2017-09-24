@@ -123,7 +123,7 @@ resource "aws_security_group" "admin" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${var.admin_cidr}"]
   }
 
   # http access from anywhere
@@ -131,7 +131,7 @@ resource "aws_security_group" "admin" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${var.admin_cidr}"]
   }
 
   # httpS access from anywhere
@@ -139,7 +139,7 @@ resource "aws_security_group" "admin" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${var.admin_cidr}"]
   }
 
   # outbound internet access
@@ -171,7 +171,7 @@ resource "aws_security_group" "master" {
    to_port = 80
    from_port = 80
    protocol = "tcp"
-   cidr_blocks = ["0.0.0.0/0"]
+   cidr_blocks = ["${var.admin_cidr}"]
  }
 
  # Adminrouter SSL access from anywhere
@@ -179,7 +179,7 @@ resource "aws_security_group" "master" {
    to_port = 443
    from_port = 443
    protocol = "tcp"
-   cidr_blocks = ["0.0.0.0/0"]
+   cidr_blocks = ["${var.admin_cidr}"]
  }
 
  # Marathon access from within the vpc
