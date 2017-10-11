@@ -20,17 +20,17 @@ variable "os" {
 
 variable "azure_master_instance_type" {
   description = "Azure DC/OS master instance type"
-  default = "Standard_DS1_v2"
+  default = "Standard_DS11_v2"
 }
 
 variable "azure_agent_instance_type" {
   description = "Azure DC/OS Private Agent instance type"
-  default = "Standard_DS1_v2"
+  default = "Standard_DS11_v2"
 }
 
 variable "azure_public_agent_instance_type" {
   description = "Azure DC/OS Public instance type"
-  default = "Standard_DS1_v2"
+  default = "Standard_DS11_v2"
 }
 
 variable "azure_bootstrap_instance_type" {
@@ -366,7 +366,7 @@ variable "dcos_process_timeout" {
 }
 
 variable "dcos_version" {
- default = "1.8.8"
+ default = "1.10.0"
  description = "DCOS Version"
 }
 

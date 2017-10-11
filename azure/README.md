@@ -61,21 +61,21 @@ There is a module called `dcos-tested-azure-oses` that contains all the tested s
 
 For CoreOS 1235.9.0:
 ```bash
-terraform init -from-module github.com/dcos/terraform-dcos//azure
+terraform init -from-module github.com/bernadinm/terraform-dcos//azure
 terraform plan --var os=coreos_1235.9.0
 ```
 
 For CoreOS 835.13.0:
 
 ```bash
-terraform init -from-module github.com/dcos/terraform-dcos//azure
+terraform init -from-module github.com/bernadinm/terraform-dcos//azure
 terraform plan --var os=coreos_835.13.0 --var dcos_overlay_enable=disable # This OS cannot support docker networking
 ```
 
 For Centos 7.2:
 
 ```bash
-terraform init -from-module github.com/dcos/terraform-dcos//azure
+terraform init -from-module github.com/bernadinm/terraform-dcos//azure
 terraform plan --var os=centos_7.2
 ```
 
@@ -115,14 +115,9 @@ When reading the instructions below regarding installing and upgrading, you can 
 
 If you wanted to install a specific version of DC/OS you can either use the stable versions or early access. You can also pick and choose any version if you like when you're first starting out. On the section below, this will explain how you automate upgrades when you're ready along with changing what order you would like them upgraded. 
 
-### DC/OS Stable (1.8.8)
+### DC/OS Stable (1.10.0)
 ```bash
 terraform apply --var dcos_version=1.8.8
-```
-
-### DC/OS EA (1.9)
-```bash
-terraform apply -var dcos_version=1.9.0
 ```
 
 ### DC/OS Master (default is stable)
@@ -144,7 +139,7 @@ num_of_masters = "3"
 num_of_private_agents = "2"
 num_of_public_agents = "1"
 dcos_security = "permissive"
-dcos_version = "1.8.8"
+dcos_version = "1.9.4"
 dcos_master_discovery = "master_http_loadbalancer"
 dcos_exhibitor_storage_backend = "azure"
 ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
@@ -160,7 +155,7 @@ _*Note*: It is required to have at least one space when inserting your YAML sett
 
 ```bash
 $ cat desired_cluster_profile
-dcos_version = "1.9.2"
+dcos_version = "1.9.4"
 num_of_masters = "3"
 num_of_private_agents = "2"
 num_of_public_agents = "1"
