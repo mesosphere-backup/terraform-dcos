@@ -458,7 +458,7 @@ resource "azurerm_virtual_machine" "master" {
 
 # Create DCOS Mesos Master Scripts to execute
 module "dcos-mesos-master" {
-  source               = "github.com/bernadinm/tf_dcos_core?ref=1.9.4_and_1.10.0?ref=1.9.4_and_1.10.0"
+  source               = "git@github.com:mesosphere/enterprise-terraform-dcos//tf_dcos_core"
   bootstrap_private_ip = "${azurerm_network_interface.bootstrap_nic.private_ip_address}"
   dcos_install_mode    = "${var.state}"
   dcos_version         = "${var.dcos_version}"
@@ -475,7 +475,7 @@ resource "null_resource" "master" {
   # So we just choose the first in this case
   connection {
     host = "${element(azurerm_public_ip.master_public_ip.*.fqdn, count.index)}"
-    user = "${module.azure-tested-oses.user}"
+    user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
   }
 
   count = "${var.num_of_masters}"

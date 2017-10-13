@@ -208,7 +208,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
 
 # Create DCOS Mesos Bootstrap Scripts to execute
   module "dcos-bootstrap" {
-    source  = "github.com/bernadinm/tf_dcos_core?ref=1.9.4_and_1.10.0?ref=1.9.4_and_1.10.0"
+    source  = "git@github.com:mesosphere/enterprise-terraform-dcos//tf_dcos_core"
     bootstrap_private_ip = "${azurerm_network_interface.bootstrap_nic.private_ip_address}"
     dcos_install_mode = "${var.state}"
     dcos_version = "${var.dcos_version}"
@@ -369,19 +369,13 @@ resource "null_resource" "bootstrap" {
   # So we just choose the first in this case
   connection {
     host = "${element(azurerm_public_ip.bootstrap_public_ip.*.fqdn, 0)}"
-    user = "${module.azure-tested-oses.user}"
+    user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
   }
 
   # DCOS ip detect script
   provisioner "file" {
    source = "${var.ip-detect["azure"]}"
    destination = "/tmp/ip-detect"
-
-   connection {
-    type = "ssh"
-    user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
-    host = "${azurerm_public_ip.bootstrap_public_ip.fqdn}"
-    }
    }
 
   # Generate and upload bootstrap script to node

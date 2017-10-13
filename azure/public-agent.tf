@@ -351,31 +351,12 @@ resource "azurerm_virtual_machine" "public-agent" {
 
 # Create DCOS Mesos Public Agent Scripts to execute
 module "dcos-mesos-agent-public" {
-  source               = "github.com/bernadinm/tf_dcos_core?ref=1.9.4_and_1.10.0?ref=1.9.4_and_1.10.0"
+  source               = "git@github.com:mesosphere/enterprise-terraform-dcos//tf_dcos_core"
   bootstrap_private_ip = "${azurerm_network_interface.bootstrap_nic.private_ip_address}"
   dcos_install_mode    = "${var.state}"
   dcos_version         = "${var.dcos_version}"
   role                 = "dcos-mesos-agent-public"
 }
-
-#resource "azurerm_virtual_machine_extension" "public-agent-commands" {
-#  name                 = "script-${data.template_file.cluster-name.rendered}-public-agent-${count.index + 1}"
-#  location             = "${var.azure_region}"
-#  resource_group_name  = "${azurerm_resource_group.dcos.name}"
-#  virtual_machine_name = "${element(azurerm_virtual_machine.public-agent.*.name, count.index)}"
-#  depends_on           = ["azurerm_virtual_machine.public-agent"]
-#  publisher            = "Microsoft.OSTCExtensions"
-#  type                 = "CustomScriptForLinux"
-#  type_handler_version = "1.5"
-#  count = "${var.num_of_public_agents}"
-#
-#  settings = <<SETTINGS
-#    {
-#        "commandToExecute": "whoami"
-#    }
-#  SETTINGS
-#}
-
 
 resource "null_resource" "public-agent" {
   # Changes to any instance of the cluster requires re-provisioning
@@ -387,7 +368,7 @@ resource "null_resource" "public-agent" {
   # So we just choose the first in this case
   connection {
     host = "${element(azurerm_public_ip.public_agent_public_ip.*.fqdn, count.index)}"
-    user = "${module.azure-tested-oses.user}"
+    user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
   }
 
   count = "${var.num_of_public_agents}"
