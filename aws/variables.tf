@@ -13,6 +13,16 @@ variable "aws_region" {
   default     = "us-west-2"
 }
 
+variable "aws_profile" {
+  description = "AWS profile to use"
+  default     = "default"
+}
+
+variable "admin_cidr" {
+  description = "Inbound Master Access"
+  default     = "0.0.0.0/0"
+}
+
 variable "os" {
   default = "coreos_1235.9.0"
   description = "Recommended DC/OS OSs are centos_7.2, coreos_1235.9.0, coreos_835.13.0"
@@ -44,7 +54,7 @@ variable "num_of_private_agents" {
 }
 
 variable "num_of_public_agents" {
-  description = "DC/OS Private Agents Count"
+  description = "DC/OS Public Agents Count"
   default = 1
 }
 
@@ -73,7 +83,7 @@ variable "ip-detect" {
 }
 
 variable "os-init-script" {
- description = "Init Scripts that runs post-AMI deployment and pre-DC/OS install" 
+ description = "Init Scripts that runs post-AMI deployment and pre-DC/OS install"
  type = "map"
 
  default = {
@@ -308,7 +318,7 @@ variable "dcos_overlay_network" {
 variable "dcos_dns_search" {
  default = ""
  description = "This parameter specifies a space-separated list of domains that are tried when an unqualified domain is entered"
-} 
+}
 
 variable "dcos_master_dns_bindall" {
  default = ""
@@ -365,8 +375,13 @@ variable "dcos_process_timeout" {
  description = "This parameter specifies the allowable amount of time, in seconds, for an action to begin after the process forks. This parameter is not the complete process time. The default value is 120 seconds."
 }
 
+variable "dcos_previous_version" {
+ default = ""
+ description = "Required by the DC/OS installer instructions to ensure the operator know what version they are upgrading from."
+}
+
 variable "dcos_version" {
- default = "1.8.8"
+ default = "1.10.0"
  description = "DCOS Version"
 }
 
@@ -434,8 +449,8 @@ variable "state" {
 }
 
 variable "dcos_ip_detect_public_contents" {
- default = "\"\\x27#!/bin/sh\\\\n\\\\n  set -o nounset -o errexit\\\\n\\\\n\\\\n  curl -fsSL http://169.254.169.254/latest/meta-data/public-ipv4\\\\n\\\\n   \\x27\\\\n\""
- description = "Used for AWS to determine the public IP. Note: single quotes was subsututed for hex x27 as it cannot be used. Currently escapes will need to be performed twice. DC/OS bug requires this variable instead of a file see https://jira.mesosphere.com/browse/DCOS_OSS-905 for more information."
+ default = "\"'#!/bin/sh\\n\\n  set -o nounset -o errexit\\n\\n\\n  curl -fsSL http://169.254.169.254/latest/meta-data/public-ipv4\\n\\n   '\\n\""
+ description = "Used for AWS to determine the public IP. DC/OS bug requires this variable instead of a file see https://jira.mesosphere.com/browse/DCOS_OSS-905 for more information."
 }
 
 # Core OS
