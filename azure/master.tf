@@ -373,13 +373,6 @@ resource "azurerm_availability_set" "master_av_set" {
   platform_fault_domain_count  = 3
   platform_update_domain_count = 1
   managed                      = true
-
-  # depends_on                   = ["azurerm_lb_rule.public_load_balancer_http_rule","azurerm_lb_rule.public_load_balancer_https_rule", "azurerm_lb_rule.private_load_balancer_http_rule", "azurerm_lb_rule.private_load_balancer_https_rule", "azurerm_lb_rule.private_load_balancer_mesos_http_rule", "azurerm_lb_rule.private_load_balancer_ZooKeeper_https_rule", "azurerm_lb_rule.private_load_balancer_exhibitor_http_rule", "azurerm_lb_rule.private_load_balancer_marathon_https_rule", "azurerm_lb_probe.load_balancer_http_probe", "azurerm_lb_probe.load_balancer_https_probe"]
-  depends_on                   = ["azurerm_lb.master_public_load_balancer", "azurerm_lb.master_internal_load_balancer"]
-  # mbernadin: Currently depends_on is required by terraform to easily destroy
-  #            resource by relating its dependency on availibility sets 
-  # Date:      08-29-2017
-  # https://github.com/terraform-providers/terraform-provider-azurerm/issues/111
 }
 
 # Master VM Coniguration
@@ -465,31 +458,12 @@ resource "azurerm_virtual_machine" "master" {
 
 # Create DCOS Mesos Master Scripts to execute
 module "dcos-mesos-master" {
-  source               = "github.com/bernadinm/tf_dcos_core"
+  source               = "github.com/bernadinm/tf_dcos_core?ref=1.9.4_and_1.10.0?ref=1.9.4_and_1.10.0"
   bootstrap_private_ip = "${azurerm_network_interface.bootstrap_nic.private_ip_address}"
   dcos_install_mode    = "${var.state}"
   dcos_version         = "${var.dcos_version}"
   role                 = "dcos-mesos-master"
 }
-
-#resource "azurerm_virtual_machine_extension" "master-commands" {
-#  name                 = "script-${data.template_file.cluster-name.rendered}-master-${count.index + 1}"
-#  location             = "${var.azure_region}"
-#  resource_group_name  = "${azurerm_resource_group.dcos.name}"
-#  virtual_machine_name = "${element(azurerm_virtual_machine.master.*.name, count.index)}"
-#  depends_on           = ["azurerm_virtual_machine.master"]
-#  publisher            = "Microsoft.OSTCExtensions"
-#  type                 = "CustomScriptForLinux"
-#  type_handler_version = "1.5"
-#  count = "${var.num_of_masters}"
-#
-#  settings = <<SETTINGS
-#    {
-#        "commandToExecute": "whoami"
-#    }
-#  SETTINGS
-#}
-
 
 resource "null_resource" "master" {
   # Changes to any instance of the cluster requires re-provisioning

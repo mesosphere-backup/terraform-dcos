@@ -256,6 +256,10 @@ variable "dcos_public_agent_list" {
    default = ""
 }
 
+variable "dcos_previous_version" {
+   default = ""
+}
+
 variable "dcos_agent_list" {
    default = ""
 }
@@ -264,7 +268,15 @@ variable "dcos_bootstrap_port" {
    default = "80"
 }
 
+variable "dcos_ip_detect_public_filename" {
+   default = ""
+}
+
 variable "dcos_ip_detect_public_contents" {
+  default = ""
+}
+
+variable "dcos_ip_detect_contents" {
   default = ""
 }
 

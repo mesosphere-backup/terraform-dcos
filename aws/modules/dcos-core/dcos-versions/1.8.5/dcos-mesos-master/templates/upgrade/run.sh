@@ -2,9 +2,9 @@
 
 # Master Commands
 curl -O http://${bootstrap_private_ip}:${dcos_bootstrap_port}/dcos_install.sh
-sudo -i /opt/mesosphere/bin/pkgpanda uninstall
-sudo rm -rf /opt/mesosphere /etc/mesosphere 
-sudo useradd --system --home-dir /opt/mesosphere --shell /sbin/nologin -c 'DCOS System User' dcos_exhibitor 
-sudo chown -R dcos_exhibitor /var/lib/zookeeper
-sudo bash dcos_install.sh -d master
+/opt/mesosphere/bin/pkgpanda uninstall
+rm -rf /opt/mesosphere /etc/mesosphere
+useradd --system --home-dir /opt/mesosphere --shell /sbin/nologin -c 'DCOS System User' dcos_exhibitor 
+chown -R dcos_exhibitor /var/lib/zookeeper
+bash dcos_install.sh -d master
 # Complete

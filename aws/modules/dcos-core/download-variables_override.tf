@@ -25,5 +25,9 @@ variable "dcos_download_path" {
    "1.9.0"      = "https://downloads.mesosphere.io/dcos-enterprise/stable/commit/9698bd296ded3f70f52346f2284c3c69f50f7fd0/dcos_generate_config.ee.sh"
    "1.9.1"      = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.9.1/dcos_generate_config.ee.sh"
    "1.9.2"      = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.9.2/dcos_generate_config.ee.sh"
+   "1.9.3"      = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.9.3/dcos_generate_config.ee.sh"
+   "1.9.4"      = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.9.4/dcos_generate_config.ee.sh"
+   "1.9.5"      = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.9.5/dcos_generate_config.ee.sh"
+   "1.10.0"     = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.10.0/dcos_generate_config.ee.sh"
   }
 }

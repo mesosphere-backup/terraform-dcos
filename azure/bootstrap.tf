@@ -208,7 +208,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
 
 # Create DCOS Mesos Bootstrap Scripts to execute
   module "dcos-bootstrap" {
-    source  = "github.com/bernadinm/tf_dcos_core"
+    source  = "github.com/bernadinm/tf_dcos_core?ref=1.9.4_and_1.10.0?ref=1.9.4_and_1.10.0"
     bootstrap_private_ip = "${azurerm_network_interface.bootstrap_nic.private_ip_address}"
     dcos_install_mode = "${var.state}"
     dcos_version = "${var.dcos_version}"
@@ -264,6 +264,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
     dcos_overlay_mtu = "${var.dcos_overlay_mtu}"
     dcos_overlay_network = "${var.dcos_overlay_network}"
     dcos_process_timeout = "${var.dcos_process_timeout}"
+    dcos_previous_version = "${var.dcos_previous_version}"
     dcos_agent_list = "\n - ${join("\n - ", azurerm_network_interface.agent_nic.*.private_ip_address)}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
     # Workaround is to flatten the list as a string below. Fix when this is closed.
@@ -342,6 +343,7 @@ resource "null_resource" "bootstrap" {
     dcos_process_timeout = "${var.dcos_process_timeout}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
     # Workaround is to flatten the list as a string below. Fix when this is closed.
+    dcos_previous_version = "${var.dcos_previous_version}"
     dcos_resolvers  = "\n - ${join("\n - ", var.dcos_resolvers)}"
     dcos_rexray_config_filename = "${var.dcos_rexray_config_filename}"
     dcos_rexray_config_method = "${var.dcos_rexray_config_method}"
