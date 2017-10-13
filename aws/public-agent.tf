@@ -1,31 +1,52 @@
-## DC/OS GPU Private Agent
-## State: Experimental
-#
-# This came out from an experiment to extend GPU support to DC/OS.
-# You can easily add this module by removing '.disabled' 
-# to the file name. You an always remove it at any time. The defaults 
-# variables are managed by this sinlge file for ease of integration. 
-
-variable "num_of_gpu_agents" {
-  default = "1"
+# Reattach the public ELBs to the agents if they change
+resource "aws_elb_attachment" "public-agent-elb" {
+  count    = "${var.num_of_public_agents}"
+  elb      = "${aws_elb.public-agent-elb.id}"
+  instance = "${aws_instance.public-agent.*.id[count.index]}"
 }
 
-variable "aws_gpu_agent_instance_type" {
-  default = "g2.2xlarge"
+# Public Agent Load Balancer Access
+# Adminrouter Only
+resource "aws_elb" "public-agent-elb" {
+  name = "${data.template_file.cluster-name.rendered}-pub-agt-elb"
+
+  subnets         = ["${aws_subnet.public.id}"]
+  security_groups = ["${aws_security_group.public_slave.id}"]
+  instances       = ["${aws_instance.public-agent.*.id}"]
+
+  listener {
+    lb_port           = 80
+    instance_port     = 80
+    lb_protocol       = "tcp"
+    instance_protocol = "tcp"
+  }
+
+  listener {
+    lb_port           = 443
+    instance_port     = 443
+    lb_protocol       = "tcp"
+    instance_protocol = "tcp"
+  }
+
+  health_check {
+    healthy_threshold = 2
+    unhealthy_threshold = 2
+    timeout = 2
+    target = "HTTP:9090/_haproxy_health_check"
+    interval = 5
+  }
+
+  lifecycle {
+    ignore_changes = ["name"]
+  }
 }
 
-# AMI Zone US-WEST-2
-variable "aws_gpu_ami" {
- default = "ami-9b5d97fb"
-}
-
-# AWS Resourece Agent for GPUs
-resource "aws_instance" "gpu-agent" {
+resource "aws_instance" "public-agent" {
   # The connection block tells our provisioner how to
   # communicate with the resource (instance)
   connection {
     # The default username for our AMI
-    user = "centos"
+    user = "${module.aws-tested-oses.user}"
 
     # The connection will use the local SSH agent for authentication.
   }
@@ -34,35 +55,35 @@ resource "aws_instance" "gpu-agent" {
     volume_size = "${var.instance_disk_size}"
   }
 
-  count = "${var.num_of_gpu_agents}"
-  instance_type = "${var.aws_gpu_agent_instance_type}"
+  count = "${var.num_of_public_agents}"
+  instance_type = "${var.aws_public_agent_instance_type}"
 
   ebs_optimized = "true"
 
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
-   Name =  "${data.template_file.cluster-name.rendered}-gpuagt-${count.index + 1}"
+   Name =  "${data.template_file.cluster-name.rendered}-pubagt-${count.index + 1}"
    cluster = "${data.template_file.cluster-name.rendered}"
   }
   # Lookup the correct AMI based on the region
   # we specified
-  ami = "${var.aws_gpu_ami}"      
+  ami = "${module.aws-tested-oses.aws_ami}"
 
   # The name of our SSH keypair we created above.
   key_name = "${var.key_name}"
 
   # Our Security group to allow http and SSH access
-  vpc_security_group_ids = ["${aws_security_group.private_slave.id}","${aws_security_group.admin.id}","${aws_security_group.any_access_internal.id}"]
+  vpc_security_group_ids = ["${aws_security_group.public_slave.id}","${aws_security_group.admin.id}","${aws_security_group.any_access_internal.id}"]
 
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
   # backend instances.
-  subnet_id = "${aws_subnet.private.id}"
+  subnet_id = "${aws_subnet.public.id}"
 
   # OS init script
   provisioner "file" {
-   source = "modules/dcos-tested-aws-oses/platform/cloud/aws/centos_7.2/setup.sh"
+   content = "${module.aws-tested-oses.os-setup}"
    destination = "/tmp/os-setup.sh"
    }
 
@@ -81,36 +102,35 @@ resource "aws_instance" "gpu-agent" {
   }
 }
 
-
-# Create DCOS Mesos Agent Scripts to execute
-module "dcos-mesos-gpu-agent" {
+# Create DCOS Mesos Public Agent Scripts to execute
+module "dcos-mesos-agent-public" {
   source               = "git@github.com:mesosphere/enterprise-terraform-dcos//tf_dcos_core"
   bootstrap_private_ip = "${aws_instance.bootstrap.private_ip}"
   dcos_install_mode    = "${var.state}"
   dcos_version         = "${var.dcos_version}"
-  role                 = "dcos-mesos-agent"
+  role                 = "dcos-mesos-agent-public"
 }
 
-
 # Execute generated script on agent
-resource "null_resource" "gpu-agent" {
+resource "null_resource" "public-agent" {
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
+    current_ec2_instance_id = "${aws_instance.public-agent.*.id[count.index]}"
   }
 
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case
   connection {
-    host = "${element(aws_instance.gpu-agent.*.public_ip, count.index)}"
-    user = "centos"
+    host = "${element(aws_instance.public-agent.*.public_ip, count.index)}"
+    user = "${module.aws-tested-oses.user}"
   }
 
-  count = "${var.num_of_gpu_agents}"
+  count = "${var.num_of_public_agents}"
 
   # Generate and upload Agent script to node
   provisioner "file" {
-    content     = "${module.dcos-mesos-agent.script}"
+    content     = "${module.dcos-mesos-agent-public.script}"
     destination = "run.sh"
   }
 
@@ -130,7 +150,10 @@ resource "null_resource" "gpu-agent" {
   }
 }
 
-output "GPU Private Public IP Address" {
-  value = ["${aws_instance.gpu-agent.*.public_ip}"]
+output "Public Agent ELB Address" {
+  value = "${aws_elb.public-agent-elb.dns_name}"
 }
 
+output "Public Agent Public IP Address" {
+  value = ["${aws_instance.public-agent.*.public_ip}"]
+}

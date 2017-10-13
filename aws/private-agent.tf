@@ -1,31 +1,10 @@
-## DC/OS GPU Private Agent
-## State: Experimental
-#
-# This came out from an experiment to extend GPU support to DC/OS.
-# You can easily add this module by removing '.disabled' 
-# to the file name. You an always remove it at any time. The defaults 
-# variables are managed by this sinlge file for ease of integration. 
-
-variable "num_of_gpu_agents" {
-  default = "1"
-}
-
-variable "aws_gpu_agent_instance_type" {
-  default = "g2.2xlarge"
-}
-
-# AMI Zone US-WEST-2
-variable "aws_gpu_ami" {
- default = "ami-9b5d97fb"
-}
-
-# AWS Resourece Agent for GPUs
-resource "aws_instance" "gpu-agent" {
+# Private agent instance deploy
+resource "aws_instance" "agent" {
   # The connection block tells our provisioner how to
   # communicate with the resource (instance)
   connection {
     # The default username for our AMI
-    user = "centos"
+    user = "${module.aws-tested-oses.user}"
 
     # The connection will use the local SSH agent for authentication.
   }
@@ -34,20 +13,20 @@ resource "aws_instance" "gpu-agent" {
     volume_size = "${var.instance_disk_size}"
   }
 
-  count = "${var.num_of_gpu_agents}"
-  instance_type = "${var.aws_gpu_agent_instance_type}"
+  count = "${var.num_of_private_agents}"
+  instance_type = "${var.aws_agent_instance_type}"
 
   ebs_optimized = "true"
 
   tags {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
-   Name =  "${data.template_file.cluster-name.rendered}-gpuagt-${count.index + 1}"
+   Name =  "${data.template_file.cluster-name.rendered}-pvtagt-${count.index + 1}"
    cluster = "${data.template_file.cluster-name.rendered}"
   }
   # Lookup the correct AMI based on the region
   # we specified
-  ami = "${var.aws_gpu_ami}"      
+  ami = "${module.aws-tested-oses.aws_ami}"
 
   # The name of our SSH keypair we created above.
   key_name = "${var.key_name}"
@@ -62,7 +41,7 @@ resource "aws_instance" "gpu-agent" {
 
   # OS init script
   provisioner "file" {
-   source = "modules/dcos-tested-aws-oses/platform/cloud/aws/centos_7.2/setup.sh"
+   content = "${module.aws-tested-oses.os-setup}"
    destination = "/tmp/os-setup.sh"
    }
 
@@ -81,9 +60,8 @@ resource "aws_instance" "gpu-agent" {
   }
 }
 
-
 # Create DCOS Mesos Agent Scripts to execute
-module "dcos-mesos-gpu-agent" {
+module "dcos-mesos-agent" {
   source               = "git@github.com:mesosphere/enterprise-terraform-dcos//tf_dcos_core"
   bootstrap_private_ip = "${aws_instance.bootstrap.private_ip}"
   dcos_install_mode    = "${var.state}"
@@ -91,22 +69,21 @@ module "dcos-mesos-gpu-agent" {
   role                 = "dcos-mesos-agent"
 }
 
-
 # Execute generated script on agent
-resource "null_resource" "gpu-agent" {
+resource "null_resource" "agent" {
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
+    current_ec2_instance_id = "${aws_instance.agent.*.id[count.index]}"
   }
-
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case
   connection {
-    host = "${element(aws_instance.gpu-agent.*.public_ip, count.index)}"
-    user = "centos"
+    host = "${element(aws_instance.agent.*.public_ip, count.index)}"
+    user = "${module.aws-tested-oses.user}"
   }
 
-  count = "${var.num_of_gpu_agents}"
+  count = "${var.num_of_private_agents}"
 
   # Generate and upload Agent script to node
   provisioner "file" {
@@ -130,7 +107,6 @@ resource "null_resource" "gpu-agent" {
   }
 }
 
-output "GPU Private Public IP Address" {
-  value = ["${aws_instance.gpu-agent.*.public_ip}"]
+output "Private Agent Public IP Address" {
+  value = ["${aws_instance.agent.*.public_ip}"]
 }
-
