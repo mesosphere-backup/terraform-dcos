@@ -48,24 +48,21 @@ There is a module called `dcos-tested-aws-oses` that contains all the tested scr
 
 For CoreOS 1235.9.0:
 ```bash
-terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
-terraform get
+terraform init -from-module git@github.com:mesosphere/enterprise-terraform-dcos//aws
 terraform plan --var os=coreos_1235.9.0
 ```
 
 For CoreOS 835.13.0:
 
 ```bash
-terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
-terraform get
+terraform init -from-module git@github.com:mesosphere/enterprise-terraform-dcos//aws
 terraform plan --var os=coreos_835.13.0 --var dcos_overlay_enable=disable # This OS cannot support docker networking
 ```
 
 For Centos 7.2:
 
 ```bash
-terraform init git@github.com:mesosphere/enterprise-terraform-dcos && cd aws
-terraform get
+terraform init -from-module git@github.com:mesosphere/enterprise-terraform-dcos//aws
 terraform plan --var os=centos_7.2
 ```
 
