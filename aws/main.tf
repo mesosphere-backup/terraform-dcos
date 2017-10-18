@@ -12,6 +12,7 @@ data "external" "whoami" {
 # Create a VPC to launch our instances into
 resource "aws_vpc" "default" {
   cidr_block = "10.0.0.0/16"
+  enable_dns_hostnames = "true"
 
 tags {
    Name = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
