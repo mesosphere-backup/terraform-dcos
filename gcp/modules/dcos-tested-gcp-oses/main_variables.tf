@@ -3,4 +3,3 @@ variable "provider" {
 }
 
 variable "os" {}
-variable "region" {}
