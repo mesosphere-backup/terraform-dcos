@@ -48,6 +48,11 @@ variable "aws_bootstrap_instance_type" {
   default = "m3.large"
 }
 
+variable "aws_bootstrap_instance_disk_size" {
+  description = "AWS DC/OS bootstrap instance type default size of the root disk (GB)"
+  default = "60"
+}
+
 variable "num_of_private_agents" {
   description = "DC/OS Private Agents Count"
   default = 2
