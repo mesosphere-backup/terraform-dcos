@@ -4,8 +4,8 @@ variable "ssh_pub_key" {
 }
 
 variable "azure_admin_username" {
-  description = "Username of the OS"
-  default = "core"
+  description = "Username of the OS. (Defaults can be found here modules/dcos-tested-azure-oses/azure_template_file.tf)"
+  default = ""
 }
 
 variable "azure_region" {
