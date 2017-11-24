@@ -43,6 +43,11 @@ variable "aws_public_agent_instance_type" {
   default = "m3.xlarge"
 }
 
+variable "aws_public_agent_instance_disk_size" {
+  description = "AWS DC/OS Public instance type default size of the root disk (GB)"
+  default = "60"
+}
+
 variable "aws_bootstrap_instance_type" {
   description = "AWS DC/OS Bootstrap instance type"
   default = "m3.large"
