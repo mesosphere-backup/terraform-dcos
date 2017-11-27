@@ -10,7 +10,7 @@ resource "aws_instance" "agent" {
   }
 
   root_block_device {
-    volume_size = "${var.instance_disk_size}"
+    volume_size = "${var.aws_agent_instance_disk_size}"
   }
 
   count = "${var.num_of_private_agents}"
