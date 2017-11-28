@@ -148,12 +148,19 @@ resource "null_resource" "public-agent" {
       "sudo ./run.sh",
     ]
   }
+
+  # Watch Public Agent Nodes Start
+  provisioner "remote-exec" {
+    inline = [
+      "until $(curl --output /dev/null --silent --head --fail http://${element(aws_instance.public-agent.*.private_ip, count.index)}:5051/version); do printf 'waiting for public agent to serve...'; sleep 10; done"
+    ]
+  }
 }
 
-output "Public Agent ELB Address" {
+output "Public_Agent_ELB_Address" {
   value = "${aws_elb.public-agent-elb.dns_name}"
 }
 
-output "Public Agent Public IP Address" {
+output "Public_Agent_Public_IP_Address" {
   value = ["${aws_instance.public-agent.*.public_ip}"]
 }
