@@ -16,7 +16,6 @@ resource "aws_instance" "bootstrap" {
   instance_type = "${var.aws_bootstrap_instance_type}"
 
   tags {
-   owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
    Name = "${data.template_file.cluster-name.rendered}-bootstrap"
    cluster = "${data.template_file.cluster-name.rendered}"

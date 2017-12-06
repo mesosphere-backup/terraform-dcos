@@ -125,7 +125,6 @@ resource "aws_instance" "master" {
   ebs_optimized  = "true"
 
   tags {
-   owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
    Name = "${data.template_file.cluster-name.rendered}-master-${count.index + 1}"
    cluster = "${data.template_file.cluster-name.rendered}"
