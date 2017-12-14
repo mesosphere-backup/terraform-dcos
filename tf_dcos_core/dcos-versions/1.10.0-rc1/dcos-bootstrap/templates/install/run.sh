@@ -29,6 +29,7 @@ ${dcos_exhibitor_storage_backend == "aws_s3" ? dcos_s3_prefix== "" ? "" : "s3_pr
 ${dcos_exhibitor_storage_backend == "azure" ? dcos_exhibitor_azure_account_name== "" ? "" : "exhibitor_azure_account_name: ${dcos_exhibitor_azure_account_name}" : ""}
 ${dcos_exhibitor_storage_backend == "azure" ? dcos_exhibitor_azure_account_key== "" ? "" : "exhibitor_azure_account_key: ${dcos_exhibitor_azure_account_key}" : ""}
 ${dcos_exhibitor_storage_backend == "azure" ? dcos_exhibitor_azure_prefix== "" ? "" : "exhibitor_azure_prefix: ${dcos_exhibitor_azure_prefix}" : ""}
+${dcos_master_external_loadbalancer == "" ? "" : "master_external_loadbalancer: ${dcos_master_external_loadbalancer}"}
 ${dcos_master_discovery == "master_http_loadbalancer" ? dcos_num_masters == "" ? "" : "num_masters: ${dcos_num_masters}" : ""}
 ${dcos_master_discovery == "master_http_loadbalancer" ? dcos_exhibitor_address== "" ? "" : "exhibitor_address: ${dcos_exhibitor_address}" : ""}
 ${dcos_master_discovery == "static" ? dcos_master_list== "" ? "" : "master_list: ${dcos_master_list}" : ""}

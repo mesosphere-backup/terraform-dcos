@@ -24,7 +24,15 @@ variable "dcos_resolvers" {
    default = ""
 }
 
+variable "dcos_skip_checks" {
+   default = "true"
+}
+
 variable "dcos_oauth_enabled" {
+   default = ""
+}
+
+variable "dcos_master_external_loadbalancer" {
    default = ""
 }
 
