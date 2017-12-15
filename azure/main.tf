@@ -63,10 +63,11 @@ resource "azurerm_subnet" "private" {
 }
 
 resource "azurerm_storage_account" "dcos-exhibitor-account" {
-  name                = "tf${substr(md5(random_id.cluster.id),0,4)}exhibitor"
-  resource_group_name = "${azurerm_resource_group.dcos.name}"
-  location            = "${azurerm_resource_group.dcos.location}"
-  account_type        = "Standard_LRS"
+  name                     = "tf${substr(md5(random_id.cluster.id),0,4)}exhibitor"
+  resource_group_name      = "${azurerm_resource_group.dcos.name}"
+  location                 = "${azurerm_resource_group.dcos.location}"
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 
   tags {
    Name       = "${coalesce(var.owner, data.external.whoami.result["owner"])}"

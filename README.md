@@ -29,11 +29,7 @@ You can find aws terraform instructions for the respective clouds below:
  - [AWS Terraform](./aws/README.md)
  - [Azure Terraform](./azure/README.md)
 
-## Azure
-
-You can find aws terraform instructions in the  page here: [AWS Terraform](./aws/README.md)
-
-  # Roadmaps
+# Roadmaps
 
   - [X] Support for AWS
   - [X] Support for Azure

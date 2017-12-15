@@ -38,8 +38,6 @@ resource "google_compute_http_health_check" "public-agent-adminrouter-healthchec
   healthy_threshold   = 2
   unhealthy_threshold = 2
   port                = "80"
-
-  # depends_on = ["google_compute_target_pool.public-agent-pool"]
 }
 
 resource "google_compute_instance_group" "public-agent" {
@@ -95,14 +93,12 @@ resource "google_compute_instance" "public-agent" {
   }
 
   connection {
-    # host = "${element(google_compute_instance.public-agent.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
     user = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}"
   }
 
   network_interface {
     subnetwork = "${google_compute_subnetwork.public.name}"
     access_config {
-        // IP
     }
   } 
 

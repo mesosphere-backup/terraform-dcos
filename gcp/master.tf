@@ -83,8 +83,6 @@ resource "google_compute_http_health_check" "master-adminrouter-healthcheck" {
   healthy_threshold   = 2
   unhealthy_threshold = 2
   port                = "80"
-
-  # depends_on = ["google_compute_target_pool.master-pool"]
 }
 
  
@@ -163,14 +161,12 @@ resource "google_compute_instance" "master" {
   }
 
   connection {
-    # host = "${element(google_compute_instance.master.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
     user = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}"
   }
 
   network_interface {
     subnetwork = "${google_compute_subnetwork.public.name}"
     access_config {
-        // IP
     }
   } 
 
@@ -178,17 +174,13 @@ resource "google_compute_instance" "master" {
     sshKeys = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}:${file(var.gce_ssh_pub_key_file)}"
   }
 
-  # network_interface {
-  #   network = "default"
-  # }
-
   # OS init script
   provisioner "file" {
    content = "${module.dcos-tested-gcp-oses.os-setup}"
    destination = "/tmp/os-setup.sh"
    }
 
- # We run a remote provisioner on the instance after creating it.
+  # We run a remote provisioner on the instance after creating it.
   # In this case, we just install nginx and start it. By default,
   # this should be on port 80
     provisioner "remote-exec" {

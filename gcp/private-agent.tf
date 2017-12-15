@@ -58,14 +58,12 @@ resource "google_compute_instance" "agent" {
   }
 
   connection {
-    # host = "${element(google_compute_instance.agent.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
     user = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}"
   }
 
   network_interface {
     subnetwork = "${google_compute_subnetwork.private.name}"
     access_config {
-        // IP
     }
   } 
 

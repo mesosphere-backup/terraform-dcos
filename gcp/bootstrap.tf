@@ -21,7 +21,6 @@ resource "google_compute_instance" "bootstrap" {
   network_interface {
     subnetwork = "${google_compute_subnetwork.private.name}"
     access_config {
-        // IP
     }
   } 
 
@@ -30,13 +29,8 @@ resource "google_compute_instance" "bootstrap" {
   }
 
   connection {
-   # host = "${element(google_compute_instance.bootstrap.*.network_interface.0.access_config.0.assigned_nat_ip, 0)}"
     user = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}"
   }
-
-#   network_interface {
-#     network = "default"
-#   }
 
   # OS init script
   provisioner "file" {

@@ -25,7 +25,6 @@ data "template_file" "cluster-name" {
 
 # Configure the Google Cloud provider
 provider "google" {
-  #credentials = "${file("myGoogleServiceAccountKey.json")}"
   project     = "${var.google_project}"
   region      = "${var.google_region}"
 }
