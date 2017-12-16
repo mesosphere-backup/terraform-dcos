@@ -1,138 +1,68 @@
 &#x1F4D9; **Disclaimer: Community supported repository. Not supported by Mesosphere directly.**
 
-# [WIP] Open DC/OS on GCP with Terraform
+# Open DC/OS on GCP with Terraform
+_Mission:  Allow for automated installs and upgrades for DC/OS on GCP._
 
-## Getting Started
+## Prerequisites
+- [Terraform 0.11.x](https://www.terraform.io/downloads.html)
+- GCP Cloud Credentials. _[configure via: `gcloud auth login`](https://cloud.google.com/sdk/downloads)_
+- SSH Keys
 
-### Install Terraform
+## Configure your GCP SSH Keys
 
-If you're on a mac environment with homebrew installed, run this command.
-
-```bash
-brew install terraform
-```
-
-If you want to leverage the terraform installer, feel free to check out https://www.terraform.io/downloads.html.
-
-### Configure your Cloud Provider Credentials
-
-#### Configure your GCP ssh Keys
-
-Set the private key that you will be you will be using to your ssh-agent and set public key in terraform.
+Set the private key that you will be you will be using to your ssh-agent and set public key in terraform. This will allow you to log into to the cluster after DC/OS is deployed and also helps Terraform setup your cluster at deployment time.
 
 ```bash
-ssh-add ~/.ssh/your_private_key.pem
+$ ssh-add ~/.ssh/your_private_key.pem
 ```
 
 ```bash
-cat desired_cluster_profile
-...
-ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
-...
-```
-
-#### Configure your GCP ID Keys
-
-Follow the Terraform instructions [here](https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform) to setup your GCP credentials to provide to terraform. 
-
-### Example Terraform Deployments
-
-#### Pull down the DC/OS terraform scripts below
-
-There is a module called `dcos-tested-azure-oses` that contains all the tested scripts per operating system. The deployment strategy is based on a bare image coupled with a prereq `script.sh` to get it ready to install dcos-core components. Its simple to add other operating systems by adding the ami, region, and install scripts to meet the dcos specifications that can be found [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/) and [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/install-docker-centos/) as an example.
-
-
-For CoreOS 1235.9.0:
-```bash
-terraform init -from-module github.com/dcos/terraform-dcos//gcp
-terraform plan --var os=coreos_1235.9.0
-```
-
-For Centos 7.2:
-
-```bash
-terraform init -from-module github.com/dcos/terraform-dcos//gcp
-terraform plan --var os=centos_7.2
-```
-
-## Pro-tip: Use Terraform’s -var-file
-
-When reading the commands below relating to installing and upgrading, it may be easier for you to keep all these flags in a file instead. This way you can make a change to the file and it will persist when you do other commands to your cluster in the future.
-
-For example:
-
-This command below already has the flags on what I need to install such has:
-* DC/OS Version 1.8.8
-* Masters 3
-* Private Agents 2
-* Public Agents 1
-* SSH Public Key <Testing Pub Key> 
-
-```bash
-terraform apply -var-file desired_cluster_profile
-```
-
-When we view the file, you can see how you can save your state of your cluster:
-
-```bash
-$ cat desired_cluster_profile
-num_of_masters = "3"
-num_of_private_agents = "2"
-num_of_public_agents = "1"
-dcos_security = "permissive"
-dcos_version = "1.8.8"
+$ cat desired_cluster_profile.tfvars
 ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
 ```
 
-When reading the instructions below regarding installing and upgrading, you can always use your `--var-file` instead to keep track of all the changes you've made. It's easy to share this file with others if you want them to deploy your same cluster. Never save `state=upgrade` in your `--var-file`, it should be only used for upgrades or one time file changes.
+## Example Terraform Deployments
 
+### Quick Start
 
-## Installing DC/OS
+We've provided all the sensible defaults that you would want to play around with DC/OS. Just run this command to deploy a multi-master setup in the cloud. Three agents will be deployed for you. Two private agents, one public agent.
 
-If you wanted to install a specific version of DC/OS you can either use the stable versions or early access. You can also pick and choose any version if you like when you're first starting out. On the section below, this will explain how you automate upgrades when you're ready along with changing what order you would like them upgraded. 
+- There is no git clone of this repo required. Terraform does this for you under the hood.
 
-### DC/OS Stable (1.10.0)
 ```bash
-terraform apply --var dcos_version=1.10.0
-```
-
-### DC/OS Master (default is stable)
-```bash
+terraform init -from-module github.com/dcos/terraform-dcos/gcp
 terraform apply
 ```
 
-### Config.yaml Modification
+### Custom terraform-dcos variables
 
-#### Recommended Configuration
+The default variables are tracked via in the [variables.tf](/variables.tf) file. Since this file can be overwritten during updates when you may run `terraform get --update` when you want to fetch new releases of DC/OS to upgrade too, its best to use the [desired_cluster_profile.tfvars](/desired_cluster_profile.tfvars.example) and set your custom terraform and DC/OS flags there. This way you can keep track of a single file that you can use manage the lifecycle of your cluster.
 
-You can modify all the DC/OS config.yaml flags via terraform. Here is an example of using the master_http_loadbalancer for cloud deployments. **master_http_loadbalancer is recommended for production**. You will be able to replace your masters in a multi master environment. Using the default static backend will not give you this option. 
+For list of supported operating systems for this repo which expands, we're supporting the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/custom/system-requirements/). You can find the list that Terraform for this repo [here](/).
 
-Here is an example default profile that will allow you to do this. 
+To apply the configuration file, you can use this command below.
 
 ```bash
-$ cat desired_cluster_profile
-num_of_masters = "3"
-num_of_private_agents = "2"
-num_of_public_agents = "1"
-dcos_security = "permissive"
-dcos_version = "1.9.4"
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
-
-**NOTE:** This will append your exhibitor_azure_account_name, exhibitor_azure_account_key and exhibitor_azure_prefix key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the azure storage backend. 
 
 #### Advance YAML Configuration 
 
-Here are the YAML flags examples where you can simply paste your YAML configuration in your desired_cluster_profile. The alternative to YAML is to convert it to JSON.  
+In this project we have designed to be flexible. Here are the example working variables that allows very deep customization by using a single `tfvars` file. 
 
-_*Note*: It is required to have at least one space when inserting your YAML settings_
+This file can have as little to as large as the DC/OS advance YAML configuration below.
+
+
+For advance users with stringent requirements, here are the DC/OS flags examples where you can simply paste your YAML configuration in your desired_cluster_profile.tfvars. The alternative to YAML is to convert it to JSON.  
 
 ```bash
-$ cat desired_cluster_profile
-dcos_version = "1.9.4"
+$ cat desired_cluster_profile.tfvars
+dcos_version = "1.10.2"
+os = "centos_7.3"
 num_of_masters = "3"
 num_of_private_agents = "2"
 num_of_public_agents = "1"
-expiration = "6h"
+expiration = "6h"  
 dcos_security = "permissive"
 dcos_cluster_docker_credentials_enabled =  "true"
 dcos_cluster_docker_credentials_write_to_etc = "true"
@@ -166,103 +96,32 @@ dcos_cluster_docker_credentials = <<EOF
     'https://index.docker.io/v1/':
       auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
 EOF
+ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
 ```
+_Note: The YAML comment is required for the DC/OS specific YAML settings._
 
 ## Upgrading DC/OS  
 
 You can upgrade your DC/OS cluster with a single command. This terraform script was built to perform installs and upgrade from the inception of this project. With the upgrade procedures below, you can also have finer control on how masters or agents upgrade at a given time. This will give you the ability to change the parallelism of master or agent upgrades.
 
-### DC/OS 1.8 Upgrades
+### DC/OS Upgrades
 
-#### Upgrading DC/OS 1.7 to DC/OS 1.8 Disabled
+#### Rolling Upgrade 
+###### Supported upgraded by dcos.io 
 
-**Important**: DC/OS will is not designed to upgrade directly from disabled to strict. Please be responsible when using automation tools.
-
-This command below will upgrade your masters and agents one at a time. It takes roughly 5 minutes per node, so depending on how many nodes, you may want to consider changing your parallelism to change the speed of your upgrade. 
-
-**Prioritise Master Upgrades First**
-
-If you take this route, you can use a few more commands but this will allow you upgrade your master nodes first, one at a time, then upgrade the agents simuanioustly with the next. Terraforms parallel algorithm will walk the graph in any order. It may do one agent first, a master second, etc. You would need to target your master resource so you can upgrade the masters first then change the parallelism back to any number for the agents. 
-
-**Master upgrade sequentially one at a time**
+##### Masters Sequentially, Agents Parellel:
 ```bash
-terraform apply \
---var os=coreos_1235.9.0 \
---var dcos_version=1.8.8 \
---var state=upgrade \
---var dcos_security=disabled \
--parallelism=1 \
--target=null_resource.master
- ```
+terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade -target null_resource.bootstrap -target null_resource.master -parallelism=1
+terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade
+```
 
-**Upgrade everything else in parallel**
- ```bash
-terraform apply \
---var os=coreos_1235.9.0 \
---var dcos_version=1.8.8 \
---var state=upgrade \
---var dcos_security=disabled
-  ```
-  
-  *NOTE: the default for parallelism is 10. You can change this value to control how many nodes you want upgraded at any given time*
+##### All Roles Simultaniously
+###### Not supported by dcos.io but it works without dcos_skip_checks enabled.
 
+```bash
+terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade
+```
 
-  ### Upgrading with DC/OS 1.8 Security Changes
-
-  **Important**: DC/OS will is not designed to upgrade directly from disabled to strict. Please be responsible when using automation tools.
-
-  #### Upgrading DC/OS 1.8 Disabled to DC/OS 1.8 Permissive
-
-  On DC/OS 1.8 clusters, testing shows that you can actually upgrade the masters simultaneously from DC/OS 1.8 and 1.9, (not 1.7). So going forward, we can drop the `--parallelism=1` entirely. If this changes on a new version, I will be sure to call this out. To go from DC/OS 1.8 Disbaled to DC/OS 1.8 Permissive, you can upgrade by running this command below. Notice the `state` is still upgrade, because we're still doing an inplace upgrade to the same version. This allows you to make DC/OS cluster-wide changes on your cluster.
-
-  ```bash
-  terraform apply \
-  --var dcos_version=1.8.8 \
-  --var state=upgrade \
-  --var dcos_security=permissive
-  ```
-
-  #### Upgrading DC/OS 1.8 Permissive to DC/OS 1.8 Strict
-
-  This command below will upgrade you from DC/OS permissive to DC/OS strict mode
-
-  ```bash
-  terraform apply \
-  --var dcos_version=1.8.8 \
-  --var state=upgrade \
-  --var dcos_security=strict
-  ```
-
-  ### DC/OS 1.9 Upgrades
-
-  **Important**: DC/OS documentation says that you cannot upgrade directly from 1.8 disabled to 1.9 while changing the version. We will err on the side of caution by following the instructions below as well.
-
-  #### Upgrading DC/OS 1.8 Disabled to DC/OS 1.9 Disabled
-
-  ```bash
-  terraform apply \
-  --var dcos_version=1.9.0 \
-  --var state=upgrade \
-  --var dcos_security=disabled
-  ```
-
-  #### Upgrading DC/OS 1.8 Permissive to DC/OS 1.9 Permissive
-
-  ```bash
-  terraform apply \
-  --var dcos_version=1.9.0 \
-  --var state=upgrade \
-  --var dcos_security=permissive
-  ```
-
-  #### Upgrading DC/OS 1.8 Strict to DC/OS 1.9 Strict
-
-  ```bash
-  terraform apply \
-  --var dcos_version=1.9.0 \
-  --var state=upgrade \
-  --var dcos_security=strict
-  ```
 
 ## Maintenance
 
@@ -272,21 +131,21 @@ If you would like to add more or remove (private) agents or public agents from y
 
 ```bash
 terraform apply \
--var-file desired_cluster_profile \
---var num_of_private_agents=5 \
---var num_of_public_agents=3
+-var-file desired_cluster_profile.tfvars \
+-var num_of_private_agents=5 \
+-var num_of_public_agents=3
 ```
 
 ### Removing Agents
 
 ```bash
 terraform apply \
--var-file desired_cluster_profile \
---var num_of_private_agents=1 \
---var num_of_public_agents=1
+-var-file desired_cluster_profile.tfvars \
+-var num_of_private_agents=1 \
+-var num_of_public_agents=1
 ```
 
-**Important**: Always remember to save your desired state in your `desired_cluster_profile`
+**Important**: Always remember to save your desired state in your `desired_cluster_profile.tfvars`
 
 ## Redeploy an existing Master
 
@@ -305,7 +164,7 @@ terraform taint google_compute_instance.master.0 # The number represents the age
 #### Redeploy Master Node
 
 ```bash
-terraform apply -var-file desired_cluster_profile
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 ## Redeploy an existing Agent
@@ -324,7 +183,7 @@ terraform taint google_compute_instance.agent.0 # The number represents the agen
 #### Redeploy Agent
 
 ```bash
-terraform apply -var-file desired_cluster_profile
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 
@@ -339,7 +198,7 @@ terraform taint google_compute_instance.public-agent.0 # The number represents t
 #### Redeploy Agent
 
 ```bash
-terraform apply -var-file desired_cluster_profile
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 ### Experimental

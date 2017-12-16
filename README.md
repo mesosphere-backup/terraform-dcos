@@ -28,9 +28,10 @@ You can find aws terraform instructions for the respective clouds below:
 
  - [AWS Terraform](./aws/README.md)
  - [Azure Terraform](./azure/README.md)
+ - [GCP Terraform](./gcp/README.md)
 
 # Roadmaps
 
   - [X] Support for AWS
   - [X] Support for Azure
-  - [ ] Support for GCP
+  - [X] Support for GCP
