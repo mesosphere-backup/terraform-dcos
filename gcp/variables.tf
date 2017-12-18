@@ -116,8 +116,8 @@ variable "dcos_security" {
 }
 
 variable "dcos_resolvers" {
- default = [ "8.8.8.8", "8.8.4.4" ]
- description = "DNS Resolver for external name resolution"
+ default = [ "169.254.169.254" ]
+ description = "DNS Resolver for internal name resolution. Google DNS supports external DNS resolution as well."
 }
 
 variable "dcos_oauth_enabled" {
