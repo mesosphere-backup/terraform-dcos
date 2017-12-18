@@ -1,9 +1,0 @@
-aws_agent_instance_type = "m3.xlarge" # exist out of the box
-instance_disk_size = "100"  # applies to all nodes but I can add a feature to support individual nodes
-num_of_private_agents = "3" # exist out of the box
-
-aws_second_group_public_agent_instance_type = "m4.xlarge" # requires the user to create a new group
-num_of_second_group_private_agents = "3" # requires the user to create a new group
-
-aws_gpu_agent_instance_type = "g2.2xlarge" # exist out of the box
-num_of_gpu_agents = "3" # exist out of the box
