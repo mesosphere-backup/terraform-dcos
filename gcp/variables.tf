@@ -17,7 +17,7 @@ variable "gce_ssh_pub_key_file" {
 }
 
 variable "gce_ssh_user" {
- default = "gce_user"
+ default = ""
  description = "The ssh username used to log into the server"
 }
 
