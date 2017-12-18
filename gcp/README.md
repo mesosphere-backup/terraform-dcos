@@ -7,6 +7,7 @@ _Mission:  Allow for automated installs and upgrades for DC/OS on GCP._
 - [Terraform 0.11.x](https://www.terraform.io/downloads.html)
 - GCP Cloud Credentials. _[configure via: `gcloud auth login`](https://cloud.google.com/sdk/downloads)_
 - SSH Keys
+- Existing Google Project. Soon automated with Terraform using project creation as documented [here.](https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform)
 
 ## Install Google SDK
 
@@ -28,6 +29,17 @@ $ ssh-add ~/.ssh/your_private_key.pem
 ```bash
 $ cat desired_cluster_profile.tfvars
 ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
+...
+```
+
+## Configure a Pre-existing Google Project
+
+Currently terraform-dcos assumes a project already exist in GCP to start deploying your resources agaisnt. This repo soon will have support for terraform to create projects on behalf of the user soon via this document [here](https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform). For the time being a user will have to create this project before time or leverage an existing project.
+
+```bash
+$ cat desired_cluster_profile.tfvars
+google_project = "massive-bliss-781"
+...
 ```
 
 ## Example Terraform Deployments

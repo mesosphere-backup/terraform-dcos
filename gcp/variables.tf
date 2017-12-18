@@ -1,5 +1,5 @@
 variable "google_project" {
- default = ""
+ default = "massive-bliss-781"
 }
 
 variable "google_region" {
