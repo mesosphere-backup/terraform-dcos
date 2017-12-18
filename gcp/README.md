@@ -8,6 +8,15 @@ _Mission:  Allow for automated installs and upgrades for DC/OS on GCP._
 - GCP Cloud Credentials. _[configure via: `gcloud auth login`](https://cloud.google.com/sdk/downloads)_
 - SSH Keys
 
+## Install Google SDK
+
+Run this command to authenticate to the Google Provider. This will bring down your keys locally on the machine for terraform to use.
+
+```bash
+$ gcloud auth login
+$ gcloud auth application-default login
+```
+
 ## Configure your GCP SSH Keys
 
 Set the private key that you will be you will be using to your ssh-agent and set public key in terraform. This will allow you to log into to the cluster after DC/OS is deployed and also helps Terraform setup your cluster at deployment time.
@@ -31,14 +40,14 @@ We've provided all the sensible defaults that you would want to play around with
 
 ```bash
 terraform init -from-module github.com/dcos/terraform-dcos/gcp
-terraform apply
+terraform apply -var google_project="your_existing_project"
 ```
 
 ### Custom terraform-dcos variables
 
-The default variables are tracked via in the [variables.tf](/variables.tf) file. Since this file can be overwritten during updates when you may run `terraform get --update` when you want to fetch new releases of DC/OS to upgrade too, its best to use the [desired_cluster_profile.tfvars](/desired_cluster_profile.tfvars.example) and set your custom terraform and DC/OS flags there. This way you can keep track of a single file that you can use manage the lifecycle of your cluster.
+The default variables are tracked via in the [variables.tf](/gcp/variables.tf) file. Since this file can be overwritten during updates when you may run `terraform get --update` when you want to fetch new releases of DC/OS to upgrade too, its best to use the [desired_cluster_profile.tfvars](/gcp/desired_cluster_profile.tfvars.example) and set your custom terraform and DC/OS flags there. This way you can keep track of a single file that you can use manage the lifecycle of your cluster.
 
-For list of supported operating systems for this repo which expands, we're supporting the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/custom/system-requirements/). You can find the list that Terraform for this repo [here](/).
+For list of supported operating systems for this repo which expands, we're supporting the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/custom/system-requirements/). You can find the list that Terraform for this repo [here](http://github.com/bernadinm/tf_dcos_core).
 
 To apply the configuration file, you can use this command below.
 
