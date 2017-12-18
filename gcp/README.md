@@ -28,7 +28,7 @@ $ ssh-add ~/.ssh/your_private_key.pem
 
 ```bash
 $ cat desired_cluster_profile.tfvars
-ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
+gce_ssh_pub_key_file = "INSERT_PUBLIC_KEY_PATH_HERE"
 ...
 ```
 
@@ -117,7 +117,7 @@ dcos_cluster_docker_credentials = <<EOF
     'https://index.docker.io/v1/':
       auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
 EOF
-ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
+gce_ssh_pub_key_file = "INSERT_PUBLIC_KEY_PATH_HERE"
 ```
 _Note: The YAML comment is required for the DC/OS specific YAML settings._
 
