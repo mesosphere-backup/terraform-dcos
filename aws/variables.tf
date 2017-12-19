@@ -146,8 +146,8 @@ variable "dcos_security" {
 }
 
 variable "dcos_resolvers" {
- default = [ "169.254.169.253" ]
- description = "DNS Resolver for internal name resolution. Points to Amazon DNS server which can resolve external addresses."
+ default = [ "8.8.8.8", "8.8.4.4" ]
+ description = "DNS Resolver for external name resolution"
 }
 
 variable "dcos_oauth_enabled" {
@@ -414,7 +414,7 @@ variable "dcos_previous_version" {
 }
 
 variable "dcos_version" {
- default = "1.10.2"
+ default = "1.10.0"
  description = "DCOS Version"
 }
 
@@ -486,12 +486,16 @@ variable "dcos_ip_detect_public_contents" {
  description = "Used for AWS to determine the public IP. DC/OS bug requires this variable instead of a file see https://jira.mesosphere.com/browse/DCOS_OSS-905 for more information."
 }
 
-# Core OS
-variable "aws_amis" {
-  default = {
-    eu-west-1 = "ami-163e7e65"
-    us-east-1 = "ami-21732036"
-    us-west-1 = "ami-161a5176"
-    us-west-2 = "ami-078d5367"
-  }
+# A Map of AMI overrides for dcos-tested-aws-oses.  This is useful when you have
+# your own set of AMI's per region.  Convention for map key and values are:
+# {platform}_{platform version}_{aws region} = "{ami id}"
+#
+# Ex)
+# centos_7.2_ap-south-1          = "ami-95cda6fa"
+# centos_7.3_eu-west-1           = "ami-061b1560"
+# coreos_835.13.0_eu-west-1      = "ami-4b18aa38"
+# rhel_7.3_eu-west-2             = "ami-40a8bf24"
+variable "user_aws_ami" {
+ type = "map"
+ default = {}
 }

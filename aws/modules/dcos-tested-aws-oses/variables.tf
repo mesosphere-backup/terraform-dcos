@@ -8,6 +8,11 @@ variable "aws_default_os_user" {
  }
 }
 
+variable "user_aws_ami" {
+  type = "map"
+  default = {}
+}
+
 # AWS recommends all HVM vs PV. HVM Below.
 variable "aws_ami" {
  type = "map"
@@ -39,7 +44,7 @@ variable "aws_ami" {
  centos_7.3_ap-southeast-2      = "ami-34171d57"
  centos_7.3_eu-central-1        = "ami-fa2df395"
  centos_7.3_us-east-1           = "ami-46c1b650"
- centos_7.3_us-east-2           = "ami-eaf9d18f"
+ centos_7.3_us-east-2           = "ami-18f8df7d"
  centos_7.3_us-west-1           = "ami-f5d7f195"
  centos_7.3_us-west-2           = "ami-f4533694"
  # CoreOS 835.13.0
