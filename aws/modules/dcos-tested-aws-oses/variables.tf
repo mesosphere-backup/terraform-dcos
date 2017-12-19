@@ -39,7 +39,7 @@ variable "aws_ami" {
  centos_7.3_ap-southeast-2      = "ami-34171d57"
  centos_7.3_eu-central-1        = "ami-fa2df395"
  centos_7.3_us-east-1           = "ami-46c1b650"
- centos_7.3_us-east-2           = "ami-c14967a4"
+ centos_7.3_us-east-2           = "ami-eaf9d18f"
  centos_7.3_us-west-1           = "ami-f5d7f195"
  centos_7.3_us-west-2           = "ami-f4533694"
  # CoreOS 835.13.0
