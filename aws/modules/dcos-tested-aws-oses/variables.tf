@@ -8,6 +8,11 @@ variable "aws_default_os_user" {
  }
 }
 
+variable "user_aws_ami" {
+  type = "map"
+  default = {}
+}
+
 # AWS recommends all HVM vs PV. HVM Below.
 variable "aws_ami" {
  type = "map"
