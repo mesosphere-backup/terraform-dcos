@@ -24,7 +24,7 @@ If you want to leverage the terraform installer, feel free to check out https://
 
 ## Cloud Providers
 
-You can find aws terraform instructions for the respective clouds below:
+You can find `terraform` instructions for the respective clouds below:
 
  - [AWS Terraform](./aws/README.md)
  - [Azure Terraform](./azure/README.md)
