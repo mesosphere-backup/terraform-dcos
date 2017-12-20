@@ -23,22 +23,22 @@ variable "gce_ssh_user" {
 
 variable "gcp_master_instance_type" {
  default = "n1-highmem-4"
- description = "Default master instance size for gcp."
+ description = "Default Master instance size for GCP."
 }
 
 variable "gcp_agent_instance_type" {
  default = "n1-highmem-2"
- description = "Default master instance size for gcp."
+ description = "Default Private Agent instance size for GCP."
 }
 
 variable "gcp_public_agent_instance_type" {
  default = "n1-highmem-2"
- description = "Default public agent instance size for gcp."
+ description = "Default Public Agent instance size for GCP."
 }
 
 variable "gcp_bootstrap_instance_type" {
  default = "n1-highmem-2"
- description = "Default bootstrap instance size for gcp."
+ description = "Default Bootstrap instance size for GCP."
 }
 
 variable "os" {
@@ -85,8 +85,8 @@ variable "os-init-script" {
  type = "map"
 
  default = {
-  coreos = "scripts/os/coreos/coreos-init.aws.sh"
-  centos = "scripts/os/centos/centos-init.aws.sh"
+  coreos = "scripts/os/coreos/coreos-init.gcp.sh"
+  centos = "scripts/os/centos/centos-init.gcp.sh"
  }
 }
 
