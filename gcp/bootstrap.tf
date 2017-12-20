@@ -255,3 +255,27 @@ resource "null_resource" "bootstrap" {
 output "Bootstrap Public IP Address" {
   value = "${google_compute_instance.bootstrap.network_interface.0.access_config.0.assigned_nat_ip}"
 }
+
+output "Internal Master ELB Address" {
+  value = "${google_compute_forwarding_rule.internal-master-forwarding-rule.ip_address}"
+}
+
+output "DNS Search" {
+  value = "None"
+}
+
+output "DNS Resolvers" {
+  value = "${var.dcos_resolvers}"
+}
+
+output "Mesos Master Private IP" {
+  value = "${google_compute_instance.master.*.network_interface.0.address}"
+}
+
+output "Bootstrap Private IP Address" {
+  value = "${google_compute_instance.bootstrap.network_interface.0.address}"
+}
+
+output "Cluster Prefix" {
+  value = "${data.template_file.cluster-name.rendered}"
+}

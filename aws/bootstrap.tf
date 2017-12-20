@@ -255,3 +255,27 @@ resource "null_resource" "bootstrap" {
 output "Bootstrap Public IP Address" {
   value = "${aws_instance.bootstrap.public_ip}"
 }
+
+output "Internal Master ELB Address" {
+  value = "${aws_elb.internal-master-elb.dns_name}"
+}
+
+output "DNS Search" {
+  value = "${var.aws_region}.compute.internal"
+}
+
+output "DNS Resolvers" {
+  value = "${var.dcos_resolvers}"
+}
+
+output "Mesos Master Private IP" {
+  value = "${aws_instance.master.*.private_ip}"
+}
+
+output "Bootstrap Private IP Address" {
+  value = "${aws_instance.bootstrap.private_ip}"
+}
+
+output "Cluster Prefix" {
+  value = "${data.template_file.cluster-name.rendered}"
+}
