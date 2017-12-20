@@ -1,0 +1,20 @@
+# Test Variables to Ensure Working Module
+# Run with `terraform apply -var-file test_input_profile`
+#
+# Desired Output :
+#
+# Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+#
+# Outputs:
+#
+# azure_offer = RHEL
+# azure_publisher = RedHat
+# azure_sku = 7.3
+# azure_version = 7.3.2017053118
+# ------------------------------
+provider = "azure"
+os = "rhel_7.3"
+#os = "centos_7.3"
+#os = "coreos_835.13.0"
+#os = "coreos_1235.9.0"
+region = "westus"

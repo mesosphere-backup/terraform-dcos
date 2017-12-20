@@ -14,7 +14,7 @@ If you want to use this in your own environment, feel free to fork this and cust
 
 ### Install Terraform
 
-If you're on a mac environment with homebrew installed, run this command.
+If you're on a Mac environment with homebrew installed, run this command.
 
 ```bash
 brew install terraform
@@ -28,14 +28,11 @@ You can find aws terraform instructions for the respective clouds below:
 
  - [AWS Terraform](./aws/README.md)
  - [Azure Terraform](./azure/README.md)
+ - [GCP Terraform](./gcp/README.md)
 
-## Azure
-
-You can find aws terraform instructions in the  page here: [AWS Terraform](./aws/README.md)
-
-  # Roadmaps
+# Roadmaps
 
   - [X] Support for AWS
   - [X] Support for Azure
-  - [ ] Support for GCP
+  - [X] Support for GCP
 
