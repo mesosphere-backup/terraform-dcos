@@ -34,7 +34,7 @@ gce_ssh_pub_key_file = "INSERT_PUBLIC_KEY_PATH_HERE"
 
 ## Configure a Pre-existing Google Project
 
-Currently terraform-dcos assumes a project already exist in GCP to start deploying your resources agaisnt. This repo soon will have support for terraform to create projects on behalf of the user soon via this document [here](https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform). For the time being a user will have to create this project before time or leverage an existing project.
+Currently terraform-dcos assumes a project already exist in GCP to start deploying your resources against. This repo soon will have support for terraform to create projects on behalf of the user soon via this document [here](https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform). For the time being a user will have to create this project before time or leverage an existing project.
 
 ```bash
 $ cat desired_cluster_profile.tfvars
@@ -67,9 +67,9 @@ To apply the configuration file, you can use this command below.
 terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
-#### Advance YAML Configuration 
+#### Advance YAML Configuration
 
-In this project we have designed to be flexible. Here are the example working variables that allows very deep customization by using a single `tfvars` file. 
+In this project we have designed to be flexible. Here are the example working variables that allows very deep customization by using a single `tfvars` file.
 
 This file can have as little to as large as the DC/OS advance YAML configuration below.
 
@@ -112,7 +112,7 @@ dcos_rexray_config = <<EOF
         ignoreusedcount: true
 EOF
 dcos_cluster_docker_credentials = <<EOF
-# YAML 
+# YAML
   auths:
     'https://index.docker.io/v1/':
       auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
@@ -127,8 +127,8 @@ You can upgrade your DC/OS cluster with a single command. This terraform script 
 
 ### DC/OS Upgrades
 
-#### Rolling Upgrade 
-###### Supported upgraded by dcos.io 
+#### Rolling Upgrade
+###### Supported upgraded by dcos.io
 
 ##### Masters Sequentially, Agents Parellel:
 ```bash
@@ -146,7 +146,7 @@ terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade
 
 ## Maintenance
 
-If you would like to add more or remove (private) agents or public agents from your cluster, you can do so by telling terraform your desired state and it will make sure it gets you there. For example, if I have 2 private agents and 1 public agent in my `-var-file` I can always override that flag by specifying the `-var` flag. It has higher priority than the `-var-file`. 
+If you would like to add more or remove (private) agents or public agents from your cluster, you can do so by telling terraform your desired state and it will make sure it gets you there. For example, if I have 2 private agents and 1 public agent in my `-var-file` I can always override that flag by specifying the `-var` flag. It has higher priority than the `-var-file`.
 
 ### Adding Agents
 
@@ -170,7 +170,7 @@ terraform apply \
 
 ## Redeploy an existing Master
 
-If you wanted to redeploy a problematic master (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle. 
+If you wanted to redeploy a problematic master (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle.
 
 **NOTE:** This only applies to DC/OS clusters that have set their `dcos_master_discovery` to `master_http_loadbalancer` and not `static`.
 
@@ -179,7 +179,7 @@ If you wanted to redeploy a problematic master (ie. storage filled up, not respo
 #### Taint Master Node
 
 ```bash
-terraform taint google_compute_instance.master.0 # The number represents the agent in the list 
+terraform taint google_compute_instance.master.0 # The number represents the agent in the list
 ```
 
 #### Redeploy Master Node
@@ -190,7 +190,7 @@ terraform apply -var-file desired_cluster_profile.tfvars
 
 ## Redeploy an existing Agent
 
-If you wanted to redeploy a problematic agent, (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle. 
+If you wanted to redeploy a problematic agent, (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle.
 
 
 ### Private Agents
@@ -198,7 +198,7 @@ If you wanted to redeploy a problematic agent, (ie. storage filled up, not respo
 #### Taint Private Agent
 
 ```bash
-terraform taint google_compute_instance.agent.0 # The number represents the agent in the list 
+terraform taint google_compute_instance.agent.0 # The number represents the agent in the list
 ```
 
 #### Redeploy Agent
@@ -213,7 +213,7 @@ terraform apply -var-file desired_cluster_profile.tfvars
 #### Taint Private Agent
 
 ```bash
-terraform taint google_compute_instance.public-agent.0 # The number represents the agent in the list 
+terraform taint google_compute_instance.public-agent.0 # The number represents the agent in the list
 ```
 
 #### Redeploy Agent
@@ -233,7 +233,7 @@ Coming soon!
 You can shutdown/destroy all resources from your environment by running this command below
 
 ```bash
-terraform destroy
+terraform destroy -var-file desired_cluster_profile.tfvars
 ```
 
   # Roadmaps
