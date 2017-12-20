@@ -42,7 +42,7 @@ resource "google_compute_instance" "agent" {
    machine_type = "${var.gcp_agent_instance_type}"
    zone         = "${data.google_compute_zones.available.names[0]}"
    count        = "${var.num_of_private_agents}"
- 
+
   labels {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
@@ -65,7 +65,7 @@ resource "google_compute_instance" "agent" {
     subnetwork = "${google_compute_subnetwork.private.name}"
     access_config {
     }
-  } 
+  }
 
   metadata {
     sshKeys = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}:${file(var.gce_ssh_pub_key_file)}"
@@ -100,13 +100,16 @@ resource "google_compute_instance" "agent" {
 module "dcos-mesos-agent" {
   source               = "github.com/bernadinm/tf_dcos_core"
   bootstrap_private_ip = "${google_compute_instance.bootstrap.network_interface.0.address}"
-  dcos_install_mode    = "${var.state}"
+  # Only allow upgrade and install as installation mode
+  dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"
   dcos_version         = "${var.dcos_version}"
   dcos_skip_checks     = "${var.dcos_skip_checks}"
   role                 = "dcos-mesos-agent"
 }
 
 resource "null_resource" "agent" {
+  # If state is set to none do not install DC/OS
+  count = "${var.state == "none" ? 0 : 1}"
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
