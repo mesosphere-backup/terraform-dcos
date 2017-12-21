@@ -6,7 +6,7 @@
 
 ### Install Terraform
 
-If you're on a mac environment with homebrew installed, run this command.
+If you're on a Mac environment with homebrew installed, run this command.
 
 ```bash
 brew install terraform
@@ -33,9 +33,9 @@ ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
 
 #### Configure your Azure ID Keys
 
-Follow the Terraform instructions [here](https://www.terraform.io/docs/providers/azurerm/#creating-credentials) to setup your Azure credentials to provide to terraform. 
+Follow the Terraform instructions [here](https://www.terraform.io/docs/providers/azurerm/#creating-credentials) to setup your Azure credentials to provide to terraform.
 
-When you've successfully retrieved your output of `az account list`, create a source file to easily run your credentials in the future. 
+When you've successfully retrieved your output of `az account list`, create a source file to easily run your credentials in the future.
 
 
 ```bash
@@ -58,7 +58,7 @@ $ source ~/.azure/credentials
 
 #### Pull down the DC/OS terraform scripts below
 
-There is a module called `dcos-tested-azure-oses` that contains all the tested scripts per operating system. The deployment strategy is based on a bare image coupled with a prereq `script.sh` to get it ready to install dcos-core components. Its simple to add other operating systems by adding the ami, region, and install scripts to meet the dcos specifications that can be found [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/) and [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/install-docker-centos/) as an example.
+There is a module called `dcos-tested-azure-oses` that contains all the tested scripts per operating system. The deployment strategy is based on a bare image coupled with a prereq `script.sh` to get it ready to install dcos-core components. Its simple to add other operating systems by adding the AMI, region, and install scripts to meet the dcos specifications that can be found [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/) and [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/install-docker-centos/) as an example.
 
 
 For CoreOS 1235.9.0:
@@ -92,7 +92,7 @@ This command below already has the flags on what I need to install such has:
 * Masters 3
 * Private Agents 2
 * Public Agents 1
-* SSH Public Key <Testing Pub Key> 
+* SSH Public Key <Testing Pub Key>
 
 ```bash
 terraform apply -var-file desired_cluster_profile
@@ -115,7 +115,7 @@ When reading the instructions below regarding installing and upgrading, you can 
 
 ## Installing DC/OS
 
-If you wanted to install a specific version of DC/OS you can either use the stable versions or early access. You can also pick and choose any version if you like when you're first starting out. On the section below, this will explain how you automate upgrades when you're ready along with changing what order you would like them upgraded. 
+If you wanted to install a specific version of DC/OS you can either use the stable versions or early access. You can also pick and choose any version if you like when you're first starting out. On the section below, this will explain how you automate upgrades when you're ready along with changing what order you would like them upgraded.
 
 ### DC/OS Stable (1.10.0)
 ```bash
@@ -131,9 +131,9 @@ terraform apply
 
 #### Recommended Configuration
 
-You can modify all the DC/OS config.yaml flags via terraform. Here is an example of using the master_http_loadbalancer for cloud deployments. **master_http_loadbalancer is recommended for production**. You will be able to replace your masters in a multi master environment. Using the default static backend will not give you this option. 
+You can modify all the DC/OS config.yaml flags via terraform. Here is an example of using the master_http_loadbalancer for cloud deployments. **master_http_loadbalancer is recommended for production**. You will be able to replace your masters in a multi master environment. Using the default static backend will not give you this option.
 
-Here is an example default profile that will allow you to do this. 
+Here is an example default profile that will allow you to do this.
 
 ```bash
 $ cat desired_cluster_profile
@@ -147,9 +147,9 @@ dcos_exhibitor_storage_backend = "azure"
 ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
 ```
 
-**NOTE:** This will append your exhibitor_azure_account_name, exhibitor_azure_account_key and exhibitor_azure_prefix key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the azure storage backend. 
+**NOTE:** This will append your exhibitor_azure_account_name, exhibitor_azure_account_key and exhibitor_azure_prefix key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the azure storage backend.
 
-#### Advance YAML Configuration 
+#### Advance YAML Configuration
 
 Here are the YAML flags examples where you can simply paste your YAML configuration in your desired_cluster_profile. The alternative to YAML is to convert it to JSON.  
 
@@ -190,7 +190,7 @@ dcos_rexray_config = <<EOF
         ignoreusedcount: true
 EOF
 dcos_cluster_docker_credentials = <<EOF
-# YAML 
+# YAML
   auths:
     'https://index.docker.io/v1/':
       auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
@@ -207,11 +207,11 @@ You can upgrade your DC/OS cluster with a single command. This terraform script 
 
 **Important**: DC/OS will is not designed to upgrade directly from disabled to strict. Please be responsible when using automation tools.
 
-This command below will upgrade your masters and agents one at a time. It takes roughly 5 minutes per node, so depending on how many nodes, you may want to consider changing your parallelism to change the speed of your upgrade. 
+This command below will upgrade your masters and agents one at a time. It takes roughly 5 minutes per node, so depending on how many nodes, you may want to consider changing your parallelism to change the speed of your upgrade.
 
 **Prioritise Master Upgrades First**
 
-If you take this route, you can use a few more commands but this will allow you upgrade your master nodes first, one at a time, then upgrade the agents simuanioustly with the next. Terraforms parallel algorithm will walk the graph in any order. It may do one agent first, a master second, etc. You would need to target your master resource so you can upgrade the masters first then change the parallelism back to any number for the agents. 
+If you take this route, you can use a few more commands but this will allow you upgrade your master nodes first, one at a time, then upgrade the agents simuanioustly with the next. Terraforms parallel algorithm will walk the graph in any order. It may do one agent first, a master second, etc. You would need to target your master resource so you can upgrade the masters first then change the parallelism back to any number for the agents.
 
 **Master upgrade sequentially one at a time**
 ```bash
@@ -232,7 +232,7 @@ terraform apply \
 --var state=upgrade \
 --var dcos_security=disabled
   ```
-  
+
   *NOTE: the default for parallelism is 10. You can change this value to control how many nodes you want upgraded at any given time*
 
 
@@ -295,7 +295,7 @@ terraform apply \
 
 ## Maintenance
 
-If you would like to add more or remove (private) agents or public agents from your cluster, you can do so by telling terraform your desired state and it will make sure it gets you there. For example, if I have 2 private agents and 1 public agent in my `-var-file` I can always override that flag by specifying the `-var` flag. It has higher priority than the `-var-file`. 
+If you would like to add more or remove (private) agents or public agents from your cluster, you can do so by telling terraform your desired state and it will make sure it gets you there. For example, if I have 2 private agents and 1 public agent in my `-var-file` I can always override that flag by specifying the `-var` flag. It has higher priority than the `-var-file`.
 
 ### Adding Agents
 
@@ -319,7 +319,7 @@ terraform apply \
 
 ## Redeploy an existing Master
 
-If you wanted to redeploy a problematic master (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle. 
+If you wanted to redeploy a problematic master (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle.
 
 **NOTE:** This only applies to DC/OS clusters that have set their `dcos_master_discovery` to `master_http_loadbalancer` and not `static`.
 
@@ -328,7 +328,7 @@ If you wanted to redeploy a problematic master (ie. storage filled up, not respo
 #### Taint Master Node
 
 ```bash
-terraform taint azurerm_virtual_machine.master.0 # The number represents the agent in the list 
+terraform taint azurerm_virtual_machine.master.0 # The number represents the agent in the list
 ```
 
 #### Redeploy Master Node
@@ -339,7 +339,7 @@ terraform apply -var-file desired_cluster_profile
 
 ## Redeploy an existing Agent
 
-If you wanted to redeploy a problematic agent, (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle. 
+If you wanted to redeploy a problematic agent, (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle.
 
 
 ### Private Agents
@@ -347,7 +347,7 @@ If you wanted to redeploy a problematic agent, (ie. storage filled up, not respo
 #### Taint Private Agent
 
 ```bash
-terraform taint azurerm_virtual_machine.agent.0 # The number represents the agent in the list 
+terraform taint azurerm_virtual_machine.agent.0 # The number represents the agent in the list
 ```
 
 #### Redeploy Agent
@@ -362,7 +362,7 @@ terraform apply -var-file desired_cluster_profile
 #### Taint Private Agent
 
 ```bash
-terraform taint azurerm_virtual_machine.public-agent.0 # The number represents the agent in the list 
+terraform taint azurerm_virtual_machine.public-agent.0 # The number represents the agent in the list
 ```
 
 #### Redeploy Agent
@@ -382,7 +382,7 @@ Coming soon!
 You can shutdown/destroy all resources from your environment by running this command below
 
 ```bash
-terraform destroy
+terraform destroy -var-file desired_cluster_profile
 ```
 
   # Roadmaps
@@ -397,4 +397,4 @@ terraform destroy
   - [X] Secondary support for specific versions of Centos
   - [X] Support for RHEL
   - [X] Secondary support for specific versions of RHEL
-  - [X] Multi AZ support via Availibility Sets
+  - [X] Multi AZ support via Availability Sets
