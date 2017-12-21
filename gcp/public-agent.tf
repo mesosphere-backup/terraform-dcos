@@ -1,8 +1,23 @@
-resource "google_compute_forwarding_rule" "external-public-agent-forwarding-rule" {
-  name   = "${data.template_file.cluster-name.rendered}-public-agent-external-lb-forwarding-rule"
+# Reserving the Public IP Address of the External Load Balancer for the Public Agent
+resource "google_compute_address" "public-agent" {
+  name = "external-dcos-public-agent-address"
+}
+
+resource "google_compute_forwarding_rule" "external-public-agent-forwarding-rule-http" {
+  name   = "${data.template_file.cluster-name.rendered}-public-agent-external-lb-forwarding-rule-http"
   load_balancing_scheme = "EXTERNAL"
   target = "${google_compute_target_pool.public-agent-pool.self_link}"
   port_range = "80"
+  ip_address = "${google_compute_address.public-agent.address}"
+  depends_on = ["google_compute_http_health_check.public-agent-adminrouter-healthcheck"]
+}
+
+resource "google_compute_forwarding_rule" "external-public-agent-forwarding-rule-https" {
+  name   = "${data.template_file.cluster-name.rendered}-public-agent-external-lb-forwarding-rule-https"
+  load_balancing_scheme = "EXTERNAL"
+  target = "${google_compute_target_pool.public-agent-pool.self_link}"
+  port_range = "443"
+  ip_address = "${google_compute_address.public-agent.address}"
   depends_on = ["google_compute_http_health_check.public-agent-adminrouter-healthcheck"]
 }
 
@@ -179,7 +194,7 @@ resource "null_resource" "public-agent" {
 }
 
 output "Public Agent ELB Address" {
-  value = "${google_compute_forwarding_rule.external-public-agent-forwarding-rule.ip_address}"
+  value = "${google_compute_forwarding_rule.external-public-agent-forwarding-rule-http.ip_address}"
 }
 
 output "Mesos Public Agent Public IP" {
