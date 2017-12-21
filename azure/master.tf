@@ -419,7 +419,7 @@ resource "azurerm_virtual_machine" "master" {
     ssh_keys {
         path     = "/home/${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}/.ssh/authorized_keys"
         key_data = "${var.ssh_pub_key}"
-    }    
+    }
   }
 
   # OS init script
@@ -460,12 +460,15 @@ resource "azurerm_virtual_machine" "master" {
 module "dcos-mesos-master" {
   source               = "github.com/bernadinm/tf_dcos_core"
   bootstrap_private_ip = "${azurerm_network_interface.bootstrap_nic.private_ip_address}"
-  dcos_install_mode    = "${var.state}"
+  # Only allow upgrade and install as installation mode
+  dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"
   dcos_version         = "${var.dcos_version}"
   role                 = "dcos-mesos-master"
 }
 
 resource "null_resource" "master" {
+  # If state is set to none do not install DC/OS
+  count = "${var.state == "none" ? 0 : 1}"
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
@@ -479,7 +482,7 @@ resource "null_resource" "master" {
   }
 
   count = "${var.num_of_masters}"
-  
+
   # Generate and upload Master script to node
   provisioner "file" {
     content     = "${module.dcos-mesos-master.script}"
