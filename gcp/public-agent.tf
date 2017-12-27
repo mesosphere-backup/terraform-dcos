@@ -77,7 +77,7 @@ resource "google_compute_instance" "public-agent" {
    machine_type = "${var.gcp_public_agent_instance_type}"
    zone         = "${data.google_compute_zones.available.names[0]}"
    count        = "${var.num_of_public_agents}"
- 
+
   labels {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
@@ -100,7 +100,7 @@ resource "google_compute_instance" "public-agent" {
     subnetwork = "${google_compute_subnetwork.public.name}"
     access_config {
     }
-  } 
+  }
 
   metadata {
     sshKeys = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}:${file(var.gce_ssh_pub_key_file)}"
@@ -124,6 +124,11 @@ resource "google_compute_instance" "public-agent" {
 
   lifecycle {
     ignore_changes = ["labels.Name", "labels.cluster"]
+  }
+
+  scheduling  {
+    preemptible = "${var.gcp_scheduling_preemptible}"
+    automatic_restart = "${var.gcp_scheduling_preemptible == "true" ? false : true}"
   }
 
   service_account {

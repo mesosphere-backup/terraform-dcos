@@ -5,7 +5,7 @@ resource "google_compute_firewall" "master-internal" {
         protocol = "tcp"
         ports = ["5050", "2181", "8181", "8080"]
     }
-    
+
     source_ranges = ["10.0.0.0/8"]
 }
 
@@ -15,7 +15,7 @@ resource "google_compute_firewall" "allow-health-checks" {
     allow {
         protocol = "tcp"
     }
-    
+
     # The health check probes to your load balanced instances come from addresses in range 130.211.0.0/22 and 35.191.0.0/16.
     source_ranges = ["130.211.0.0/22", "35.191.0.0/16"]
 }
@@ -85,7 +85,7 @@ resource "google_compute_http_health_check" "master-adminrouter-healthcheck" {
   port                = "80"
 }
 
- 
+
 
 # Provide tested AMI and user from listed region startup commands
 module "dcos-tested-gcp-oses" {
@@ -145,7 +145,7 @@ resource "google_compute_instance" "master" {
    machine_type = "${var.gcp_master_instance_type}"
    zone         = "${data.google_compute_zones.available.names[0]}"
    count        = "${var.num_of_masters}"
- 
+
   labels {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
@@ -168,7 +168,7 @@ resource "google_compute_instance" "master" {
     subnetwork = "${google_compute_subnetwork.public.name}"
     access_config {
     }
-  } 
+  }
 
   metadata {
     sshKeys = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}:${file(var.gce_ssh_pub_key_file)}"
@@ -192,6 +192,11 @@ resource "google_compute_instance" "master" {
 
   lifecycle {
     ignore_changes = ["labels.Name", "labels.cluster"]
+  }
+
+  scheduling  {
+    preemptible = "${var.gcp_scheduling_preemptible}"
+    automatic_restart = "${var.gcp_scheduling_preemptible == "true" ? false : true}"
   }
 
   service_account {
