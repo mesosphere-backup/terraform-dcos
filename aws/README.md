@@ -6,7 +6,7 @@
 
 ### Install Terraform
 
-If you're on a mac environment with homebrew installed, run this command.
+If you're on a Mac environment with homebrew installed, run this command.
 
 ```bash
 brew install terraform
@@ -27,7 +27,7 @@ ssh-add ~/.ssh/path_to_you_key.pem
 ```
 **Configure your IAM AWS Keys**
 
-You will need your AWS aws_access_key_id and aws_secret_access_key. If you dont have one yet, you can get them from the AWS documentation [here](
+You will need your AWS aws_access_key_id and aws_secret_access_key. If you don't have one yet, you can get them from the AWS documentation [here](
 http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). When you finally get them, you can install it in your home directory. The default location is `$HOME/.aws/credentials` on Linux and OS X, or `"%USERPROFILE%\.aws\credentials"` for Windows users.
 
 Here is an example of the output when you're done:
@@ -43,7 +43,7 @@ aws_secret_access_key = /R8SHF+SHFJaerSKE83awf4ASyrF83sa471DHSEXAMPLE
 
 **Pull down the DC/OS terraform scripts below**
 
-There is a module called `dcos-tested-aws-oses` that contains all the tested scripts per operating system. The deployment strategy is a base AMI coupled with a prereq `script.sh` to get it ready to install dcos-core components. Its simple to add other operating systems by adding the ami, region, and install scripts to meet the dcos specifications that can be found [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/) and [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/install-docker-centos/) as an example.
+There is a module called `dcos-tested-aws-oses` that contains all the tested scripts per operating system. The deployment strategy is a base AMI coupled with a prereq `script.sh` to get it ready to install dcos-core components. Its simple to add other operating systems by adding the AMI, region, and install scripts to meet the dcos specifications that can be found [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/) and [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/install-docker-centos/) as an example.
 
 
 For CoreOS 1235.9.0:
@@ -135,7 +135,7 @@ dcos_exhibitor_storage_backend = "aws_s3"
 dcos_exhibitor_explicit_keys = "true"
 ```
 
-**NOTE:** This will append your aws_access_key_id and aws_secret_access_key key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the aws_s3 bucket.
+**NOTE:** This will append your aws_access_key_id and aws_secret_access_key key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the AWS S3 bucket.
 
 ## Upgrading DC/OS
 
@@ -182,7 +182,7 @@ terraform apply \
 
   #### Upgrading DC/OS 1.8 Disabled to DC/OS 1.8 Permissive
 
-  On DC/OS 1.8 clusters, testing shows that you can actually upgrade the masters simultaneously from DC/OS 1.8 and 1.9, (not 1.7). So going forward, we can drop the `--parallelism=1` entirely. If this changes on a new version, I will be sure to call this out. To go from DC/OS 1.8 Disbaled to DC/OS 1.8 Permissive, you can upgrade by running this command below. Notice the `state` is still upgrade, because we're still doing an inplace upgrade to the same version. This allows you to make DC/OS cluster-wide changes on your cluster.
+  On DC/OS 1.8 clusters, testing shows that you can actually upgrade the masters simultaneously from DC/OS 1.8 and 1.9, (not 1.7). So going forward, we can drop the `--parallelism=1` entirely. If this changes on a new version, I will be sure to call this out. To go from DC/OS 1.8 Disabled to DC/OS 1.8 Permissive, you can upgrade by running this command below. Notice the `state` is still upgrade, because we're still doing an in-place upgrade to the same version. This allows you to make DC/OS cluster-wide changes on your cluster.
 
   ```bash
   terraform apply \
@@ -340,7 +340,7 @@ terraform apply -var-file desired_cluster_profile
 You can shutdown/destroy all resources from your environment by running this command below
 
 ```bash
-terraform destroy
+terraform destroy -var-file desired_cluster_profile
 ```
 
   # Roadmaps

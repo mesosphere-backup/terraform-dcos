@@ -51,7 +51,7 @@ We've provided all the sensible defaults that you would want to play around with
 - There is no git clone of this repo required. Terraform does this for you under the hood.
 
 ```bash
-terraform init -from-module github.com/dcos/terraform-dcos/gcp
+terraform init -from-module github.com/dcos/terraform-dcos//gcp
 terraform apply -var google_project="your_existing_project"
 ```
 

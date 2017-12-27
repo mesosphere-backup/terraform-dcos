@@ -22,22 +22,22 @@ variable "gce_ssh_user" {
 }
 
 variable "gcp_master_instance_type" {
- default = "n1-highmem-4"
+ default = "n1-standard-4"
  description = "Default Master instance size for GCP."
 }
 
 variable "gcp_agent_instance_type" {
- default = "n1-highmem-2"
+ default = "n1-standard-4"
  description = "Default Private Agent instance size for GCP."
 }
 
 variable "gcp_public_agent_instance_type" {
- default = "n1-highmem-2"
+ default = "n1-standard-4"
  description = "Default Public Agent instance size for GCP."
 }
 
 variable "gcp_bootstrap_instance_type" {
- default = "n1-highmem-2"
+ default = "n1-standard-2"
  description = "Default Bootstrap instance size for GCP."
 }
 
