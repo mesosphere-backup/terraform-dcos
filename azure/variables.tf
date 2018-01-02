@@ -112,6 +112,11 @@ variable "dcos_oauth_enabled" {
  description = "DC/OS Open Flag for Open Auth"
 }
 
+variable "dcos_master_external_loadbalancer" {
+ default = ""
+ description = "Used to allow DC/OS to set any required certs. Used for DC/OS EE."
+}
+
 variable "dcos_master_discovery" {
  default = "static"
  description = "Ability to use an ELB or a static list for master descovery"
