@@ -103,6 +103,7 @@ module "dcos-bootstrap" {
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
     dcos_log_directory = "${var.dcos_log_directory}"
+    dcos_master_external_loadbalancer = "${var.dcos_master_external_loadbalancer}"
     dcos_master_discovery = "${var.dcos_master_discovery}"
     dcos_master_dns_bindall = "${var.dcos_master_dns_bindall}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
@@ -181,6 +182,7 @@ resource "null_resource" "bootstrap" {
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
     dcos_log_directory = "${var.dcos_log_directory}"
+    dcos_master_external_loadbalancer = "${var.dcos_master_external_loadbalancer}"
     dcos_master_discovery = "${var.dcos_master_discovery}"
     dcos_master_dns_bindall = "${var.dcos_master_dns_bindall}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
