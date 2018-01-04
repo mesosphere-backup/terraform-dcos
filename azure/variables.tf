@@ -4,8 +4,8 @@ variable "ssh_pub_key" {
 }
 
 variable "azure_admin_username" {
-  description = "Username of the OS"
-  default = "core"
+  description = "Username of the OS. (Defaults can be found here modules/dcos-tested-azure-oses/azure_template_file.tf)"
+  default = ""
 }
 
 variable "azure_region" {
@@ -103,13 +103,18 @@ variable "dcos_security" {
 }
 
 variable "dcos_resolvers" {
- default = [ "8.8.8.8", "8.8.4.4" ]
- description = "DNS Resolver for external name resolution"
+ default = [ "168.63.129.16" ]
+ description = "DNS Resolver for internal name resolution. The Azure DNS server will resolve any external names also."
 }
 
 variable "dcos_oauth_enabled" {
  default = ""
  description = "DC/OS Open Flag for Open Auth"
+}
+
+variable "dcos_master_external_loadbalancer" {
+ default = ""
+ description = "Used to allow DC/OS to set any required certs. Used for DC/OS EE."
 }
 
 variable "dcos_master_discovery" {

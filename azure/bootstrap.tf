@@ -251,9 +251,10 @@ resource "azurerm_virtual_machine" "bootstrap" {
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
     dcos_log_directory = "${var.dcos_log_directory}"
+    dcos_master_external_loadbalancer = "${coalesce(var.dcos_master_external_loadbalancer, azurerm_public_ip.master_load_balancer_public_ip.fqdn)}"
     dcos_master_discovery = "${var.dcos_master_discovery}"
     dcos_master_dns_bindall = "${var.dcos_master_dns_bindall}"
-    # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings. 
+    # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
     # Workaround is to flatten the list as a string below. Fix when this is closed.
     dcos_master_list = "\n - ${join("\n - ", azurerm_network_interface.master_nic.*.private_ip_address)}"
     dcos_no_proxy = "${var.dcos_no_proxy}"
@@ -329,6 +330,7 @@ resource "null_resource" "bootstrap" {
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
     dcos_log_directory = "${var.dcos_log_directory}"
+    dcos_master_external_loadbalancer = "${coalesce(var.dcos_master_external_loadbalancer, azurerm_public_ip.master_load_balancer_public_ip.fqdn)}"
     dcos_master_discovery = "${var.dcos_master_discovery}"
     dcos_master_dns_bindall = "${var.dcos_master_dns_bindall}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
