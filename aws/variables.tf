@@ -33,9 +33,19 @@ variable "aws_master_instance_type" {
   default = "m3.xlarge"
 }
 
+variable "aws_master_instance_disk_size" {
+  description = "AWS DC/OS Master instance type default size of the root disk (GB)"
+  default = "60"
+}
+
 variable "aws_agent_instance_type" {
   description = "AWS DC/OS Private Agent instance type"
   default = "m3.xlarge"
+}
+
+variable "aws_agent_instance_disk_size" {
+  description = "AWS DC/OS Private Agent instance type default size of the root disk (GB)"
+  default = "60"
 }
 
 variable "aws_public_agent_instance_type" {
@@ -43,9 +53,19 @@ variable "aws_public_agent_instance_type" {
   default = "m3.xlarge"
 }
 
+variable "aws_public_agent_instance_disk_size" {
+  description = "AWS DC/OS Public instance type default size of the root disk (GB)"
+  default = "60"
+}
+
 variable "aws_bootstrap_instance_type" {
   description = "AWS DC/OS Bootstrap instance type"
   default = "m3.large"
+}
+
+variable "aws_bootstrap_instance_disk_size" {
+  description = "AWS DC/OS bootstrap instance type default size of the root disk (GB)"
+  default = "60"
 }
 
 variable "num_of_private_agents" {
@@ -113,13 +133,18 @@ variable "dcos_security" {
 }
 
 variable "dcos_resolvers" {
- default = [ "8.8.8.8", "8.8.4.4" ]
- description = "DNS Resolver for external name resolution"
+ default = [ "169.254.169.253" ]
+ description = "DNS Resolver for internal name resolution. Points to Amazon DNS server which can resolve external addresses."
 }
 
 variable "dcos_oauth_enabled" {
  default = ""
  description = "DC/OS Open Flag for Open Auth"
+}
+
+variable "dcos_master_external_loadbalancer" {
+ default = ""
+ description = "Used to allow DC/OS to set any required certs. Used for DC/OS EE."
 }
 
 variable "dcos_master_discovery" {
@@ -381,7 +406,7 @@ variable "dcos_previous_version" {
 }
 
 variable "dcos_version" {
- default = "1.10.0"
+ default = "1.10.2"
  description = "DCOS Version"
 }
 
