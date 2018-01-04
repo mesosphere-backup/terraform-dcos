@@ -3,7 +3,7 @@ resource "google_compute_instance" "bootstrap" {
    name         = "${data.template_file.cluster-name.rendered}-bootstrap"
    machine_type = "${var.gcp_bootstrap_instance_type}"
    zone         = "${data.google_compute_zones.available.names[0]}"
-
+ 
   labels {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
    expiration = "${var.expiration}"
@@ -22,7 +22,7 @@ resource "google_compute_instance" "bootstrap" {
     subnetwork = "${google_compute_subnetwork.private.name}"
     access_config {
     }
-  }
+  } 
 
   metadata {
     sshKeys = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}:${file(var.gce_ssh_pub_key_file)}"
@@ -103,6 +103,7 @@ module "dcos-bootstrap" {
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
     dcos_log_directory = "${var.dcos_log_directory}"
+    dcos_master_external_loadbalancer = "${var.dcos_master_external_loadbalancer}"
     dcos_master_discovery = "${var.dcos_master_discovery}"
     dcos_master_dns_bindall = "${var.dcos_master_dns_bindall}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
@@ -181,6 +182,7 @@ resource "null_resource" "bootstrap" {
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
     dcos_log_directory = "${var.dcos_log_directory}"
+    dcos_master_external_loadbalancer = "${var.dcos_master_external_loadbalancer}"
     dcos_master_discovery = "${var.dcos_master_discovery}"
     dcos_master_dns_bindall = "${var.dcos_master_dns_bindall}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.

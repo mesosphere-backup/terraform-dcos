@@ -22,23 +22,23 @@ variable "gce_ssh_user" {
 }
 
 variable "gcp_master_instance_type" {
- default = "n1-highmem-4"
- description = "Default Master instance size for gcp."
+ default = "n1-standard-4"
+ description = "Default Master instance size for GCP."
 }
 
 variable "gcp_agent_instance_type" {
- default = "n1-highmem-2"
- description = "Default Master instance size for gcp."
+ default = "n1-standard-4"
+ description = "Default Private Agent instance size for GCP."
 }
 
 variable "gcp_public_agent_instance_type" {
- default = "n1-highmem-2"
- description = "Default Public Agent instance size for gcp."
+ default = "n1-standard-4"
+ description = "Default Public Agent instance size for GCP."
 }
 
 variable "gcp_bootstrap_instance_type" {
- default = "n1-highmem-2"
- description = "Default Bootstrap instance size for gcp."
+ default = "n1-standard-2"
+ description = "Default Bootstrap instance size for GCP."
 }
 
 variable "os" {
@@ -123,6 +123,11 @@ variable "dcos_resolvers" {
 variable "dcos_oauth_enabled" {
  default = ""
  description = "DC/OS Open Flag for Open Auth"
+}
+
+variable "dcos_master_external_loadbalancer" {
+ default = ""
+ description = "Used to allow DC/OS to set any required certs. Used for DC/OS EE."
 }
 
 variable "dcos_master_discovery" {
