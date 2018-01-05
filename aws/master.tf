@@ -171,12 +171,15 @@ resource "aws_instance" "master" {
 module "dcos-mesos-master" {
   source               = "github.com/bernadinm/tf_dcos_core"
   bootstrap_private_ip = "${aws_instance.bootstrap.private_ip}"
-  dcos_install_mode    = "${var.state}"
+  # Only allow upgrade and install as installation mode
+  dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"
   dcos_version         = "${var.dcos_version}"
   role                 = "dcos-mesos-master"
 }
 
 resource "null_resource" "master" {
+  # If state is set to none do not install DC/OS
+  count = "${var.state == "none" ? 0 : 1}"
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"

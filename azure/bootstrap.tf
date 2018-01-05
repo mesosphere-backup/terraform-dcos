@@ -169,7 +169,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
     ssh_keys {
         path     = "/home/${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}/.ssh/authorized_keys"
         key_data = "${var.ssh_pub_key}"
-    }    
+    }
   }
 
   # OS init script
@@ -210,14 +210,15 @@ resource "azurerm_virtual_machine" "bootstrap" {
   module "dcos-bootstrap" {
     source  = "github.com/bernadinm/tf_dcos_core"
     bootstrap_private_ip = "${azurerm_network_interface.bootstrap_nic.private_ip_address}"
-    dcos_install_mode = "${var.state}"
+    # Only allow upgrade and install as installation mode
+    dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"
     dcos_version = "${var.dcos_version}"
     role = "dcos-bootstrap"
     dcos_bootstrap_port = "${var.custom_dcos_bootstrap_port}"
     custom_dcos_download_path = "${var.custom_dcos_download_path}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
     # Workaround is to flatten the list as a string below. Fix when this is closed.
-    dcos_public_agent_list = "\n - ${join("\n - ", azurerm_network_interface.public_agent_nic.*.private_ip_address)}" 
+    dcos_public_agent_list = "\n - ${join("\n - ", azurerm_network_interface.public_agent_nic.*.private_ip_address)}"
     dcos_audit_logging = "${var.dcos_audit_logging}"
     dcos_auth_cookie_secure_flag = "${var.dcos_auth_cookie_secure_flag}"
     dcos_aws_access_key_id = "${var.dcos_aws_access_key_id}"
@@ -254,7 +255,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
     dcos_master_external_loadbalancer = "${coalesce(var.dcos_master_external_loadbalancer, azurerm_public_ip.master_load_balancer_public_ip.fqdn)}"
     dcos_master_discovery = "${var.dcos_master_discovery}"
     dcos_master_dns_bindall = "${var.dcos_master_dns_bindall}"
-    # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings. 
+    # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
     # Workaround is to flatten the list as a string below. Fix when this is closed.
     dcos_master_list = "\n - ${join("\n - ", azurerm_network_interface.master_nic.*.private_ip_address)}"
     dcos_no_proxy = "${var.dcos_no_proxy}"
@@ -281,7 +282,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
     dcos_use_proxy = "${var.dcos_use_proxy}"
     dcos_zk_agent_credentials = "${var.dcos_zk_agent_credentials}"
     dcos_zk_master_credentials = "${var.dcos_zk_master_credentials}"
-    dcos_zk_super_credentials = "${var.dcos_zk_super_credentials}"    
+    dcos_zk_super_credentials = "${var.dcos_zk_super_credentials}"
     dcos_cluster_docker_registry_url = "${var.dcos_cluster_docker_registry_url}"
     dcos_rexray_config = "${var.dcos_rexray_config}"
     dcos_ip_detect_public_contents = "${var.dcos_ip_detect_public_contents}"
@@ -291,6 +292,8 @@ resource "azurerm_virtual_machine" "bootstrap" {
  }
 
 resource "null_resource" "bootstrap" {
+  # If state is set to none do not install DC/OS
+  count = "${var.state == "none" ? 0 : 1}"
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${azurerm_virtual_machine.bootstrap.id}"
