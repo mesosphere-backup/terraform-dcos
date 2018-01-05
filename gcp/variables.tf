@@ -41,6 +41,11 @@ variable "gcp_bootstrap_instance_type" {
  description = "Default Bootstrap instance size for GCP."
 }
 
+variable "gcp_scheduling_preemptible" {
+  default = "false"
+  description = "Instance scheduling as preemptible is disabled by default"
+}
+
 variable "os" {
   default = "coreos_1235.9.0"
   description = "Recommended DC/OS OSs are centos_7.2, coreos_1235.9.0, coreos_835.13.0"
@@ -132,7 +137,7 @@ variable "dcos_master_external_loadbalancer" {
 
 variable "dcos_master_discovery" {
  default = "static"
- description = "Ability to use an ELB or a static list for master descovery"
+ description = "Ability to use an ELB or a static list for master discovery"
 }
 
 variable "dcos_aws_template_storage_bucket" {
