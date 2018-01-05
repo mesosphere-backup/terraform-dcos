@@ -23,7 +23,7 @@ variable "google_compute_subnetwork_private" {
 
 variable "gce_ssh_pub_key_file" {
  default = "~/.ssh/key.pub"
- description = "Your ssh public key to log into your the openvpn server"
+ description = "Your ssh public key to log into your the DC/OS cluster"
 }
 
 variable "gce_ssh_user" {
