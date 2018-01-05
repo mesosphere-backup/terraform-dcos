@@ -30,7 +30,7 @@ provider "google" {
 }
 
 data "google_compute_zones" "available" {}
- 
+
  # Create google network
 resource "google_compute_network" "default" {
    name                    = "${data.template_file.cluster-name.rendered}-dcos-network"
@@ -38,21 +38,21 @@ resource "google_compute_network" "default" {
 }
 
 resource "google_compute_subnetwork" "public" {
-    name          = "public"
-    ip_cidr_range = "10.64.0.0/22"
+    name          = "${data.template_file.cluster-name.rendered}-public"
+    ip_cidr_range = "${var.google_compute_subnetwork_public}"
     network       = "${google_compute_network.default.self_link}"
     region        = "${var.google_region}"
 }
 
 resource "google_compute_subnetwork" "private" {
-    name          = "internal"
-    ip_cidr_range = "10.64.4.0/22"
+    name          = "${data.template_file.cluster-name.rendered}-internal"
+    ip_cidr_range = "${var.google_compute_subnetwork_private}"
     network       = "${google_compute_network.default.self_link}"
     region        = "${var.google_region}"
 }
- 
+
 resource "google_compute_firewall" "internal-any-any" {
-    name = "internal-any-any-access"
+    name = "${data.template_file.cluster-name.rendered}-internal-any-any"
     network = "${google_compute_network.default.name}"
 
     allow {
@@ -72,7 +72,7 @@ resource "google_compute_firewall" "internal-any-any" {
 }
 
 resource "google_compute_firewall" "adminrouter" {
-    name = "adminrouter-firewall"
+    name = "${data.template_file.cluster-name.rendered}-adminrouter-firewall"
     network = "${google_compute_network.default.name}"
     allow {
         protocol = "tcp"
@@ -84,7 +84,7 @@ resource "google_compute_firewall" "adminrouter" {
 }
 
 resource "google_compute_firewall" "ssh" {
-    name = "ssh"
+    name = "${data.template_file.cluster-name.rendered}-ssh"
     network = "${google_compute_network.default.name}"
     allow {
         protocol = "tcp"
