@@ -52,6 +52,11 @@ resource "google_compute_instance" "bootstrap" {
     ignore_changes = ["labels.Name", "labels.cluster"]
   }
 
+  scheduling {
+    preemptible = "${var.gcp_scheduling_preemptible}"
+    automatic_restart = "${var.gcp_scheduling_preemptible == "true" ? false : true}"
+  }
+
   service_account {
       scopes = ["https://www.googleapis.com/auth/compute.readonly"]
   }

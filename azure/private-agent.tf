@@ -204,7 +204,7 @@ module "dcos-mesos-agent" {
 
 resource "null_resource" "agent" {
   # If state is set to none do not install DC/OS
-  count = "${var.state == "none" ? 0 : 1}"
+  count = "${var.state == "none" ? 0 : var.num_of_private_agents}"
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
