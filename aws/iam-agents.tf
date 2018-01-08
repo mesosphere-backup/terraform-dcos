@@ -78,11 +78,3 @@ resource "aws_iam_role_policy" "agent" {
 }
 EOF
 }
-
-resource "null_resource" "dummy_dependency" {
-  depends_on = [
-    "aws_iam_role.agent",
-    "aws_iam_role_policy.agent",
-    "aws_iam_instance_profile.agent",
-  ]
-}
