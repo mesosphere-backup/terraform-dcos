@@ -27,7 +27,7 @@ resource "aws_instance" "bootstrap" {
   ami = "${module.aws-tested-oses.aws_ami}"
 
   # The name of our SSH keypair we created above.
-  key_name = "${var.key_name}"
+  key_name = "${var.ssh_key_name}"
 
   # Our Security group to allow http and SSH access
   vpc_security_group_ids = ["${aws_security_group.master.id}","${aws_security_group.admin.id}"]
