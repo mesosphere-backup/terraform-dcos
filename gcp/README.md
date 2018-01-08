@@ -28,7 +28,7 @@ $ ssh-add ~/.ssh/your_private_key.pem
 
 ```bash
 $ cat desired_cluster_profile.tfvars
-gce_ssh_pub_key_file = "INSERT_PUBLIC_KEY_PATH_HERE"
+gcp_ssh_pub_key_file = "INSERT_PUBLIC_KEY_PATH_HERE"
 ...
 ```
 
@@ -38,7 +38,7 @@ Currently terraform-dcos assumes a project already exist in GCP to start deployi
 
 ```bash
 $ cat desired_cluster_profile.tfvars
-google_project = "massive-bliss-781"
+gcp_project = "massive-bliss-781"
 ...
 ```
 
@@ -52,7 +52,7 @@ We've provided all the sensible defaults that you would want to play around with
 
 ```bash
 terraform init -from-module github.com/dcos/terraform-dcos//gcp
-terraform apply -var google_project="your_existing_project"
+terraform apply -var gcp_project="your_existing_project"
 ```
 
 ### Custom terraform-dcos variables
@@ -117,7 +117,7 @@ dcos_cluster_docker_credentials = <<EOF
     'https://index.docker.io/v1/':
       auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
 EOF
-gce_ssh_pub_key_file = "INSERT_PUBLIC_KEY_PATH_HERE"
+gcp_ssh_pub_key_file = "INSERT_PUBLIC_KEY_PATH_HERE"
 ```
 _Note: The YAML comment is required for the DC/OS specific YAML settings._
 

@@ -1,8 +1,8 @@
-variable "google_project" {
+variable "gcp_project" {
  default = "massive-bliss-781"
 }
 
-variable "google_region" {
+variable "gcp_region" {
  default = "us-west1"
 }
 
@@ -21,12 +21,12 @@ variable "google_compute_subnetwork_private" {
   description = "Google compute private subnetwork"
 }
 
-variable "gce_ssh_pub_key_file" {
+variable "gcp_ssh_pub_key_file" {
  default = "~/.ssh/key.pub"
  description = "Your ssh public key to log into your the DC/OS cluster"
 }
 
-variable "gce_ssh_user" {
+variable "gcp_ssh_user" {
  default = ""
  description = "The ssh username used to log into the server"
 }
