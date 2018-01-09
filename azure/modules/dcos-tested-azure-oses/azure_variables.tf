@@ -16,10 +16,10 @@ variable "azure_os_image_version" {
  # Azure Cloud Image Schema # Offer  / Publisher / SKU  / Version
  #                              V          V        V         V
  default = {
-  "centos_7.2_West US"        = ["CentOS","OpenLogic","7.2","7.2.20170517"]
-  "centos_7.3_West US"        = ["CentOS","OpenLogic","7.3","7.3.20170707"]
-  "coreos_835.13.0_West US"   = ["CoreOS", "CoreOS", "Stable", "835.13.0"]
-  "coreos_1235.9.0_West US"   = ["CoreOS", "CoreOS", "Stable", "1235.9.0"]
-  "rhel_7.3_West US"          = ["RHEL", "RedHat", "7.3", "7.3.2017053118"]
+  "centos_7.2"        = ["CentOS","OpenLogic","7.2","7.2.20170517"]
+  "centos_7.3"        = ["CentOS","OpenLogic","7.3","7.3.20170707"]
+  "coreos_835.13.0"   = ["CoreOS", "CoreOS", "Stable", "835.13.0"]
+  "coreos_1235.9.0"   = ["CoreOS", "CoreOS", "Stable", "1235.9.0"]
+  "rhel_7.3"          = ["RHEL", "RedHat", "7.3", "7.3.2017053118"]
  }
 }
