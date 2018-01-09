@@ -1,5 +1,5 @@
 variable "ssh_pub_key" {
-  description = "The Public SSH Key assicated with your instances for login. Copy your own key from your machine when deploying to log into your instance."
+  description = "The Public SSH Key associated with your instances for login. Copy your own key from your machine when deploying to log into your instance."
   default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDCJtEX2fuZ4EWXCL3M37Qbr0mj3saEdhOwnLGJk8hr5xFOa8DoTs5IofaHfeRoiOKwfg44PW4fpDIz/e7X/9tmKTuwOszuAE9QTWQijZesCanLSf5nwYCTMsNGlUfxhjpJhcgQIcZ6vcDbNeGIQTElgsBKXoIXDosP3qjdWuwEEIfaQJDo4Mv16P+SqzPJ1KIV16lfw2NW71y7JzNApPRWxlxkoTiydv1hs6Ye6b6MTLLeDIsyzPqNro5/LpQkT7hr37pG88xC22Cn2lA18hhusP0wP+6pZbnbveKLVFkSdVlZAKgsEZ0UyAXsKElWtTHN+SXuqXmldg8h7n6GF1/tmEz7n/2+SBH+nNBlQPM/VOxW7yDwCKWr87mFI009a6ge66U4q+lqrfKzNSIsoamuICYg8GtAGK3yuPQq+pwFluJRUEihZQDlJ7IvezAKThglyDgV31D9frCqJ4gMTfzSnZ2PW54vJjNyAHZQoCqp/Y0aIdjwpnHw6F+blPmgXzzsheMahME7iCMQP1F/ckgXfq1rtI0mT1QNZhUtfFf1qYguNT0EdCGy3G3oWnHiIqjcq/wfhCTpf22ph7h1Q+b1ygXXIGnQWfyY/vZTDdW2lbrX36X/fZA3M74SBmQFEMWrul4tX//YwGtpHSyN380fdRHyCPPo6+BSB7KHVwDevw== default@mesosphere.com"
 }
 
@@ -74,7 +74,7 @@ variable "ip-detect" {
 }
 
 variable "os-init-script" {
- description = "Init Scripts that runs post-AMI deployment and pre-DC/OS install" 
+ description = "Init Scripts that runs post-AMI deployment and pre-DC/OS install"
  type = "map"
 
  default = {
@@ -313,7 +313,7 @@ variable "dcos_overlay_network" {
 variable "dcos_dns_search" {
  default = ""
  description = "This parameter specifies a space-separated list of domains that are tried when an unqualified domain is entered"
-} 
+}
 
 variable "dcos_master_dns_bindall" {
  default = ""

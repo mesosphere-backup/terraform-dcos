@@ -312,7 +312,7 @@ resource "azurerm_virtual_machine" "public-agent" {
     ssh_keys {
         path     = "/home/${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}/.ssh/authorized_keys"
         key_data = "${var.ssh_pub_key}"
-    }    
+    }
   }
 
   # OS init script
@@ -353,12 +353,15 @@ resource "azurerm_virtual_machine" "public-agent" {
 module "dcos-mesos-agent-public" {
   source               = "git@github.com:mesosphere/enterprise-terraform-dcos//tf_dcos_core"
   bootstrap_private_ip = "${azurerm_network_interface.bootstrap_nic.private_ip_address}"
-  dcos_install_mode    = "${var.state}"
+  # Only allow upgrade and install as installation mode
+  dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"
   dcos_version         = "${var.dcos_version}"
   role                 = "dcos-mesos-agent-public"
 }
 
 resource "null_resource" "public-agent" {
+  # If state is set to none do not install DC/OS
+  count = "${var.state == "none" ? 0 : var.num_of_public_agents}"
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
@@ -372,7 +375,7 @@ resource "null_resource" "public-agent" {
   }
 
   count = "${var.num_of_public_agents}"
-  
+
   # Generate and upload Public Agent script to node
   provisioner "file" {
     content     = "${module.dcos-mesos-agent-public.script}"
