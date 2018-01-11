@@ -67,11 +67,11 @@ terraform init -from-module git@github.com:mesosphere/terraform-dcos-enterprise/
 terraform plan --var os=coreos_835.13.0 --var dcos_overlay_enable=disable # This OS cannot support docker networking
 ```
 
-For Centos 7.2:
+For Centos 7.3:
 
 ```bash
 terraform init -from-module git@github.com:mesosphere/terraform-dcos-enterprise//azure
-terraform plan --var os=centos_7.2
+terraform plan --var os=centos_7.3
 ```
 
 ## Pro-tip: Use Terraform’s -var-file
@@ -393,7 +393,16 @@ You can shutdown/destroy all resources from your environment by running this com
 terraform destroy
 ```
 
-  # Roadmaps
+##### Destroy Optimization
+
+Azure's shutdown can take ~10 minutes at times compared to other cloud providers. The fastest way to destroy is to delete the resource group.
+
+```
+az group delete --name $(jq -r '.modules[0].resources."azurerm_resource_group.dcos".primary.attributes.name' terraform.tfstate) --no-wait --yes
+rm terraform.tfstate*
+```
+
+# Roadmaps
 
   - [X] Support for Azure
   - [X] Support for CoreOS
