@@ -1,4 +1,4 @@
-## Azure Data Templates
+## GCP Data Templates
 #
 
 data "template_file" "traditional_os_user" {

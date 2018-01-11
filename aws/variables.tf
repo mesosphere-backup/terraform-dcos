@@ -1,5 +1,5 @@
-variable "key_name" {
-  description = "Key name assicated with your instances for login"
+variable "ssh_key_name" {
+  description = "Key name associated with your instances for login"
   default = "default"
 }
 
@@ -486,4 +486,9 @@ variable "aws_amis" {
     us-west-1 = "ami-161a5176"
     us-west-2 = "ami-078d5367"
   }
+}
+
+variable "kubernetes_cluster" {
+ default = "kubernetes-cluster"
+ description = "Kubernetes cluster tag"
 }
