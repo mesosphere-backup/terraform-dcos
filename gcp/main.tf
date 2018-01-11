@@ -39,14 +39,14 @@ resource "google_compute_network" "default" {
 
 resource "google_compute_subnetwork" "public" {
     name          = "${data.template_file.cluster-name.rendered}-public"
-    ip_cidr_range = "${var.google_compute_subnetwork_public}"
+    ip_cidr_range = "${var.gcp_compute_subnetwork_public}"
     network       = "${google_compute_network.default.self_link}"
     region        = "${var.gcp_region}"
 }
 
 resource "google_compute_subnetwork" "private" {
     name          = "${data.template_file.cluster-name.rendered}-internal"
-    ip_cidr_range = "${var.google_compute_subnetwork_private}"
+    ip_cidr_range = "${var.gcp_compute_subnetwork_private}"
     network       = "${google_compute_network.default.self_link}"
     region        = "${var.gcp_region}"
 }

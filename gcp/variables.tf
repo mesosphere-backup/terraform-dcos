@@ -11,12 +11,12 @@ variable "admin_cidr" {
   description = "Inbound Master Access"
 }
 
-variable "google_compute_subnetwork_public" {
+variable "gcp_compute_subnetwork_public" {
   default     = "10.64.0.0/22"
   description = "Google compute public subnetwork"
 }
 
-variable "google_compute_subnetwork_private" {
+variable "gcp_compute_subnetwork_private" {
   default     = "10.64.4.0/22"
   description = "Google compute private subnetwork"
 }
