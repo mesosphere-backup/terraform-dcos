@@ -1,6 +1,6 @@
 # Reserving the Public IP Address of the External Load Balancer for the Public Agent
 resource "google_compute_address" "public-agent" {
-  name = "external-dcos-public-agent-address"
+  name = "${data.template_file.cluster-name.rendered}-external-dcos-public-agent-address"
 }
 
 resource "google_compute_forwarding_rule" "external-public-agent-forwarding-rule-http" {
