@@ -1,6 +1,6 @@
 # Reserving the Public IP Address of the External Load Balancer for the master
 resource "google_compute_address" "master" {
-  name = "external-dcos-master-address"
+  name = "${data.template_file.cluster-name.rendered}-external-dcos-master-address"
 }
 
 resource "google_compute_firewall" "master-internal" {
