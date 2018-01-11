@@ -111,7 +111,7 @@ resource "aws_instance" "master" {
   connection {
     # The default username for our AMI
     user = "${module.aws-tested-oses.user}"
-
+    bastion_host = "${aws_instance.bootstrap.public_ip}"
     # The connection will use the local SSH agent for authentication.
   }
 
@@ -143,16 +143,16 @@ resource "aws_instance" "master" {
 
   # OS init script
   provisioner "file" {
-   content = "${module.aws-tested-oses.os-setup}"
-   destination = "/tmp/os-setup.sh"
-   }
+    content = "${module.aws-tested-oses.os-setup}"
+    destination = "/tmp/os-setup.sh"
+  }
 
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
   # backend instances.
-  subnet_id = "${aws_subnet.public.id}"
+  subnet_id = "${aws_subnet.private.id}"
 
- # We run a remote provisioner on the instance after creating it.
+  # We run a remote provisioner on the instance after creating it.
   # In this case, we just install nginx and start it. By default,
   # this should be on port 80
     provisioner "remote-exec" {
@@ -185,8 +185,9 @@ resource "null_resource" "master" {
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case
   connection {
-    host = "${element(aws_instance.master.*.public_ip, count.index)}"
+    host = "${element(aws_instance.master.*.private_ip, count.index)}"
     user = "${module.aws-tested-oses.user}"
+    bastion_host = "${aws_instance.bootstrap.public_ip}"
   }
 
   count = "${var.num_of_masters}"
@@ -200,7 +201,7 @@ resource "null_resource" "master" {
   # Wait for bootstrapnode to be ready
   provisioner "remote-exec" {
     inline = [
-     "until $(curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
+      "until $(curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
     ]
   }
 
@@ -215,7 +216,7 @@ resource "null_resource" "master" {
   # Watch Master Nodes Start
   provisioner "remote-exec" {
     inline = [
-      "until $(curl --output /dev/null --silent --head --fail http://${element(aws_instance.master.*.public_ip, count.index)}/); do printf 'loading DC/OS...'; sleep 10; done"
+      "until $(curl --output /dev/null --silent --head --fail http://${element(aws_instance.master.*.private_ip, count.index)}/); do printf 'loading DC/OS...'; sleep 10; done"
     ]
   }
 }
@@ -224,6 +225,6 @@ output "Master_ELB_Address" {
   value = "${aws_elb.public-master-elb.dns_name}"
 }
 
-output "Mesos_Master_Public_IP" {
-  value = ["${aws_instance.master.*.public_ip}"]
+output "Mesos_Master_Private_IP" {
+  value = ["${aws_instance.master.*.private_ip}"]
 }

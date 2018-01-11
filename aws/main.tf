@@ -46,11 +46,33 @@ resource "aws_internet_gateway" "default" {
   vpc_id = "${aws_vpc.default.id}"
 }
 
-# Grant the VPC internet access on its main route table
-resource "aws_route" "internet_access" {
-  route_table_id         = "${aws_vpc.default.main_route_table_id}"
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.default.id}"
+resource "aws_eip" "pub-subnet-nat-eip" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "default" {
+  allocation_id = "${aws_eip.pub-subnet-nat-eip.id}"
+  subnet_id     = "${aws_subnet.public.id}"
+}
+
+# Create public route table with internet gateway route
+resource "aws_route_table" "public-route-table" {
+  vpc_id = "${aws_vpc.default.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.default.id}"
+  }
+}
+
+# Create private route table with nat gateway route
+resource "aws_route_table" "private-route-table" {
+  vpc_id = "${aws_vpc.default.id}"
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.default.id}"
+  }
 }
 
 # Create a subnet to launch public nodes into
@@ -64,7 +86,18 @@ resource "aws_subnet" "public" {
 resource "aws_subnet" "private" {
   vpc_id                  = "${aws_vpc.default.id}"
   cidr_block              = "10.0.4.0/22"
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
+}
+
+# Assign route tables to subnets
+resource "aws_route_table_association" "public-routes-public-subnet" {
+  route_table_id = "${aws_route_table.public-route-table.id}"
+  subnet_id      = "${aws_subnet.public.id}"
+}
+
+resource "aws_route_table_association" "private-routes-public-subnet" {
+  route_table_id = "${aws_route_table.private-route-table.id}"
+  subnet_id      = "${aws_subnet.private.id}"
 }
 
 # A security group that allows all port access to internal vpc
@@ -73,20 +106,20 @@ resource "aws_security_group" "any_access_internal" {
   description = "Manage all ports cluster level"
   vpc_id      = "${aws_vpc.default.id}"
 
- # full access internally
- ingress {
-  from_port = 0
-  to_port = 0
-  protocol = "-1"
-  cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  # full access internally
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
   }
 
- # full access internally
- egress {
-  from_port = 0
-  to_port = 0
-  protocol = "-1"
-  cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  # full access internally
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
   }
 }
 
@@ -287,25 +320,25 @@ resource "aws_security_group" "private_slave" {
 
   # full access internally
   ingress {
-   from_port = 0
-   to_port = 0
-   protocol = "-1"
-   cidr_blocks = ["${aws_vpc.default.cidr_block}"]
-   }
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  }
 
   # full access internally
   egress {
-   from_port = 0
-   to_port = 0
-   protocol = "-1"
-   cidr_blocks = ["${aws_vpc.default.cidr_block}"]
-   }
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  }
 }
 
 # Provide tested AMI and user from listed region startup commands
-  module "aws-tested-oses" {
-      source        = "./modules/dcos-tested-aws-oses"
-      os            = "${var.os}"
-      region        = "${var.aws_region}"
-      user_aws_ami  = "${var.user_aws_ami}"
+module "aws-tested-oses" {
+  source        = "./modules/dcos-tested-aws-oses"
+  os            = "${var.os}"
+  region        = "${var.aws_region}"
+  user_aws_ami  = "${var.user_aws_ami}"
 }

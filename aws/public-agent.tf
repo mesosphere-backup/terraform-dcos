@@ -47,7 +47,7 @@ resource "aws_instance" "public-agent" {
   connection {
     # The default username for our AMI
     user = "${module.aws-tested-oses.user}"
-
+    bastion_host = "${aws_instance.bootstrap.public_ip}"
     # The connection will use the local SSH agent for authentication.
   }
 
@@ -61,10 +61,10 @@ resource "aws_instance" "public-agent" {
   ebs_optimized = "true"
 
   tags {
-   owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
-   expiration = "${var.expiration}"
-   Name =  "${data.template_file.cluster-name.rendered}-pubagt-${count.index + 1}"
-   cluster = "${data.template_file.cluster-name.rendered}"
+    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
+    expiration = "${var.expiration}"
+    Name =  "${data.template_file.cluster-name.rendered}-pubagt-${count.index + 1}"
+    cluster = "${data.template_file.cluster-name.rendered}"
   }
   # Lookup the correct AMI based on the region
   # we specified
@@ -79,13 +79,13 @@ resource "aws_instance" "public-agent" {
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
   # backend instances.
-  subnet_id = "${aws_subnet.public.id}"
+  subnet_id = "${aws_subnet.private.id}"
 
   # OS init script
   provisioner "file" {
-   content = "${module.aws-tested-oses.os-setup}"
-   destination = "/tmp/os-setup.sh"
-   }
+    content = "${module.aws-tested-oses.os-setup}"
+    destination = "/tmp/os-setup.sh"
+  }
 
  # We run a remote provisioner on the instance after creating it.
   # In this case, we just install nginx and start it. By default,
@@ -122,8 +122,9 @@ resource "null_resource" "public-agent" {
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case
   connection {
-    host = "${element(aws_instance.public-agent.*.public_ip, count.index)}"
+    host = "${element(aws_instance.public-agent.*.private_ip, count.index)}"
     user = "${module.aws-tested-oses.user}"
+    bastion_host = "${aws_instance.bootstrap.public_ip}"
   }
 
   count = "${var.num_of_public_agents}"
@@ -161,6 +162,6 @@ output "Public_Agent_ELB_Address" {
   value = "${aws_elb.public-agent-elb.dns_name}"
 }
 
-output "Public_Agent_Public_IP_Address" {
-  value = ["${aws_instance.public-agent.*.public_ip}"]
+output "Public_Agent_Private_IP_Address" {
+  value = ["${aws_instance.public-agent.*.private_ip}"]
 }

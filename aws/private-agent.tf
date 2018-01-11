@@ -5,7 +5,7 @@ resource "aws_instance" "agent" {
   connection {
     # The default username for our AMI
     user = "${module.aws-tested-oses.user}"
-
+    bastion_host = "${aws_instance.bootstrap.public_ip}"
     # The connection will use the local SSH agent for authentication.
   }
 
@@ -41,14 +41,14 @@ resource "aws_instance" "agent" {
 
   # OS init script
   provisioner "file" {
-   content = "${module.aws-tested-oses.os-setup}"
-   destination = "/tmp/os-setup.sh"
-   }
+    content = "${module.aws-tested-oses.os-setup}"
+    destination = "/tmp/os-setup.sh"
+  }
 
- # We run a remote provisioner on the instance after creating it.
+  # We run a remote provisioner on the instance after creating it.
   # In this case, we just install nginx and start it. By default,
   # this should be on port 80
-    provisioner "remote-exec" {
+  provisioner "remote-exec" {
     inline = [
       "sudo chmod +x /tmp/os-setup.sh",
       "sudo bash /tmp/os-setup.sh",
@@ -79,8 +79,9 @@ resource "null_resource" "agent" {
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case
   connection {
-    host = "${element(aws_instance.agent.*.public_ip, count.index)}"
+    host = "${element(aws_instance.agent.*.private_ip, count.index)}"
     user = "${module.aws-tested-oses.user}"
+    bastion_host = "${aws_instance.bootstrap.public_ip}"
   }
 
   count = "${var.num_of_private_agents}"
@@ -114,6 +115,6 @@ resource "null_resource" "agent" {
   }
 }
 
-output "Private_Agent_Public_IP_Address" {
-  value = ["${aws_instance.agent.*.public_ip}"]
+output "Private_Agent_Private_IP_Address" {
+  value = ["${aws_instance.agent.*.private_ip}"]
 }
