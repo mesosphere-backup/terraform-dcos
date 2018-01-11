@@ -9,12 +9,12 @@ variable "traditional_default_os_user" {
  }
 }
 
-# Azure Images
+# GCP Images
 variable "gcp_os_image_version" {
  type = "map"
 
- # Azure Cloud Image Schema # image family   /   image name  
- #                                  V                  V        
+ # GCP Image Schema # image family   /   image name
+ #                                  V                  V
  default = {
   "centos_7.2"                = ["centos-cloud","centos-7-v20170523"]
   "centos_7.3"                = ["centos-cloud","centos-7-v20170719"]
