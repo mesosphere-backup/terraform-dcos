@@ -15,6 +15,7 @@ resource "aws_instance" "agent" {
 
   count = "${var.num_of_private_agents}"
   instance_type = "${var.aws_agent_instance_type}"
+  iam_instance_profile = "${aws_iam_instance_profile.agent.name}"
 
   ebs_optimized = "true"
 
@@ -23,13 +24,14 @@ resource "aws_instance" "agent" {
    expiration = "${var.expiration}"
    Name =  "${data.template_file.cluster-name.rendered}-pvtagt-${count.index + 1}"
    cluster = "${data.template_file.cluster-name.rendered}"
+   KubernetesCluster = "${var.kubernetes_cluster}"
   }
   # Lookup the correct AMI based on the region
   # we specified
   ami = "${module.aws-tested-oses.aws_ami}"
 
   # The name of our SSH keypair we created above.
-  key_name = "${var.key_name}"
+  key_name = "${var.ssh_key_name}"
 
   # Our Security group to allow http and SSH access
   vpc_security_group_ids = ["${aws_security_group.private_slave.id}","${aws_security_group.admin.id}","${aws_security_group.any_access_internal.id}"]

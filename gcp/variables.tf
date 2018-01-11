@@ -1,8 +1,8 @@
-variable "google_project" {
+variable "gcp_project" {
  default = "massive-bliss-781"
 }
 
-variable "google_region" {
+variable "gcp_region" {
  default = "us-west1"
 }
 
@@ -11,12 +11,22 @@ variable "admin_cidr" {
   description = "Inbound Master Access"
 }
 
-variable "gce_ssh_pub_key_file" {
- default = "~/.ssh/key.pub"
- description = "Your ssh public key to log into your the openvpn server"
+variable "gcp_compute_subnetwork_public" {
+  default     = "10.64.0.0/22"
+  description = "Google compute public subnetwork"
 }
 
-variable "gce_ssh_user" {
+variable "gcp_compute_subnetwork_private" {
+  default     = "10.64.4.0/22"
+  description = "Google compute private subnetwork"
+}
+
+variable "gcp_ssh_pub_key_file" {
+ default = "~/.ssh/key.pub"
+ description = "Your ssh public key to log into your the DC/OS cluster"
+}
+
+variable "gcp_ssh_user" {
  default = ""
  description = "The ssh username used to log into the server"
 }
@@ -39,6 +49,11 @@ variable "gcp_public_agent_instance_type" {
 variable "gcp_bootstrap_instance_type" {
  default = "n1-standard-2"
  description = "Default Bootstrap instance size for GCP."
+}
+
+variable "gcp_scheduling_preemptible" {
+  default = "false"
+  description = "Instance scheduling as preemptible is disabled by default"
 }
 
 variable "os" {

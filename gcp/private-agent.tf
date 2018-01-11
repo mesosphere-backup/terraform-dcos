@@ -58,7 +58,7 @@ resource "google_compute_instance" "agent" {
   }
 
   connection {
-    user = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}"
+    user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
   }
 
   network_interface {
@@ -68,7 +68,7 @@ resource "google_compute_instance" "agent" {
   }
 
   metadata {
-    sshKeys = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}:${file(var.gce_ssh_pub_key_file)}"
+    sshKeys = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}:${file(var.gcp_ssh_pub_key_file)}"
   }
 
   # OS init script
@@ -89,6 +89,11 @@ resource "google_compute_instance" "agent" {
 
   lifecycle {
     ignore_changes = ["labels.Name", "labels.cluster"]
+  }
+
+  scheduling {
+    preemptible = "${var.gcp_scheduling_preemptible}"
+    automatic_restart = "${var.gcp_scheduling_preemptible == "true" ? false : true}"
   }
 
   service_account {
@@ -116,7 +121,7 @@ resource "null_resource" "agent" {
   # So we just choose the first in this case
   connection {
     host = "${element(google_compute_instance.agent.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
-    user = "${coalesce(var.gce_ssh_user, module.dcos-tested-gcp-oses.user)}"
+    user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
   }
 
   count = "${var.num_of_private_agents}"

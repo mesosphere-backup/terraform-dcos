@@ -25,8 +25,8 @@ data "template_file" "cluster-name" {
 
 # Configure the Google Cloud provider
 provider "google" {
-  project     = "${var.google_project}"
-  region      = "${var.google_region}"
+  project     = "${var.gcp_project}"
+  region      = "${var.gcp_region}"
 }
 
 data "google_compute_zones" "available" {}
@@ -39,16 +39,16 @@ resource "google_compute_network" "default" {
 
 resource "google_compute_subnetwork" "public" {
     name          = "public"
-    ip_cidr_range = "10.64.0.0/22"
+    ip_cidr_range = "${var.gcp_compute_subnetwork_public}"
     network       = "${google_compute_network.default.self_link}"
-    region        = "${var.google_region}"
+    region        = "${var.gcp_region}"
 }
 
 resource "google_compute_subnetwork" "private" {
     name          = "internal"
-    ip_cidr_range = "10.64.4.0/22"
+    ip_cidr_range = "${var.gcp_compute_subnetwork_private}"
     network       = "${google_compute_network.default.self_link}"
-    region        = "${var.google_region}"
+    region        = "${var.gcp_region}"
 }
 
 resource "google_compute_firewall" "internal-any-any" {
