@@ -1,3 +1,8 @@
+# Reserving the Public IP Address of the External Load Balancer for the master
+resource "google_compute_address" "master" {
+  name = "${data.template_file.cluster-name.rendered}-external-dcos-master-address"
+}
+
 resource "google_compute_firewall" "master-internal" {
     name = "${data.template_file.cluster-name.rendered}-master-internal-firewall"
     network = "${google_compute_network.default.name}"
@@ -29,11 +34,21 @@ resource "google_compute_forwarding_rule" "internal-master-forwarding-rule" {
   subnetwork = "${google_compute_subnetwork.private.self_link}"
 }
 
-resource "google_compute_forwarding_rule" "external-master-forwarding-rule" {
-  name   = "${data.template_file.cluster-name.rendered}-master-external-lb-forwarding-rule"
+resource "google_compute_forwarding_rule" "external-master-forwarding-rule-http" {
+  name   = "${data.template_file.cluster-name.rendered}-master-external-lb-forwarding-rule-http"
   load_balancing_scheme = "EXTERNAL"
   target = "${google_compute_target_pool.master-pool.self_link}"
   port_range = "80"
+  ip_address = "${google_compute_address.master.address}"
+  depends_on = ["google_compute_http_health_check.master-adminrouter-healthcheck"]
+}
+
+resource "google_compute_forwarding_rule" "external-master-forwarding-rule-https" {
+  name   = "${data.template_file.cluster-name.rendered}-master-external-lb-forwarding-rule-https"
+  load_balancing_scheme = "EXTERNAL"
+  target = "${google_compute_target_pool.master-pool.self_link}"
+  port_range = "443"
+  ip_address = "${google_compute_address.master.address}"
   depends_on = ["google_compute_http_health_check.master-adminrouter-healthcheck"]
 }
 
@@ -209,7 +224,7 @@ module "dcos-mesos-master" {
   source               = "github.com/bernadinm/tf_dcos_core"
   bootstrap_private_ip = "${google_compute_instance.bootstrap.network_interface.0.address}"
   # Only allow upgrade and install as installation mode
-  dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"
+  dcos_install_mode    = "${var.state == "upgrade" ? "upgrade" : "install"}"
   dcos_version         = "${var.dcos_version}"
   dcos_skip_checks     = "${var.dcos_skip_checks}"
   role                 = "dcos-mesos-master"
@@ -262,7 +277,7 @@ resource "null_resource" "master" {
 }
 
 output "Master ELB Address" {
-  value = "${google_compute_forwarding_rule.external-master-forwarding-rule.ip_address}"
+  value = "${google_compute_forwarding_rule.external-master-forwarding-rule-http.ip_address}"
 }
 
 output "Mesos Master Public IP" {

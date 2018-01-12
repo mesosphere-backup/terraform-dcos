@@ -106,7 +106,7 @@ module "dcos-mesos-agent" {
   source               = "github.com/bernadinm/tf_dcos_core"
   bootstrap_private_ip = "${google_compute_instance.bootstrap.network_interface.0.address}"
   # Only allow upgrade and install as installation mode
-  dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"
+  dcos_install_mode    = "${var.state == "upgrade" ? "upgrade" : "install"}"
   dcos_version         = "${var.dcos_version}"
   dcos_skip_checks     = "${var.dcos_skip_checks}"
   role                 = "dcos-mesos-agent"
