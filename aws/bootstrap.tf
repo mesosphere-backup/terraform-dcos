@@ -16,10 +16,10 @@ resource "aws_instance" "bootstrap" {
   instance_type = "${var.aws_bootstrap_instance_type}"
 
   tags {
-   owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
-   expiration = "${var.expiration}"
-   Name = "${data.template_file.cluster-name.rendered}-bootstrap"
-   cluster = "${data.template_file.cluster-name.rendered}"
+    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
+    expiration = "${var.expiration}"
+    Name = "${data.template_file.cluster-name.rendered}-bootstrap"
+    cluster = "${data.template_file.cluster-name.rendered}"
   }
 
   # Lookup the correct AMI based on the region
@@ -29,8 +29,8 @@ resource "aws_instance" "bootstrap" {
   # The name of our SSH keypair we created above.
   key_name = "${var.key_name}"
 
-  # Our Security group to allow http and SSH access
-  vpc_security_group_ids = ["${aws_security_group.master.id}","${aws_security_group.admin.id}"]
+  # Any internal access and any SSH and VPN in
+  vpc_security_group_ids = ["${aws_security_group.bootstrap.id}","${aws_security_group.any-access-internal.id}"]
 
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
@@ -39,23 +39,23 @@ resource "aws_instance" "bootstrap" {
 
   # DCOS ip detect script
   provisioner "file" {
-   source = "${coalesce(var.ip-detect["aws"], local.ip-detect["aws"])}"
-   destination = "/tmp/ip-detect"
+    source = "${coalesce(var.ip-detect["aws"], local.ip-detect["aws"])}"
+    destination = "/tmp/ip-detect"
   }
 
   # OS init script
   provisioner "file" {
-   content = "${module.aws-tested-oses.os-setup}"
-   destination = "/tmp/os-setup.sh"
-   }
+    content = "${module.aws-tested-oses.os-setup}"
+    destination = "/tmp/os-setup.sh"
+  }
 
- # We run a remote provisioner on the instance after creating it.
+  # We run a remote provisioner on the instance after creating it.
   # In this case, we just install nginx and start it. By default,
   # this should be on port 80
-    provisioner "remote-exec" {
+  provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x /tmp/os-setup.sh",
-      "sudo bash /tmp/os-setup.sh",
+      "${local.no_provision} sudo chmod +x /tmp/os-setup.sh",
+      "${local.no_provision} sudo bash /tmp/os-setup.sh",
     ]
   }
 
@@ -239,8 +239,8 @@ resource "null_resource" "bootstrap" {
   # Install Bootstrap Script
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x run.sh",
-      "sudo ./run.sh",
+      "${local.no_provision} sudo chmod +x run.sh",
+      "${local.no_provision} sudo ./run.sh",
     ]
   }
 

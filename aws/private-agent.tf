@@ -31,8 +31,8 @@ resource "aws_instance" "agent" {
   # The name of our SSH keypair we created above.
   key_name = "${var.key_name}"
 
-  # Our Security group to allow http and SSH access
-  vpc_security_group_ids = ["${aws_security_group.private_slave.id}","${aws_security_group.admin.id}","${aws_security_group.any_access_internal.id}"]
+  # Any internal access
+  vpc_security_group_ids = ["${aws_security_group.any-access-internal.id}"]
 
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
@@ -50,8 +50,8 @@ resource "aws_instance" "agent" {
   # this should be on port 80
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x /tmp/os-setup.sh",
-      "sudo bash /tmp/os-setup.sh",
+      "${local.no_provision} sudo chmod +x /tmp/os-setup.sh",
+      "${local.no_provision} sudo bash /tmp/os-setup.sh",
     ]
   }
 
@@ -92,25 +92,25 @@ resource "null_resource" "agent" {
     destination = "run.sh"
   }
 
-  # Wait for bootstrapnode to be ready
+  # Wait for bootstrap node to be ready
   provisioner "remote-exec" {
     inline = [
-     "until $(curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
+     "${local.no_provision} \"until curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}/dcos_install.sh ; do printf 'waiting for bootstrap node to serve...'; sleep 20; done\""
     ]
   }
 
   # Install Slave Node
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x run.sh",
-      "sudo ./run.sh",
+      "${local.no_provision} sudo chmod +x run.sh",
+      "${local.no_provision} sudo ./run.sh",
     ]
   }
 
   # Watch Private Agent Nodes Start
   provisioner "remote-exec" {
     inline = [
-      "until $(curl --output /dev/null --silent --head --fail http://${element(aws_instance.agent.*.private_ip, count.index)}:5051/version); do printf 'waiting for private agent to serve...'; sleep 10; done"
+      "${local.no_provision} \"until curl --output /dev/null --silent --head --fail http://${element(aws_instance.agent.*.private_ip, count.index)}:5051/version ; do printf 'waiting for private agent to serve...'; sleep 10; done\""
     ]
   }
 }

@@ -13,6 +13,11 @@ variable "aws_region" {
   default     = "us-west-2"
 }
 
+variable "aws_availability_zone" {
+  description = "AWS availability zone to launch servers"
+  default     = "us-west-2a"
+}
+
 variable "aws_profile" {
   description = "AWS profile to use"
   default     = "default"
@@ -498,4 +503,24 @@ variable "dcos_ip_detect_public_contents" {
 variable "user_aws_ami" {
  type = "map"
  default = {}
+}
+
+variable "no_provision" {
+  default = false
+  description = "When no-provision is true then only AWS infrastructure is provisioned and the DC/OS installer is not run."
+}
+
+# See details on how booleans are handled.
+# https://www.terraform.io/docs/configuration/variables.html#booleans
+# tl;dr;  false evals to 0, true evals to 1
+locals {
+  no_provision = <<EOF
+function provision() {
+  echo [ ${var.no_provision} -eq 1 ]
+  if [ ${var.no_provision} -eq 1 ]; then
+    echo "NO_PROVISION: ${var.no_provision}, COMMAND: $${@}"
+    return 0
+  fi
+  eval "$$@"
+} && provisionEOF
 }

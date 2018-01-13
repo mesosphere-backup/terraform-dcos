@@ -9,10 +9,11 @@ resource "aws_elb_attachment" "internal-master-elb" {
 # Mesos Master, Zookeeper, Exhibitor, Adminrouter, Marathon
 resource "aws_elb" "internal-master-elb" {
   name = "${data.template_file.cluster-name.rendered}-int-master-elb"
+
   internal = "true"
 
-  subnets         = ["${aws_subnet.public.id}"]
-  security_groups = ["${aws_security_group.master.id}","${aws_security_group.public_slave.id}", "${aws_security_group.private_slave.id}"]
+  subnets         = ["${aws_subnet.private.id}"]
+  security_groups = ["${aws_security_group.internal-master-elb.id}"]
   instances       = ["${aws_instance.master.*.id}"]
 
   listener {
@@ -57,6 +58,10 @@ resource "aws_elb" "internal-master-elb" {
     instance_protocol = "http"
   }
 
+  tags {
+    cluster = "${data.template_file.cluster-name.rendered}"
+  }
+
   lifecycle {
     ignore_changes = ["name"]
   }
@@ -75,7 +80,7 @@ resource "aws_elb" "public-master-elb" {
   name = "${data.template_file.cluster-name.rendered}-pub-mas-elb"
 
   subnets         = ["${aws_subnet.public.id}"]
-  security_groups = ["${aws_security_group.public_slave.id}"]
+  security_groups = ["${aws_security_group.public-elb.id}", "${aws_security_group.any-access-internal.id}"]
   instances       = ["${aws_instance.master.*.id}"]
 
   listener {
@@ -96,8 +101,12 @@ resource "aws_elb" "public-master-elb" {
     healthy_threshold = 2
     unhealthy_threshold = 2
     timeout = 5
-    target = "TCP:5050"
+    target = "TCP:80"
     interval = 30
+  }
+
+  tags {
+    cluster = "${data.template_file.cluster-name.rendered}"
   }
 
   lifecycle {
@@ -138,8 +147,8 @@ resource "aws_instance" "master" {
   # The name of our SSH keypair we created above.
   key_name = "${var.key_name}"
 
-  # Our Security group to allow http and SSH access
-  vpc_security_group_ids = ["${aws_security_group.master.id}","${aws_security_group.admin.id}","${aws_security_group.any_access_internal.id}"]
+  # Any internal access
+  vpc_security_group_ids = ["${aws_security_group.public-elb.id}", "${aws_security_group.internal-master-elb.id}","${aws_security_group.any-access-internal.id}"]
 
   # OS init script
   provisioner "file" {
@@ -155,10 +164,10 @@ resource "aws_instance" "master" {
   # We run a remote provisioner on the instance after creating it.
   # In this case, we just install nginx and start it. By default,
   # this should be on port 80
-    provisioner "remote-exec" {
+  provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x /tmp/os-setup.sh",
-      "sudo bash /tmp/os-setup.sh",
+      "${local.no_provision} sudo chmod +x /tmp/os-setup.sh",
+      "${local.no_provision} sudo bash /tmp/os-setup.sh",
     ]
   }
 
@@ -201,22 +210,22 @@ resource "null_resource" "master" {
   # Wait for bootstrapnode to be ready
   provisioner "remote-exec" {
     inline = [
-      "until $(curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
+      "${local.no_provision} \"until curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}/dcos_install.sh ; do printf 'waiting for bootstrap node to serve...'; sleep 20; done\""
     ]
   }
 
   # Install Master Script
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x run.sh",
-      "sudo ./run.sh",
+      "${local.no_provision} sudo chmod +x run.sh",
+      "${local.no_provision} sudo ./run.sh",
     ]
   }
 
   # Watch Master Nodes Start
   provisioner "remote-exec" {
     inline = [
-      "until $(curl --output /dev/null --silent --head --fail http://${element(aws_instance.master.*.private_ip, count.index)}/); do printf 'loading DC/OS...'; sleep 10; done"
+      "${local.no_provision} \"until curl --output /dev/null --silent --head --fail http://${element(aws_instance.master.*.private_ip, count.index)} ; do printf 'loading DC/OS...'; sleep 10; done\""
     ]
   }
 }

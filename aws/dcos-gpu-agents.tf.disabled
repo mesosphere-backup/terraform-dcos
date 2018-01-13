@@ -53,7 +53,7 @@ resource "aws_instance" "gpu-agent" {
   key_name = "${var.key_name}"
 
   # Our Security group to allow http and SSH access
-  vpc_security_group_ids = ["${aws_security_group.private_slave.id}","${aws_security_group.admin.id}","${aws_security_group.any_access_internal.id}"]
+  vpc_security_group_ids = ["${aws_security_group.private_slave.id}","${aws_security_group.admin.id}","${aws_security_group.any-access-internal.id}"]
 
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for

@@ -11,7 +11,7 @@ resource "aws_elb" "public-agent-elb" {
   name = "${data.template_file.cluster-name.rendered}-pub-agt-elb"
 
   subnets         = ["${aws_subnet.public.id}"]
-  security_groups = ["${aws_security_group.public_slave.id}"]
+  security_groups = ["${aws_security_group.public-elb.id}"]
   instances       = ["${aws_instance.public-agent.*.id}"]
 
   listener {
@@ -34,6 +34,10 @@ resource "aws_elb" "public-agent-elb" {
     timeout = 2
     target = "HTTP:9090/_haproxy_health_check"
     interval = 5
+  }
+
+  tags {
+    cluster = "${data.template_file.cluster-name.rendered}"
   }
 
   lifecycle {
@@ -73,8 +77,8 @@ resource "aws_instance" "public-agent" {
   # The name of our SSH keypair we created above.
   key_name = "${var.key_name}"
 
-  # Our Security group to allow http and SSH access
-  vpc_security_group_ids = ["${aws_security_group.public_slave.id}","${aws_security_group.admin.id}","${aws_security_group.any_access_internal.id}"]
+  # Any internal access
+  vpc_security_group_ids = ["${aws_security_group.public-elb.id}","${aws_security_group.any-access-internal.id}"]
 
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
@@ -87,13 +91,13 @@ resource "aws_instance" "public-agent" {
     destination = "/tmp/os-setup.sh"
   }
 
- # We run a remote provisioner on the instance after creating it.
+  # We run a remote provisioner on the instance after creating it.
   # In this case, we just install nginx and start it. By default,
   # this should be on port 80
-    provisioner "remote-exec" {
+  provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x /tmp/os-setup.sh",
-      "sudo bash /tmp/os-setup.sh",
+      "${local.no_provision} sudo chmod +x /tmp/os-setup.sh",
+      "${local.no_provision} sudo bash /tmp/os-setup.sh",
     ]
   }
 
@@ -138,22 +142,22 @@ resource "null_resource" "public-agent" {
   # Wait for bootstrapnode to be ready
   provisioner "remote-exec" {
     inline = [
-     "until $(curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
+     "${local.no_provision} \"until curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}/dcos_install.sh ; do printf 'waiting for bootstrap node to serve...'; sleep 20; done\""
     ]
   }
 
   # Install Slave Node
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x run.sh",
-      "sudo ./run.sh",
+      "${local.no_provision} sudo chmod +x run.sh",
+      "${local.no_provision} sudo ./run.sh",
     ]
   }
 
   # Watch Public Agent Nodes Start
   provisioner "remote-exec" {
     inline = [
-      "until $(curl --output /dev/null --silent --head --fail http://${element(aws_instance.public-agent.*.private_ip, count.index)}:5051/version); do printf 'waiting for public agent to serve...'; sleep 10; done"
+      "${local.no_provision} \"until curl --output /dev/null --silent --head --fail http://${element(aws_instance.public-agent.*.private_ip, count.index)}:5051/version ; do printf 'waiting for public agent to serve...'; sleep 10; done\""
     ]
   }
 }
