@@ -128,11 +128,9 @@ num_of_private_agents = "2"
 num_of_public_agents = "1"
 dcos_security = "permissive"
 dcos_version = "1.8.8"
-dcos_aws_access_key_id = "ACHEHS71DG712w7EXAMPLE"
-dcos_aws_secret_access_key = "/R8SHF+SHFJaerSKE83awf4ASyrF83sa471DHSEXAMPLE"
 dcos_master_discovery = "master_http_loadbalancer"
 dcos_exhibitor_storage_backend = "aws_s3"
-dcos_exhibitor_explicit_keys = "true"
+dcos_exhibitor_explicit_keys = "false"
 ```
 
 **NOTE:** This will append your aws_access_key_id and aws_secret_access_key key in your config.yaml on your bootstrap node so DC/OS will know how to upload its state to the AWS S3 bucket.
