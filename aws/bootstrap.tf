@@ -69,7 +69,8 @@ resource "aws_instance" "bootstrap" {
   module "dcos-bootstrap" {
     source = "git@github.com:mesosphere/enterprise-terraform-dcos//tf_dcos_core"
     bootstrap_private_ip = "${aws_instance.bootstrap.private_ip}"
-    dcos_install_mode = "${var.state}"
+    # Only allow upgrade and install as installation mode
+    dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"
     dcos_version = "${var.dcos_version}"
     role = "dcos-bootstrap"
     dcos_bootstrap_port = "${var.custom_dcos_bootstrap_port}"
@@ -150,6 +151,8 @@ resource "aws_instance" "bootstrap" {
  }
 
 resource "null_resource" "bootstrap" {
+  # If state is set to none do not install DC/OS
+  count = "${var.state == "none" ? 0 : 1}"
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${aws_instance.bootstrap.id}"
