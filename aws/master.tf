@@ -57,6 +57,14 @@ resource "aws_elb" "internal-master-elb" {
     instance_protocol = "http"
   }
 
+  health_check {
+    healthy_threshold = 2
+    unhealthy_threshold = 2
+    timeout = 5
+    target = "TCP:5050"
+    interval = 30
+  }
+
   lifecycle {
     ignore_changes = ["name"]
   }
@@ -116,11 +124,12 @@ resource "aws_instance" "master" {
   }
 
   root_block_device {
-    volume_size = "${var.instance_disk_size}"
+    volume_size = "${var.aws_master_instance_disk_size}"
   }
 
   count = "${var.num_of_masters}"
   instance_type = "${var.aws_master_instance_type}"
+  iam_instance_profile = "${aws_iam_instance_profile.master.name}"
 
   ebs_optimized  = "true"
 
@@ -171,12 +180,15 @@ resource "aws_instance" "master" {
 module "dcos-mesos-master" {
   source               = "git@github.com:mesosphere/enterprise-terraform-dcos//tf_dcos_core"
   bootstrap_private_ip = "${aws_instance.bootstrap.private_ip}"
-  dcos_install_mode    = "${var.state}"
+  # Only allow upgrade and install as installation mode
+  dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"
   dcos_version         = "${var.dcos_version}"
   role                 = "dcos-mesos-master"
 }
 
 resource "null_resource" "master" {
+  # If state is set to none do not install DC/OS
+  count = "${var.state == "none" ? 0 : var.num_of_masters}"
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
