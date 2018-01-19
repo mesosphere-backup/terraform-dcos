@@ -19,6 +19,15 @@ tags {
   }
 }
 
+# Addressable Cluster UUID
+data "template_file" "cluster_uuid" {
+ template = "tf$${uuid}"
+
+ vars {
+    uuid = "${substr(md5(aws_vpc.default.id),0,4)}"
+  }
+}
+
 # Allow overrides of the owner variable or default to whoami.sh
 data "template_file" "cluster-name" {
  template = "$${username}-tf$${uuid}"
@@ -305,9 +314,9 @@ resource "aws_security_group" "private_slave" {
    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
    }
 
-   tags {
-     KubernetesCluster = "${var.kubernetes_cluster}"
-   }
+  tags {
+    KubernetesCluster = "${var.kubernetes_cluster}"
+  }
 }
 
 # Provide tested AMI and user from listed region startup commands

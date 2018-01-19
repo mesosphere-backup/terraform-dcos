@@ -1,5 +1,5 @@
 resource "aws_iam_role" "agent" {
-  name = "agent_iam_role"
+  name = "${coalesce(var.owner, data.external.whoami.result["owner"])}_${data.template_file.cluster_uuid.rendered}_agent_iam_role"
 
   assume_role_policy = <<EOF
 {
@@ -18,12 +18,12 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "agent" {
-  name = "agent_instance_profile"
+  name = "${coalesce(var.owner, data.external.whoami.result["owner"])}_${data.template_file.cluster_uuid.rendered}_agent_instance_profile"
   role = "${ aws_iam_role.agent.name }"
 }
 
 resource "aws_iam_role_policy" "agent" {
-  name = "agent_iam_role_policy"
+  name = "${coalesce(var.owner, data.external.whoami.result["owner"])}_${data.template_file.cluster_uuid.rendered}_agent_iam_role_policy"
   role = "${ aws_iam_role.agent.id }"
   policy = <<EOF
 {
