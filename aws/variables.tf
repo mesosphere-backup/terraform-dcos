@@ -1,5 +1,5 @@
 variable "ssh_key_name" {
-  description = "Key name associated with your instances for login"
+  description = "ssh key name associated with your instances for login"
   default = "default"
 }
 
