@@ -5,11 +5,16 @@ _Mission:  Allow for automated installs and upgrades for DC/OS on GCP._
 
 ## Prerequisites
 - [Terraform 0.11.x](https://www.terraform.io/downloads.html)
-- GCP Cloud Credentials. _[configure via: `gcloud auth login`](https://cloud.google.com/sdk/downloads)_
+- Google Cloud Credentials. _[configure via: `gcloud auth login`](https://cloud.google.com/sdk/downloads)_
+- Or Google Cloud Service Account key
 - SSH Keys
 - Existing Google Project. Soon automated with Terraform using project creation as documented [here.](https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform)
 
-## Install Google SDK
+## Setting up access to GCP Project
+
+To access your GCP Project from terraform you have two options:
+
+#### Install Google SDK
 
 Run this command to authenticate to the Google Provider. This will bring down your keys locally on the machine for terraform to use.
 
@@ -18,9 +23,26 @@ $ gcloud auth login
 $ gcloud auth application-default login
 ```
 
+#### Configure your GCP Service Account Key
+
+Authenticating with Google Cloud services requires a JSON file which called service account file.
+
+This file is downloaded directly from the _Google Developers Console_. To make the process more straightforwarded, it is documented here:
+Log into the [Google Developers Console](https://console.developers.google.com/) and select a project.
+The API Manager view should be selected, click on "Credentials" on the left, then "Create credentials", and finally "Service account key".
+
+Select "Compute Engine default service account" in the "Service account" dropdown, and select "JSON" as the key type.
+Clicking "Create" will download your credentials.
+
+```bash
+$ cat desired_cluster_profile.tfvars
+gcp_credentials_key_file = "PATH/YOUR_GCP_SERVICE_ACCOUNT_KEY.json"
+...
+```
+
 ## Configure your GCP SSH Keys
 
-Set the private key that you will be you will be using to your ssh-agent and set public key in terraform. This will allow you to log into to the cluster after DC/OS is deployed and also helps Terraform setup your cluster at deployment time.
+Set the private key that you will be using to your ssh-agent and set public key in terraform. This will allow you to log into to the cluster after DC/OS is deployed and also helps Terraform setup your cluster at deployment time.
 
 ```bash
 $ ssh-add ~/.ssh/your_private_key.pem
@@ -28,7 +50,7 @@ $ ssh-add ~/.ssh/your_private_key.pem
 
 ```bash
 $ cat desired_cluster_profile.tfvars
-gcp_ssh_pub_key_file = "INSERT_PUBLIC_KEY_PATH_HERE"
+gcp_ssh_pub_key_file = "PATH/YOUR_GCP_SSH_PUBLIC_KEY.pub"
 ...
 ```
 
