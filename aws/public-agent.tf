@@ -10,7 +10,7 @@ resource "aws_elb_attachment" "public-agent-elb" {
 resource "aws_elb" "public-agent-elb" {
   name = "${data.template_file.cluster-name.rendered}-pub-agt-elb"
 
-  subnets         = ["${aws_subnet.public.id}"]
+  subnets         = ["${aws_subnet.public.*.id}"]
   security_groups = ["${aws_security_group.public_slave.id}", "${aws_security_group.http-https.id}"]
   instances       = ["${aws_instance.public-agent.*.id}"]
 
@@ -84,7 +84,7 @@ resource "aws_instance" "public-agent" {
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
   # backend instances.
-  subnet_id = "${aws_subnet.public.id}"
+  subnet_id = "${aws_subnet.public.*.id[count.index]}"
 
   # OS init script
   provisioner "file" {

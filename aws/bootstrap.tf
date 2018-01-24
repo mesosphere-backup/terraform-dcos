@@ -38,7 +38,7 @@ resource "aws_instance" "bootstrap" {
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
   # backend instances.
-  subnet_id = "${aws_subnet.public.id}"
+  subnet_id = "${aws_subnet.public.0.id}"
 
   # DCOS ip detect script
   provisioner "file" {
