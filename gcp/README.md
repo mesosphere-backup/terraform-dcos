@@ -83,7 +83,6 @@ The default variables are tracked in the [variables.tf](/gcp/variables.tf) file.
 
 For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/oss/custom/system-requirements/). You can find the list that Terraform for this repo [here](http://github.com/bernadinm/tf_dcos_core).
 
-
 To apply the configuration file, you can use this command below.
 
 ```bash
