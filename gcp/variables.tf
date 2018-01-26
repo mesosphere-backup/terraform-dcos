@@ -6,6 +6,11 @@ variable "gcp_region" {
  default = "us-west1"
 }
 
+variable "gcp_credentials_key_file" {
+ default = ""
+ description = "Google project service account key"
+}
+
 variable "admin_cidr" {
   default     = "0.0.0.0/0"
   description = "Inbound Master Access"

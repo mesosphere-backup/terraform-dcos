@@ -3,7 +3,7 @@ data "external" "whoami" {
   program = ["scripts/local/whoami.sh"]
 }
 
-# Privdes a unique ID thoughout the livespan of the cluster
+# Provides a unique ID throughout the livespan of the cluster
 resource "random_id" "cluster" {
   keepers = {
     # Generate a new id each time we switch to a new AMI id
@@ -27,6 +27,7 @@ data "template_file" "cluster-name" {
 provider "google" {
   project     = "${var.gcp_project}"
   region      = "${var.gcp_region}"
+  credentials = "${var.gcp_credentials_key_file}"
 }
 
 data "google_compute_zones" "available" {}
