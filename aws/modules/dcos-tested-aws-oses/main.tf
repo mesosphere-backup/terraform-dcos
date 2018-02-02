@@ -12,7 +12,7 @@ data "template_file" "aws_ami" {
   template = "$${aws_ami_result}"
 
   vars {
-    aws_ami_result = "${lookup(var.aws_ami, format("%s_%s",var.os, var.region))}"
+    aws_ami_result = "${lookup(merge(var.aws_ami, var.user_aws_ami), format("%s_%s",var.os, var.region))}"
   }
 }
 

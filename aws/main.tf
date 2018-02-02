@@ -321,7 +321,8 @@ resource "aws_security_group" "private_slave" {
 
 # Provide tested AMI and user from listed region startup commands
   module "aws-tested-oses" {
-      source   = "./modules/dcos-tested-aws-oses"
-      os       = "${var.os}"
-      region   = "${var.aws_region}"
+      source        = "./modules/dcos-tested-aws-oses"
+      os            = "${var.os}"
+      region        = "${var.aws_region}"
+      user_aws_ami  = "${var.user_aws_ami}"
 }
