@@ -375,11 +375,6 @@ variable "dcos_version" {
  description = "DCOS Version"
 }
 
-variable "dcos_type" {
- default = "open"
- description = "DCOS type, either ee or open."
-}
-
 variable "dcos_cluster_docker_credentials" {
  default = ""
  description = "This parameter specifies a dictionary of Docker credentials to pass."
