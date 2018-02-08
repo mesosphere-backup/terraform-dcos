@@ -473,16 +473,6 @@ variable "dcos_ip_detect_public_contents" {
  description = "Used for AWS to determine the public IP. DC/OS bug requires this variable instead of a file see https://jira.mesosphere.com/browse/DCOS_OSS-905 for more information."
 }
 
-# Core OS
-variable "aws_amis" {
-  default = {
-    eu-west-1 = "ami-163e7e65"
-    us-east-1 = "ami-21732036"
-    us-west-1 = "ami-161a5176"
-    us-west-2 = "ami-078d5367"
-  }
-}
-
 variable "kubernetes_cluster" {
  default = "kubernetes-cluster"
  description = "Kubernetes cluster tag"
