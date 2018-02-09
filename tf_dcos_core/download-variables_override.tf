@@ -33,5 +33,6 @@ variable "dcos_download_path" {
    "1.10.1"     = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.10.1/dcos_generate_config.ee.sh"
    "1.10.2"     = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.10.2/dcos_generate_config.ee.sh"
    "1.10.3"     = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.10.3/dcos_generate_config.ee.sh"
+   "1.10.4"     = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.10.4/dcos_generate_config.ee.sh"
   }
 }
