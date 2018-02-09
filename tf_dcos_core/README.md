@@ -64,6 +64,7 @@ This tf_dcos_core module takes care of all the installation, modification, and u
 
 ### Optional Variables
 
+- `dcos_previous_version_master_index` - Used to track the index of master for quering the previous DC/OS version during upgrading. (optional) applicable: 1.9+
 - `dcos_skip_checks` - Upgrade option: Used to skip all dcos checks that may block an upgrade if any DC/OS component is unhealthly. (optional) applicable: 1.10+
 - `dcos_dns_search` - A space-separated list of domains that are tried when an unqualified domain is entered. (optional)
 - `custom_dcos_download_path` - insert location of dcos installer script (optional)

@@ -268,6 +268,10 @@ variable "dcos_previous_version" {
    default = ""
 }
 
+variable "dcos_previous_version_master_index" {
+   default = "0"
+}
+
 variable "dcos_agent_list" {
    default = ""
 }

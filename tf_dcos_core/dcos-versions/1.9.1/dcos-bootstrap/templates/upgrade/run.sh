@@ -75,7 +75,8 @@ ${dcos_package_storage_uri == "" ? "" : "  package_storage_uri: ${dcos_package_s
 EOF
 cp /tmp/ip-detect genconf/.
 OVERRIDE_PREVIOUS_DCOS_VERSION=${dcos_previous_version}
-PREVIOUS_DCOS_VERSION=$(grep -a "'dcos_version':" "$(ls -altr dcos_generate_config.* | tail -1 | awk '{ print $9 }')" | cut -d ":" -f2 | sed 's/,$//' | sed s/\'//g)
+# TODO(bernadinm) Terraform Bug: 9488. Templates will not accept list, but only strings. Used for PREVIOUS_DCOS_VERSION generation.
+PREVIOUS_DCOS_VERSION=$(curl -ksL ${element(compact(split("\n - ","${dcos_master_list}")),"${dcos_previous_version_master_index}")}/dcos-metadata/dcos-version.json | grep version | cut -d ":" -f2 | sed 's/ //g' | sed 's/,$//' | sed 's/\"//g')
 curl -o dcos_generate_config.${dcos_version}.sh ${dcos_download_path}
 bash dcos_generate_config.${dcos_version}.sh --generate-node-upgrade-script $${OVERRIDE_PREVIOUS_DCOS_VERSION:-$${PREVIOUS_DCOS_VERSION}}
 rm -fr genconf/serve/upgrade/current

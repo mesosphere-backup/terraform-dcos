@@ -56,6 +56,7 @@ template = "${file("${path.module}/dcos-versions/${var.dcos_version}/${var.role}
     dcos_process_timeout = "${var.dcos_process_timeout}"
     dcos_public_agent_list = "${var.dcos_public_agent_list}"
     dcos_previous_version = "${var.dcos_previous_version}"
+    dcos_previous_version_master_index = "${var.dcos_previous_version_master_index}"
     dcos_resolvers  = "${var.dcos_resolvers}"
     dcos_rexray_config_filename = "${var.dcos_rexray_config_filename}"
     dcos_rexray_config_method = "${var.dcos_rexray_config_method}"
