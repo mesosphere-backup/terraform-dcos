@@ -30,7 +30,7 @@ resource "aws_instance" "bootstrap" {
   key_name = "${var.ssh_key_name}"
 
   # Our Security group to allow http and SSH access
-  vpc_security_group_ids = ["${aws_security_group.master.id}","${aws_security_group.admin.id}"]
+  vpc_security_group_ids = ["${aws_security_group.any_access_internal.id}","${aws_security_group.admin.id}"]
 
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
