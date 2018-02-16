@@ -16,7 +16,7 @@ If you want to leverage the terraform installer, feel free to check out https://
 
 ### Configure your Cloud Provider Credentials
 
-**Configure your AWS ssh Keys**
+##### Configure your AWS ssh Keys
 
 In the `variable.tf` there is a `ssh_key_name` variable. This key must be added to your host machine running your terraform script as it will be used to log into the machines to run setup scripts. The default is `default`. You can find aws documentation that talks about this [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws).
 
@@ -25,7 +25,10 @@ When you have your key available, you can use ssh-add.
 ```bash
 ssh-add ~/.ssh/path_to_you_key.pem
 ```
-**Configure your IAM AWS Keys**
+
+_*NOTE*: When using an ssh agent it is best to add it the command above to your `~/.bash_profile`, next time your terminal gets reopened, it will reload your keys automatically._
+
+##### Configure your IAM AWS Keys
 
 You will need your AWS aws_access_key_id and aws_secret_access_key. If you don't have one yet, you can get them from the AWS documentation [here](
 http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). When you finally get them, you can install it in your home directory. The default location is `$HOME/.aws/credentials` on Linux and OS X, or `"%USERPROFILE%\.aws\credentials"` for Windows users.
