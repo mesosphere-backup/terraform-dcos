@@ -52,8 +52,12 @@ We've provided all the sensible defaults that you would want to play around with
 
 ```bash
 terraform init -from-module git@github.com:mesosphere/enterprise-terraform-dcos//aws
-terraform apply -var aws_profile="default_or_custom_profile"
+terraform apply
 ```
+
+###### Choosing Different AWS Credential Profiles
+
+If you have different types of AWS profiles that you use within your organization, you can specify which credentials/keys you want terraform to use by appending this flag to terraform apply `-var aws_profile="default_or_custom_profile"`
 
 ### Custom terraform-dcos variables
 
@@ -216,6 +220,20 @@ terraform taint aws_instance.public-agent.0 # The number represents the agent in
 ```
 
 **Redeploy Agent**
+
+```bash
+terraform apply -var-file desired_cluster_profile
+```
+
+### Bootstrap Node
+
+**Taint Bootstrap Node**
+
+```bash
+terraform taint aws_instance.bootstrap
+```
+
+**Redeploy Bootstrap Node**
 
 ```bash
 terraform apply -var-file desired_cluster_profile
