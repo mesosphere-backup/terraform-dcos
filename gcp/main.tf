@@ -13,13 +13,24 @@ resource "random_id" "cluster" {
   byte_length = 8
 }
 
+locals {
+  max_owner_length = 9
+  whoami           = "${data.external.whoami.result["owner"]}"
+  owner            = "${length(local.whoami) > local.max_owner_length ? substr(local.whoami, 0, local.max_owner_length) : local.whoami}"
+  username         = "${coalesce(var.owner, local.owner)}"
+}
+
+resource "null_resource" "owner_check" {
+  count = "${length(var.owner) > local.max_owner_length ? 1 : 0}"
+  "Invalid owner: due to GCP resource naming restrictions, owner value is restricted to 10 characters." = true
+}
+
 # Allow overrides of the owner variable or default to whoami.sh
 data "template_file" "cluster-name" {
- template = "$${username}-tf$${uuid}"
+  template = "${local.username}-tf$${uuid}"
 
   vars {
-    uuid     = "${substr(md5(random_id.cluster.id),0,4)}"
-    username = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
+    uuid   = "${substr(md5(random_id.cluster.id),0,4)}"
   }
 }
 
