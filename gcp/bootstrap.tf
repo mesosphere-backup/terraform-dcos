@@ -237,6 +237,12 @@ resource "null_resource" "bootstrap" {
    destination = "/tmp/ip-detect"
   }
 
+  # DCOS fault domain detect script
+  provisioner "file" {
+   source = "${var.dcos_fault_domain_detect_filename}"
+   destination = "/tmp/fault-domain-detect"
+   }
+
   # Generate and upload bootstrap script to node
   provisioner "file" {
     content     = "${module.dcos-bootstrap.script}"

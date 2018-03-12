@@ -1,27 +1,27 @@
 # Main Variables
 variable "bootstrap_private_ip" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_install_mode" {
-   default = "install"
+  default = "install"
 }
 
 variable "dcos_version" {
-   default = "1.9.0"
+  default = "1.9.0"
 }
 
 variable "role" {
-   default = ""
+  default = ""
 }
 
 # DCOS bootstrap node variables
 variable "dcos_security" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_resolvers" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_skip_checks" {
@@ -29,7 +29,7 @@ variable "dcos_skip_checks" {
 }
 
 variable "dcos_oauth_enabled" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_master_external_loadbalancer" {
@@ -37,235 +37,319 @@ variable "dcos_master_external_loadbalancer" {
 }
 
 variable "dcos_master_discovery" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_aws_template_storage_bucket" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_aws_template_storage_bucket_path" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_aws_template_storage_region_name" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_aws_template_upload" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_aws_template_storage_access_key_id" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_aws_template_storage_secret_access_key" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_exhibitor_storage_backend" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_exhibitor_zk_hosts" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_exhibitor_zk_path" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_aws_access_key_id" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_aws_region" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_aws_secret_access_key" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_exhibitor_explicit_keys" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_s3_bucket" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_s3_prefix" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_exhibitor_azure_account_name" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_exhibitor_azure_account_key" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_exhibitor_azure_prefix" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_exhibitor_address" {
-   default = ""
+  default = ""
 }
 
 variable "num_of_public_agents" {
-   default = ""
+  default = ""
 }
 
 variable "num_of_private_agents" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_num_masters" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_customer_key" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_rexray_config_method" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_rexray_config_filename" {
-   default = ""
+  default = ""
+}
+
+variable "dcos_adminrouter_tls_1_0_enabled" {
+  default = ""
+}
+
+variable "dcos_adminrouter_tls_1_1_enabled" {
+  default = ""
+}
+
+variable "dcos_adminrouter_tls_1_2_enabled" {
+  default = ""
+}
+
+variable "dcos_adminrouter_tls_cipher_suite" {
+  default = ""
 }
 
 variable "dcos_auth_cookie_secure_flag" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_bouncer_expiration_auth_token_days" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_superuser_password_hash" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_cluster_name" {
-   default = ""
+  default = ""
+}
+
+variable "dcos_ca_certificate_chain_path" {
+  default = ""
+}
+
+variable "dcos_ca_certificate_path" {
+  default = ""
+}
+
+variable "dcos_ca_certificate_key_path" {
+  default = ""
+}
+
+variable "dcos_config" {
+  default = ""
+}
+
+variable "dcos_custom_checks" {
+  default = ""
+}
+
+variable "dcos_dns_bind_ip_blacklist" {
+  default = ""
+}
+
+variable "dcos_enable_gpu_isolation" {
+  default = ""
+}
+
+variable "dcos_fault_domain_detect_contents" {
+  default = ""
+}
+
+variable "dcos_fault_domain_enabled" {
+  default = ""
+}
+
+variable "dcos_gpus_are_scarce" {
+  default = ""
+}
+
+variable "dcos_l4lb_enable_ipv6" {
+  default = ""
+}
+
+variable "dcos_license_key_contents" {
+  default = ""
+}
+
+variable "dcos_mesos_container_log_sink" {
+  default = ""
+}
+
+variable "dcos_mesos_dns_set_truncate_bit" {
+  default = ""
+}
+
+variable "dcos_mesos_max_completed_tasks_per_framework" {
+  default = ""
+}
+
+variable "dcos_ucr_default_bridge_subnet" {
+  default = ""
 }
 
 variable "dcos_superuser_username" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_telemetry_enabled" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_zk_super_credentials" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_zk_master_credentials" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_zk_agent_credentials" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_overlay_enable" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_overlay_config_attempts" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_overlay_mtu" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_overlay_network" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_dns_search" {
-   default = ""
+  default = ""
+}
+
+variable "dcos_dns_forward_zones" {
+  default = ""
 }
 
 variable "dcos_master_dns_bindall" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_use_proxy" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_http_proxy" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_https_proxy" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_no_proxy" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_check_time" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_docker_remove_delay" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_audit_logging" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_gc_delay" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_log_directory" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_process_timeout" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_cluster_docker_credentials" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_cluster_docker_credentials_dcos_owned" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_cluster_docker_credentials_write_to_etc" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_cluster_docker_credentials_enabled" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_master_list" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_public_agent_list" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_previous_version" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_previous_version_master_index" {
@@ -273,15 +357,15 @@ variable "dcos_previous_version_master_index" {
 }
 
 variable "dcos_agent_list" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_bootstrap_port" {
-   default = "80"
+  default = "80"
 }
 
 variable "dcos_ip_detect_public_filename" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_ip_detect_public_contents" {
@@ -301,7 +385,7 @@ variable "dcos_cluster_docker_registry_url" {
 }
 
 variable "custom_dcos_download_path" {
-   default = ""
+  default = ""
 }
 
 variable "dcos_cluster_docker_registry_enabled" {
@@ -309,13 +393,13 @@ variable "dcos_cluster_docker_registry_enabled" {
 }
 
 variable "dcos_enable_docker_gc" {
- default = ""
+  default = ""
 }
 
 variable "dcos_staged_package_storage_uri" {
- default = ""
+  default = ""
 }
 
 variable "dcos_package_storage_uri" {
- default = ""
+  default = ""
 }

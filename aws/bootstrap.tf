@@ -37,12 +37,6 @@ resource "aws_instance" "bootstrap" {
   # backend instances.
   subnet_id = "${aws_subnet.public.id}"
 
-  # DCOS ip detect script
-  provisioner "file" {
-   source = "${var.ip-detect["aws"]}"
-   destination = "/tmp/ip-detect"
-   }
-
   # OS init script
   provisioner "file" {
    content = "${module.aws-tested-oses.os-setup}"
@@ -235,6 +229,18 @@ resource "null_resource" "bootstrap" {
     host = "${element(aws_instance.bootstrap.*.public_ip, 0)}"
     user = "${module.aws-tested-oses.user}"
   }
+
+  # DCOS ip detect script
+  provisioner "file" {
+   source = "${var.ip-detect["aws"]}"
+   destination = "/tmp/ip-detect"
+   }
+
+  # DCOS fault domain detect script
+  provisioner "file" {
+   source = "${var.dcos_fault_domain_detect_filename}"
+   destination = "/tmp/fault-domain-detect"
+   }
 
   # Generate and upload bootstrap script to node
   provisioner "file" {

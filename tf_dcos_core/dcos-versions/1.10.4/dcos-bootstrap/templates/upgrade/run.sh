@@ -74,8 +74,8 @@ ${dcos_staged_package_storage_uri == "" ? "" : dcos_package_storage_uri == "" ? 
 ${dcos_staged_package_storage_uri == "" ? "" : "  staged_package_storage_uri: ${dcos_staged_package_storage_uri}"}
 ${dcos_package_storage_uri == "" ? "" : "  package_storage_uri: ${dcos_package_storage_uri}"}
 EOF
-cp /tmp/ip-detect genconf/.
-cp /tmp/ip-detect-public genconf/.
+cp /tmp/ip-detect genconf/. &> /dev/null; if [[ $? -ne 0 ]]; then echo "skipping absent /tmp/ip-detect file"; else echo "copied file /tmp/ip-detect to ~/genconf"; fi
+cp /tmp/ip-detect-public genconf/. &> /dev/null; if [[ $? -ne 0 ]]; then echo "skipping absent /tmp/ip-detect-public file"; else echo "copied file /tmp/ip-detect-public to ~/genconf"; fi
 OVERRIDE_PREVIOUS_DCOS_VERSION=${dcos_previous_version}
 # TODO(bernadinm) Terraform Bug: 9488. Templates will not accept list, but only strings. Used for PREVIOUS_DCOS_VERSION generation.
 PREVIOUS_DCOS_VERSION=$(curl -ksL ${element(compact(split("\n - ","${dcos_master_list}")),"${dcos_previous_version_master_index}")}/dcos-metadata/dcos-version.json | grep version | cut -d ":" -f2 | sed 's/ //g' | sed 's/,$//' | sed 's/\"//g')
@@ -83,5 +83,5 @@ curl -o dcos_generate_config.${dcos_version}.sh ${dcos_download_path}
 bash dcos_generate_config.${dcos_version}.sh --generate-node-upgrade-script $${OVERRIDE_PREVIOUS_DCOS_VERSION:-$${PREVIOUS_DCOS_VERSION}} || exit 1
 rm -fr genconf/serve/upgrade/current
 cp -r genconf/serve/upgrade/$(ls -1tr genconf/serve/upgrade/ | tail -1) genconf/serve/upgrade/current
-docker rm -f $(docker ps -a -q -f ancestor=nginx)
+docker rm -f $(docker ps -a -q -f ancestor=nginx) &> /dev/null; if [[ $? -eq 0 ]]; then echo "reloaded nginx..."; fi
 docker run -d -p ${dcos_bootstrap_port}:80 -v $PWD/genconf/serve:/usr/share/nginx/html:ro nginx

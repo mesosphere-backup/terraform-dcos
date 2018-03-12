@@ -73,6 +73,10 @@ variable "ip-detect" {
  }
 }
 
+variable "dcos_fault_domain_detect_filename" {
+ default = "scripts/cloud/azure/fault-domain-detect"
+}
+
 variable "os-init-script" {
  description = "Init Scripts that runs post-AMI deployment and pre-DC/OS install"
  type = "map"
