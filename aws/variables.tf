@@ -296,6 +296,11 @@ variable "dcos_cluster_name" {
  description = "Name of the DC/OS Cluster"
 }
 
+variable "dcos_license_key_contents" {
+ default = ""
+ description = "Used to privide the license key of DC/OS for Enterprise Edition"
+}
+
 variable "dcos_superuser_username" {
  default = ""
  description = "This required parameter specifies the Admin username. (EE only)"

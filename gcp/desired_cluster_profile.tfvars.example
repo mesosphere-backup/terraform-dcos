@@ -19,3 +19,6 @@ admin_cidr = "0.0.0.0/0"
 
 # Uncomment the line below if you want short living cheap cluster for testing
 #gcp_scheduling_preemptible = "true"
+dcos_license_key_contents= <<EOF
+<INSERT_LICENSE_HERE>
+EOF

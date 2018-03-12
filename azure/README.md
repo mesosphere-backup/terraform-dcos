@@ -193,6 +193,9 @@ dcos_cluster_docker_credentials = <<EOF
     'https://index.docker.io/v1/':
       auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
 EOF
+dcos_license_key_contents = <<EOF
+<INSERT_LICENSE_HERE>
+EOF
 ```
 
 ## Upgrading DC/OS  

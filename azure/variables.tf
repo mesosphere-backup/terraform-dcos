@@ -73,6 +73,11 @@ variable "ip-detect" {
  }
 }
 
+variable "dcos_license_key_contents" {
+ default = ""
+ description = "Used to privide the license key of DC/OS for Enterprise Edition"
+}
+
 variable "dcos_fault_domain_detect_filename" {
  default = "scripts/cloud/azure/fault-domain-detect"
 }
