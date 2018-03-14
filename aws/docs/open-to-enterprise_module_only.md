@@ -52,7 +52,7 @@ terraform plan -var-file desired_cluster_profile
 
 Change your source of your community module to our enterprise module that contains the DC/OS download bits.
 
-i.e Change `source = "./modules/dcos-core"` or `source = "github.com/bernadinm/tf_dcos_core"` into this below:
+i.e Change `source = "./modules/dcos-core"` or `source = "github.com/dcos/tf_dcos_core"` into this below:
 
  ```bash
  source = "git@github.com:mesosphere/terraform-dcos-enterprise//tf_dcos_core"
