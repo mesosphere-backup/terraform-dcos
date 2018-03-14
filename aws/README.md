@@ -68,7 +68,7 @@ For a list of supported operating systems for this repo, see the ones that DC/OS
 
 ###### Supported DC/OS Versions
 
-For a list of all the DC/OS versions that this repository supports, you can find them at the `tf_dcos_core` module [here](https://github.com/bernadinm/tf_dcos_core/tree/master/dcos-versions).
+For a list of all the DC/OS versions that this repository supports, you can find them at the `tf_dcos_core` module [here](https://github.com/dcos/tf_dcos_core/tree/master/dcos-versions).
 
 To apply the configuration file, you can use this command below.
 
