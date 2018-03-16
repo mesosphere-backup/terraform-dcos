@@ -5,7 +5,7 @@ This document to aid users who have their own terraform infrastructure in place 
 
 ## Requirements
 
-You are already the open source `dcos_core` module. 
+You are already using the open source `tf_dcos_core` module. 
 
 ## High Level Procedure
 
