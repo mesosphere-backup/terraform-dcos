@@ -50,6 +50,8 @@ We've provided all the sensible defaults that you would want to play around with
 
 - There is no git clone of this repo required. Terraform does this for you under the hood.
 
+_*Note:* Use a new directory for the command below as terraform will write its files within that directory._  
+
 ```bash
 terraform init -from-module github.com/dcos/terraform-dcos//aws
 terraform apply 
