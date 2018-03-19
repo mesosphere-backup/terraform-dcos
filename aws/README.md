@@ -230,7 +230,7 @@ terraform apply -var-file desired_cluster_profile
 
 #### Adding GPU Private Agents
 
-*NOTE: Best used with DC/OS 1.9*
+*NOTE: Best used with DC/OS 1.9 and above*
 
 As of Mesos 1.0, which now supports GPU agents, you can experiment with them immediately by simply removing `.disabled` from `dcos-gpu-agents.tf.disabled`. Once you do that, you can simply perform `terraform apply` and the agents will be deployed and configure and automatically join your mesos cluster. The default of `num_of_gpu_agents` is `1`. You can also remove GPU agents by simply adding `.disabled` and it will exit as well.
 
