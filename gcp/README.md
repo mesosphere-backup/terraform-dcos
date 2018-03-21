@@ -61,6 +61,10 @@ The default variables are tracked via in the [variables.tf](/gcp/variables.tf) f
 
 For list of supported operating systems for this repo which expands, we're supporting the ones that DC/OS recommends [here](https://docs.mesosphere.com/version-policy/). You can find the list that Terraform for this repo [here](/gcp/modules/dcos-tested-gcp-oses/platform/cloud/gcp).
 
+###### Supported DC/OS Versions
+
+For a list of all the DC/OS versions that this repository supports, you can find them at the `tf_dcos_core` module [here](https://github.com/mesosphere/terraform-dcos-enterprise/tree/master/tf_dcos_core/dcos-versions).
+
 To apply the configuration file, you can use this command below.
 
 ```bash
