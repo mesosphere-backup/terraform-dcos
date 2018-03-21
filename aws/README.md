@@ -65,7 +65,7 @@ The default variables are tracked in the [variables.tf](/aws/variables.tf) file.
 
 ###### Supported Operating Systems
 
-For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/oss/custom/system-requirements/). You can find the list that Terraform for this repo [here](/aws/modules/dcos-tested-aws-oses/platform/cloud/aws).
+For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/version-policy/). You can find the list that Terraform for this repo [here](/aws/modules/dcos-tested-aws-oses/platform/cloud/aws).
 
 ###### Supported DC/OS Versions
 
