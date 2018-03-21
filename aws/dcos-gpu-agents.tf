@@ -129,8 +129,3 @@ resource "null_resource" "gpu-agent" {
     ]
   }
 }
-
-output "GPU Private Public IP Address" {
-  value = ["${aws_instance.gpu-agent.*.public_ip}"]
-}
-

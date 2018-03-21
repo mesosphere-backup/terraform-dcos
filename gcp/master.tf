@@ -276,11 +276,3 @@ resource "null_resource" "master" {
     ]
   }
 }
-
-output "Master ELB Address" {
-  value = "${google_compute_forwarding_rule.external-master-forwarding-rule-http.ip_address}"
-}
-
-output "Mesos Master Public IP" {
-  value = ["${google_compute_instance.master.*.network_interface.0.access_config.0.assigned_nat_ip}"]
-}
