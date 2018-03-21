@@ -254,7 +254,3 @@ resource "null_resource" "bootstrap" {
     ignore_changes = ["data.template_file.cluster-name.rendered"]
   }
 }
-
-output "Bootstrap Public IP Address" {
-  value = "${aws_instance.bootstrap.public_ip}"
-}

@@ -1,23 +1,27 @@
-output "Master ELB Address" {
+output "Master ELB Public IP" {
   value = "${azurerm_public_ip.master_load_balancer_public_ip.fqdn}"
 }
 
-output "Public Agent ELB Address" {
+output "Public Agent ELB Public IP" {
   value = "${azurerm_public_ip.public_agent_load_balancer_public_ip.fqdn}"
 }
 
-output "Mesos Master Public IP" {
+output "Master Public IPs" {
   value = ["${azurerm_public_ip.master_public_ip.*.fqdn}"]
 }
 
-output "Private Agent Public IP Address" {
+output "Private Agent Public IPs" {
   value = ["${azurerm_public_ip.agent_public_ip.*.fqdn}"]
 }
 
-output "Public Agent Public IP Address" {
+output "Public Agent Public IPs" {
   value = ["${azurerm_public_ip.public_agent_public_ip.*.fqdn}"]
 }
 
-output "Bootstrap Public IP Address" {
+output "Bootstrap Host Public IP" {
   value = "${azurerm_public_ip.bootstrap_public_ip.fqdn}"
+}
+
+output "ssh_user" {
+ value = "${module.dcos-tested-azure-oses}"
 }
