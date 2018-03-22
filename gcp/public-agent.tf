@@ -200,11 +200,3 @@ resource "null_resource" "public-agent" {
     ]
   }
 }
-
-output "Public Agent ELB Address" {
-  value = "${google_compute_forwarding_rule.external-public-agent-forwarding-rule-http.ip_address}"
-}
-
-output "Mesos Public Agent Public IP" {
-  value = ["${google_compute_instance.public-agent.*.network_interface.0.access_config.0.assigned_nat_ip}"]
-}
