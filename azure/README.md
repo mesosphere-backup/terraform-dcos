@@ -70,7 +70,7 @@ _*Note:* Create a new directory before the command below as terraform will write
 
 ```bash
 terraform init -from-module github.com/dcos/terraform-dcos//azure
-terraform apply 
+terraform apply
 ```
 
 ### Custom terraform-dcos variables
@@ -79,7 +79,7 @@ The default variables are tracked in the [variables.tf](/aws/variables.tf) file.
 
 ###### Supported Operating Systems
 
-For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/oss/custom/system-requirements/). You can find the list that Terraform for this repo [here](/aws/modules/dcos-tested-aws-oses/platform/cloud/aws).
+For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.11/installing/oss/custom/system-requirements/). You can find the list that Terraform for this repo [here](/aws/modules/dcos-tested-aws-oses/platform/cloud/aws).
 
 ###### Supported DC/OS Versions
 
@@ -99,7 +99,7 @@ For advance users with stringent requirements, here are the DC/OS flags examples
 
 ```bash
 $ cat desired_cluster_profile.tfvars
-dcos_version = "1.10.2"
+dcos_version = "1.11.0"
 os = "centos_7.3"
 num_of_masters = "3"
 num_of_private_agents = "2"

@@ -81,7 +81,7 @@ terraform apply -var gcp_project="your_existing_project"
 
 The default variables are tracked in the [variables.tf](/gcp/variables.tf) file. Since this file can be overwritten during updates when you may run `terraform get --update` when you want to fetch new releases of DC/OS to upgrade too, its best to use the [desired_cluster_profile.tfvars](/gcp/desired_cluster_profile.tfvars.example) and set your custom terraform and DC/OS flags there. This way you can keep track of a single file that you can use manage the lifecycle of your cluster.
 
-For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/oss/custom/system-requirements/). You can find the list that Terraform for this repo [here](http://github.com/dcos/tf_dcos_core).
+For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.11/installing/oss/custom/system-requirements/). You can find the list that Terraform for this repo [here](http://github.com/dcos/tf_dcos_core).
 
 To apply the configuration file, you can use this command below.
 
@@ -97,7 +97,7 @@ For advance users with stringent requirements, here are the DC/OS flags examples
 
 ```bash
 $ cat desired_cluster_profile.tfvars
-dcos_version = "1.10.2"
+dcos_version = "1.11.0"
 os = "centos_7.3"
 num_of_masters = "3"
 num_of_private_agents = "2"
