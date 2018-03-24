@@ -6,6 +6,10 @@ variable "gcp_region" {
  default = "us-west1"
 }
 
+variable "gcp_zone" {
+ default = "us-west1-a"
+}
+
 variable "gcp_credentials_key_file" {
  default = ""
  description = "Google project service account key"
