@@ -2,10 +2,6 @@ variable "gcp_project" {
  default = "massive-bliss-781"
 }
 
-variable "gcp_region" {
- default = "us-west1"
-}
-
 variable "gcp_zone" {
  default = "us-west1-a"
 }
