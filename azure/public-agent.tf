@@ -324,6 +324,8 @@ resource "azurerm_virtual_machine" "public-agent" {
     type = "ssh"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
     host = "${element(azurerm_public_ip.public_agent_public_ip.*.fqdn, count.index)}"
+    private_key = "${local.private_key}"
+    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
     }
  }
 
@@ -340,6 +342,8 @@ resource "azurerm_virtual_machine" "public-agent" {
     type = "ssh"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
     host = "${element(azurerm_public_ip.public_agent_public_ip.*.fqdn, count.index)}"
+    private_key = "${local.private_key}"
+    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
    }
  }
 
@@ -373,6 +377,8 @@ resource "null_resource" "public-agent" {
   connection {
     host = "${element(azurerm_public_ip.public_agent_public_ip.*.fqdn, count.index)}"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
   }
 
   count = "${var.num_of_public_agents}"

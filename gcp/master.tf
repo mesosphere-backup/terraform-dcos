@@ -177,6 +177,8 @@ resource "google_compute_instance" "master" {
 
   connection {
     user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
   }
 
   network_interface {
@@ -244,6 +246,8 @@ resource "null_resource" "master" {
   connection {
     host = "${element(google_compute_instance.master.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
     user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
   }
 
   count = "${var.num_of_masters}"

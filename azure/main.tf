@@ -3,6 +3,10 @@ data "external" "whoami" {
   program = ["scripts/local/whoami.sh"]
 }
 
+locals {
+  private_key = "${file(var.ssh_private_key_filename)}"
+}
+
 # Privdes a unique ID thoughout the livespan of the cluster
 resource "random_id" "cluster" {
   keepers = {

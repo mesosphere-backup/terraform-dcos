@@ -35,6 +35,12 @@ variable "gcp_ssh_pub_key_file" {
  description = "Your ssh public key to log into your the DC/OS cluster"
 }
 
+variable "ssh_private_key_filename" {
+ # main.tf only used as a placeholder here, otherwise 'terraform validate' will fail
+ default = "main.tf"
+ description = "Path to file containing your ssh private key"
+}
+
 variable "gcp_ssh_user" {
  default = ""
  description = "The ssh username used to log into the server"

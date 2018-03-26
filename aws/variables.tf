@@ -3,6 +3,11 @@ variable "ssh_key_name" {
   default = "default"
 }
 
+variable "ssh_private_key_filename" {
+ default = "main.tf"
+ description = "Path to file containing your ssh private key"
+}
+
 variable "user" {
   description = "Username of the OS"
   default = "core"
@@ -280,6 +285,11 @@ variable "dcos_bouncer_expiration_auth_token_days" {
 variable "ssh_port" {
  default = "22"
  description = "This parameter specifies the port to SSH to"
+}
+
+variable "ssh_priv_key" {
+ default = ""
+ description = ""
 }
 
 variable "dcos_superuser_password_hash" {

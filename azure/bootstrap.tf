@@ -181,6 +181,8 @@ resource "azurerm_virtual_machine" "bootstrap" {
     type = "ssh"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
     host = "${azurerm_public_ip.bootstrap_public_ip.fqdn}"
+    private_key = "${local.private_key}"
+    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
     }
  }
 
@@ -197,6 +199,8 @@ resource "azurerm_virtual_machine" "bootstrap" {
     type = "ssh"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
     host = "${azurerm_public_ip.bootstrap_public_ip.fqdn}"
+    private_key = "${local.private_key}"
+    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
    }
  }
 
@@ -376,6 +380,8 @@ resource "null_resource" "bootstrap" {
   connection {
     host = "${element(azurerm_public_ip.bootstrap_public_ip.*.fqdn, 0)}"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
   }
 
   # DCOS ip detect script

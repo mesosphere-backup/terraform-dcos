@@ -4,6 +4,10 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+locals {
+  private_key = "${file(var.ssh_private_key_filename)}"
+}
+
 # Runs a local script to return the current user in bash
 data "external" "whoami" {
   program = ["scripts/local/whoami.sh"]

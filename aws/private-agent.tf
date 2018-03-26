@@ -5,6 +5,8 @@ resource "aws_instance" "agent" {
   connection {
     # The default username for our AMI
     user = "${module.aws-tested-oses.user}"
+    private_key = "${local.private_key}"
+    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
 
     # The connection will use the local SSH agent for authentication.
   }
@@ -88,6 +90,8 @@ resource "null_resource" "agent" {
   connection {
     host = "${element(aws_instance.agent.*.public_ip, count.index)}"
     user = "${module.aws-tested-oses.user}"
+    private_key = "${local.private_key}"
+    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
   }
 
   count = "${var.num_of_private_agents}"
