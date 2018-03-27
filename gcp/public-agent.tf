@@ -110,7 +110,7 @@ resource "google_compute_instance" "public-agent" {
   connection {
     user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
     private_key = "${local.private_key}"
-    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
+    agent = "${local.agent}"
   }
 
   network_interface {
@@ -179,7 +179,7 @@ resource "null_resource" "public-agent" {
     host = "${element(google_compute_instance.public-agent.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
     user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
     private_key = "${local.private_key}"
-    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
+    agent = "${local.agent}"
   }
 
   count = "${var.num_of_public_agents}"

@@ -7,6 +7,7 @@ locals {
     # example: region = "us-west1", zone = "us-west1-a", thus the "- 2". All zones are a region plus a dash and a letter
     gcp_region = "${substr(var.gcp_zone, 0, length(var.gcp_zone) - 2)}"
     private_key = "${file(var.ssh_private_key_filename)}"
+    agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
 }
 
 # Provides a unique ID throughout the livespan of the cluster

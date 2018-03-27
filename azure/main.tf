@@ -5,6 +5,7 @@ data "external" "whoami" {
 
 locals {
   private_key = "${file(var.ssh_private_key_filename)}"
+  agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
 }
 
 # Privdes a unique ID thoughout the livespan of the cluster
