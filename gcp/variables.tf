@@ -57,8 +57,8 @@ variable "gcp_scheduling_preemptible" {
 }
 
 variable "os" {
-  default = "coreos_1235.9.0"
-  description = "Recommended DC/OS OSs are centos_7.2, coreos_1235.9.0, coreos_835.13.0"
+  default = "coreos_1235.12.0"
+  description = "Recommended DC/OS OSs are centos_7.2, coreos_1235.12.0, coreos_835.13.0"
 }
 
 variable "num_of_private_agents" {
