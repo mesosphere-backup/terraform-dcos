@@ -102,3 +102,7 @@ resource "google_compute_firewall" "ssh" {
     source_ranges = ["${var.admin_cidr}"]
     description   = "Used to allow SSH access to any instance from the outside world specified by the user source range."
 }
+
+output "ssh_user" {
+ value = "${module.dcos-tested-gcp-oses.user}"
+}

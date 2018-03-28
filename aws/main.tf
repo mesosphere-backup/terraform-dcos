@@ -330,3 +330,7 @@ resource "aws_security_group" "private_slave" {
       os       = "${var.os}"
       region   = "${var.aws_region}"
 }
+
+output "ssh_user" {
+   value = "${module.aws-tested-oses.user}"
+}

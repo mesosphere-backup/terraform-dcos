@@ -155,3 +155,7 @@ resource "null_resource" "agent" {
     ]
   }
 }
+
+output "Private Agent Public IPs" {
+  value = ["${google_compute_instance.agent.*.network_interface.0.access_config.0.assigned_nat_ip}"]
+}

@@ -408,3 +408,7 @@ resource "null_resource" "bootstrap" {
     ignore_changes = ["data.template_file.cluster-name.rendered"]
   }
 }
+
+output "Bootstrap Host Public IP" {
+  value = "${azurerm_public_ip.bootstrap_public_ip.fqdn}"
+}

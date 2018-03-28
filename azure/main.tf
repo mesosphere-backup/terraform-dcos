@@ -121,3 +121,7 @@ resource "azurerm_network_security_rule" "public-subnet-httpsRule" {
     resource_group_name         = "${azurerm_resource_group.dcos.name}"
     network_security_group_name = "${azurerm_network_security_group.public_subnet_security_group.name}"
 }
+
+output "ssh_user" {
+ value = "${module.azure-tested-oses.user}"
+}

@@ -117,3 +117,7 @@ resource "null_resource" "agent" {
     ]
   }
 }
+
+output "Private Agent Public IPs" {
+  value = ["${aws_instance.agent.*.public_ip}"]
+}

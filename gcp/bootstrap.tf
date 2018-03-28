@@ -263,3 +263,7 @@ resource "null_resource" "bootstrap" {
     ignore_changes = ["data.template_file.cluster-name.rendered"]
   }
 }
+
+output "Bootstrap Host Public IP" {
+  value = "${google_compute_instance.bootstrap.network_interface.0.access_config.0.assigned_nat_ip}"
+}
