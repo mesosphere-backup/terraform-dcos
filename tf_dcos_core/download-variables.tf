@@ -24,6 +24,8 @@ variable "dcos_download_path" {
    "1.9.4"      = "https://downloads.dcos.io/dcos/stable/1.9.4/dcos_generate_config.sh"
    "1.9.5"      = "https://downloads.dcos.io/dcos/stable/1.9.5/dcos_generate_config.sh"
    "1.9.6"      = "https://downloads.dcos.io/dcos/stable/1.9.6/dcos_generate_config.sh"
+   "1.9.7"      = "https://downloads.dcos.io/dcos/stable/1.9.7/dcos_generate_config.sh"
+   "1.9.8"      = "https://downloads.dcos.io/dcos/stable/1.9.8/dcos_generate_config.sh"
    "1.10.0-rc1" = "https://downloads.dcos.io/dcos/EarlyAccess/commit/a5ecc9af5d9ca903f53fa16f6f0ebd597095652e/dcos_generate_config.sh"
    "1.10.0"     = "https://downloads.dcos.io/dcos/stable/1.10.0/dcos_generate_config.sh"
    "1.10.1"     = "https://downloads.dcos.io/dcos/stable/1.10.1/dcos_generate_config.sh"
