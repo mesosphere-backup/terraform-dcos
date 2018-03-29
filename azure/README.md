@@ -193,12 +193,10 @@ dcos_cluster_docker_credentials = <<EOF
     'https://index.docker.io/v1/':
       auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
 EOF
-dcos_license_key_contents = <<EOF
-<INSERT_LICENSE_HERE>
-EOF
+dcos_license_key_contents = "<INSERT_LICENSE_HERE>"
 ```
 
-## Upgrading DC/OS  
+## Upgrading DC/OS
 
 You can upgrade your DC/OS cluster with a single command. This terraform script was built to perform installs and upgrade from the inception of this project. With the upgrade procedures below, you can also have finer control on how masters or agents upgrade at a given time. This will give you the ability to change the parallelism of master or agent upgrades.
 

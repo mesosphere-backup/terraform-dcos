@@ -121,9 +121,7 @@ dcos_cluster_docker_credentials = <<EOF
     'https://index.docker.io/v1/':
       auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
 EOF
-dcos_license_key_contents = <<EOF
-<INSERT_LICENSE_HERE>
-EOF
+dcos_license_key_contents = "<INSERT_LICENSE_HERE>"
 gcp_ssh_pub_key_file = "INSERT_PUBLIC_KEY_PATH_HERE"
 ```
 _Note: The YAML comment is required for the DC/OS specific YAML settings._
