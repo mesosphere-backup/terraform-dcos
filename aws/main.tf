@@ -6,7 +6,7 @@ provider "aws" {
 
 locals {
   private_key = "${file(var.ssh_private_key_filename)}"
-  agent = "${var.ssh_private_key_filename == "main.tf" ? true : false}"
+  agent = "${var.ssh_private_key_filename == "/dev/null" ? true : false}"
 }
 
 # Runs a local script to return the current user in bash

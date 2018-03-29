@@ -2,7 +2,7 @@
 resource "google_compute_instance" "bootstrap" {
    name         = "${data.template_file.cluster-name.rendered}-bootstrap"
    machine_type = "${var.gcp_bootstrap_instance_type}"
-   zone         = "${var.gcp_zone}"
+   zone         = "${local.gcp_zone}"
 
   labels {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"

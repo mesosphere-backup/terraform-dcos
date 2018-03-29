@@ -33,14 +33,14 @@ resource "google_compute_instance_group" "agent" {
     port = "22"
   }
 
-  zone = "${var.gcp_zone}"
+  zone = "${local.gcp_zone}"
 }
 
 # deploy image
 resource "google_compute_instance" "agent" {
    name         = "${data.template_file.cluster-name.rendered}-agent-${count.index + 1}"
    machine_type = "${var.gcp_agent_instance_type}"
-   zone         = "${var.gcp_zone}"
+   zone         = "${local.gcp_zone}"
    count        = "${var.num_of_private_agents}"
 
   labels {

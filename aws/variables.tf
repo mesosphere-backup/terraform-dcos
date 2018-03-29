@@ -4,7 +4,9 @@ variable "ssh_key_name" {
 }
 
 variable "ssh_private_key_filename" {
- default = "main.tf"
+ # cannot leave this empty as the file() interpolation will fail later on for the private_key local variable
+ # https://github.com/hashicorp/terraform/issues/15605
+ default = "/dev/null"
  description = "Path to file containing your ssh private key"
 }
 
@@ -285,11 +287,6 @@ variable "dcos_bouncer_expiration_auth_token_days" {
 variable "ssh_port" {
  default = "22"
  description = "This parameter specifies the port to SSH to"
-}
-
-variable "ssh_priv_key" {
- default = ""
- description = ""
 }
 
 variable "dcos_superuser_password_hash" {

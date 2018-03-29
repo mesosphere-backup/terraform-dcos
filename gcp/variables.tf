@@ -3,7 +3,11 @@ variable "gcp_project" {
 }
 
 variable "gcp_zone" {
- default = "us-west1-a"
+ default = ""
+}
+
+variable "gcp_region" {
+ default = "us-west1"
 }
 
 variable "gcp_credentials_key_file" {
@@ -32,8 +36,9 @@ variable "gcp_ssh_pub_key_file" {
 }
 
 variable "ssh_private_key_filename" {
- # main.tf only used as a placeholder here, otherwise 'terraform validate' will fail
- default = "main.tf"
+ # cannot leave this empty as the file() interpolation will fail later on for the private_key local variable
+ # https://github.com/hashicorp/terraform/issues/15605
+ default = "/dev/null"
  description = "Path to file containing your ssh private key"
 }
 

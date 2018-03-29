@@ -151,14 +151,14 @@ resource "google_compute_instance_group" "master" {
     port = "22"
   }
 
-  zone = "${var.gcp_zone}"
+  zone = "${local.gcp_zone}"
 }
 
 # deploy image
 resource "google_compute_instance" "master" {
    name         = "${data.template_file.cluster-name.rendered}-master-${count.index + 1}"
    machine_type = "${var.gcp_master_instance_type}"
-   zone         = "${var.gcp_zone}"
+   zone         = "${local.gcp_zone}"
    count        = "${var.num_of_masters}"
 
   labels {
