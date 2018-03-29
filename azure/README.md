@@ -85,6 +85,8 @@ For a list of supported operating systems for this repo, see the ones that DC/OS
 
 For a list of all the DC/OS versions that this repository supports, you can find them at the `tf_dcos_core` module [here](https://github.com/dcos/tf_dcos_core/tree/master/dcos-versions).
 
+_*Note*: Master DC/OS version is not meant for production use. It is only for CI/CD testing._
+
 To apply the configuration file, you can use this command below.
 
 ```bash
