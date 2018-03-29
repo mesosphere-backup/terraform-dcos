@@ -4,11 +4,14 @@ data "external" "whoami" {
 }
 
 locals {
-    # example: region = "us-west1", zone = "us-west1-a", thus the "- 2". All zones are a region plus a dash and a letter
-    gcp_region = "${var.gcp_zone == "" ? var.gcp_region : substr(var.gcp_zone, 0, max(length(var.gcp_zone) - 2, 0))}"
-    gcp_zone = "${coalesce(var.gcp_zone, data.google_compute_zones.available.names[0])}"
+    gcp_zone = "${var.gcp_zone == "" ? data.google_compute_zones.available.names[0] : format("%s-%s", var.gcp_region, var.gcp_zone)}"
     private_key = "${file(var.ssh_private_key_filename)}"
     agent = "${var.ssh_private_key_filename == "/dev/null" ? true : false}"
+}
+
+resource "null_resource" "gcp_zone_check" {
+  count = "${length(var.gcp_zone) > 1 ? 1 : 0}"
+  "Invalid gcp_zone: gcp_zone variable should be a single letter" = true
 }
 
 # Provides a unique ID throughout the livespan of the cluster
@@ -34,7 +37,7 @@ data "template_file" "cluster-name" {
 # Configure the Google Cloud provider
 provider "google" {
   project     = "${var.gcp_project}"
-  region      = "${local.gcp_region}"
+  region      = "${var.gcp_region}"
   credentials = "${var.gcp_credentials_key_file}"
 }
 
@@ -50,14 +53,14 @@ resource "google_compute_subnetwork" "public" {
     name          = "${data.template_file.cluster-name.rendered}-public"
     ip_cidr_range = "${var.gcp_compute_subnetwork_public}"
     network       = "${google_compute_network.default.self_link}"
-    region        = "${local.gcp_region}"
+    region        = "${var.gcp_region}"
 }
 
 resource "google_compute_subnetwork" "private" {
     name          = "${data.template_file.cluster-name.rendered}-internal"
     ip_cidr_range = "${var.gcp_compute_subnetwork_private}"
     network       = "${google_compute_network.default.self_link}"
-    region        = "${local.gcp_region}"
+    region        = "${var.gcp_region}"
 }
 
 resource "google_compute_firewall" "internal-any-any" {

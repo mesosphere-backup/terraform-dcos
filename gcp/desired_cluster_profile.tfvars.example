@@ -3,7 +3,7 @@ num_of_private_agents = "3"
 num_of_public_agents = "1"
 #
 gcp_project = "YOUR_GCP_PROJECT"
-gcp_zone = "us-west1-a"
+gcp_zone = "a"
 # If you want to use GCP service account key instead of GCP SDK
 # uncomment the line below and update it with the path to the key file
 #gcp_credentials_key_file = "PATH/YOUR_GCP_SERVICE_ACCOUNT_KEY.json"
