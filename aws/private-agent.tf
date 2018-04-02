@@ -34,8 +34,8 @@ resource "aws_instance" "agent" {
   # The name of our SSH keypair we created above.
   key_name = "${var.ssh_key_name}"
 
-  # Our Security group to allow http and SSH access
-  vpc_security_group_ids = ["${aws_security_group.private_slave.id}","${aws_security_group.admin.id}","${aws_security_group.any_access_internal.id}"]
+  # Our Security group to allow http, SSH, and outbound internet access only for pulling containers from the web
+  vpc_security_group_ids = ["${aws_security_group.private_slave.id}", "${aws_security_group.any_access_internal.id}", "${aws_security_group.ssh.id}", "${aws_security_group.internet-outbound.id}"]
 
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
