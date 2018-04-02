@@ -100,8 +100,8 @@ resource "aws_security_group" "any_access_internal" {
 }
 
 # A security group for the ELB so it is accessible via the web
-resource "aws_security_group" "elb" {
-  name        = "elb-security-group"
+resource "aws_security_group" "http" {
+  name        = "http-security-group"
   description = "A security group for the elb"
   vpc_id      = "${aws_vpc.default.id}"
 
@@ -122,10 +122,10 @@ resource "aws_security_group" "elb" {
   }
 }
 
-# A security group for Admins to control access
-resource "aws_security_group" "admin" {
-  name        = "admin-security-group"
-  description = "Administrators can manage their machines"
+# A security group for SSH only access
+resource "aws_security_group" "ssh" {
+  name        = "ssh-security-group"
+  description = "SSH only access for terraform and administrators"
   vpc_id      = "${aws_vpc.default.id}"
 
   # SSH access from anywhere
@@ -135,6 +135,13 @@ resource "aws_security_group" "admin" {
     protocol    = "tcp"
     cidr_blocks = ["${var.admin_cidr}"]
   }
+}
+
+# A security group for Admins to control access
+resource "aws_security_group" "http-https" {
+  name        = "http-https-security-group"
+  description = "Administrators can manage their machines"
+  vpc_id      = "${aws_vpc.default.id}"
 
   # http access from anywhere
   ingress {
@@ -151,8 +158,17 @@ resource "aws_security_group" "admin" {
     protocol    = "tcp"
     cidr_blocks = ["${var.admin_cidr}"]
   }
+}
 
-  # outbound internet access
+# A security group for any machine to download artifacts from the web
+# without this, an agent cannot get internet access to pull containers
+# This does not expose any ports locally, just external access.
+resource "aws_security_group" "internet-outbound" {
+  name        = "internet-outbound-only-access"
+  description = "Security group to control outbound internet access only."
+  vpc_id      = "${aws_vpc.default.id}"
+
+ # outbound internet access
   egress {
     from_port   = 0
     to_port     = 0
@@ -215,14 +231,6 @@ resource "aws_security_group" "master" {
    protocol = "tcp"
    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
  }
-
- # outbound internet access
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }
 
 # A security group for public slave so it is accessible via the web
@@ -276,14 +284,6 @@ resource "aws_security_group" "public_slave" {
     to_port = 32000
     from_port = 5052
     protocol = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # outbound internet access
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
