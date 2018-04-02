@@ -117,7 +117,7 @@ resource "null_resource" "gpu-agent" {
   # Wait for bootstrapnode to be ready
   provisioner "remote-exec" {
     inline = [
-     "until $(curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
+     "until $(curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}:${var.custom_dcos_bootstrap_port}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
     ]
   }
 
