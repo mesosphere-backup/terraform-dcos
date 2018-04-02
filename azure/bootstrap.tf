@@ -300,6 +300,7 @@ resource "null_resource" "bootstrap" {
     dcos_version = "${var.dcos_version}"
     dcos_security = "${var.dcos_security}"
     num_of_masters = "${var.num_of_masters}"
+    dcos_bootstrap_port = "${var.custom_dcos_bootstrap_port}"
     dcos_audit_logging = "${var.dcos_audit_logging}"
     dcos_auth_cookie_secure_flag = "${var.dcos_auth_cookie_secure_flag}"
     dcos_aws_access_key_id = "${var.dcos_aws_access_key_id}"
