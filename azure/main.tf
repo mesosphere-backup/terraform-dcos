@@ -1,6 +1,6 @@
 # Runs a local script to return the current user in bash
 data "external" "whoami" {
-  program = ["scripts/local/whoami.sh"]
+  program = ["${path.module}/scripts/local/whoami.sh"]
 }
 
 # Privdes a unique ID thoughout the livespan of the cluster

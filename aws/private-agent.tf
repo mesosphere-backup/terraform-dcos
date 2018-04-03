@@ -112,8 +112,15 @@ resource "null_resource" "agent" {
       "sudo ./run.sh",
     ]
   }
+
+  # Watch Private Agent Nodes Start
+  provisioner "remote-exec" {
+    inline = [
+      "until $(curl --output /dev/null --silent --head --fail http://${element(aws_instance.agent.*.private_ip, count.index)}:5051/version); do printf 'waiting for private agent to serve...'; sleep 10; done"
+    ]
+  }
 }
 
-output "Private Agent Public IP Address" {
+output "Private_Agent_Public_IP_Address" {
   value = ["${aws_instance.agent.*.public_ip}"]
 }

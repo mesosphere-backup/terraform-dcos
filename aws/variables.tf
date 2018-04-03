@@ -94,22 +94,35 @@ variable "expiration" {
 }
 
 variable "ip-detect" {
- description = "Used to determine the private IP address of instances"
+ description = "Script used to override default script the private IP address of instances"
  type = "map"
 
  default = {
-  aws = "scripts/cloud/aws/ip-detect.aws.sh"
+  aws = ""
  }
 }
 
+locals {
+  ip-detect {
+    aws = "${path.module}/scripts/cloud/aws/ip-detect.aws.sh"
+  }
+}
+
 variable "os-init-script" {
- description = "Init Scripts that runs post-AMI deployment and pre-DC/OS install"
+ description = "Init Scripts used to override default scripts that runs post-AMI deployment and pre-DC/OS install"
  type = "map"
 
  default = {
-  coreos = "scripts/os/coreos/coreos-init.aws.sh"
-  centos = "scripts/os/centos/centos-init.aws.sh"
+  coreos = ""
+  centos = ""
  }
+}
+
+locals {
+  os-init-script {
+    coreos = "${path.module}/scripts/os/coreos/coreos-init.aws.sh"
+    centos = "${path.module}/scripts/os/centos/centos-init.aws.sh"
+  }
 }
 
 variable "instance_disk_size" {

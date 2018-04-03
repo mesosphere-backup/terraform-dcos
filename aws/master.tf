@@ -233,10 +233,10 @@ resource "null_resource" "master" {
   }
 }
 
-output "Master ELB Address" {
+output "Master_ELB_Address" {
   value = "${aws_elb.public-master-elb.dns_name}"
 }
 
-output "Mesos Master Public IP" {
+output "Mesos_Master_Public_IP" {
   value = ["${aws_instance.master.*.public_ip}"]
 }

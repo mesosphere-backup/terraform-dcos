@@ -40,9 +40,9 @@ resource "aws_instance" "bootstrap" {
 
   # DCOS ip detect script
   provisioner "file" {
-   source = "${var.ip-detect["aws"]}"
+   source = "${coalesce(var.ip-detect["aws"], local.ip-detect["aws"])}"
    destination = "/tmp/ip-detect"
-   }
+  }
 
   # OS init script
   provisioner "file" {
@@ -257,6 +257,6 @@ resource "null_resource" "bootstrap" {
   }
 }
 
-output "Bootstrap Public IP Address" {
+output "Bootstrap_Public_IP_Address" {
   value = "${aws_instance.bootstrap.public_ip}"
 }
