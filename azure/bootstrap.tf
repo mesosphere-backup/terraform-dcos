@@ -208,7 +208,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
 
 # Create DCOS Mesos Bootstrap Scripts to execute
   module "dcos-bootstrap" {
-    source  = "github.com/dcos/tf_dcos_core"
+    source  = "${local.tf_dcos_core_branch}"
     bootstrap_private_ip = "${azurerm_network_interface.bootstrap_nic.private_ip_address}"
     # Only allow upgrade and install as installation mode
     dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"

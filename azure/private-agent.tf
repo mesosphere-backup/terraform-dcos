@@ -194,7 +194,7 @@ resource "azurerm_virtual_machine" "agent" {
 
 # Create DCOS Mesos Agent Scripts to execute
 module "dcos-mesos-agent" {
-  source               = "github.com/dcos/tf_dcos_core"
+  source               = "${local.tf_dcos_core}"
   bootstrap_private_ip = "${azurerm_network_interface.bootstrap_nic.private_ip_address}"
   dcos_bootstrap_port  = "${var.custom_dcos_bootstrap_port}"
   # Only allow upgrade and install as installation mode

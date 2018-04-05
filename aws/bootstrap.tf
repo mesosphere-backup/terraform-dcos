@@ -68,7 +68,7 @@ resource "aws_instance" "bootstrap" {
 
 # Create DCOS Mesos Master Scripts to execute
   module "dcos-bootstrap" {
-    source = "github.com/dcos/tf_dcos_core"
+    source = "${local.tf_dcos_core}"
     bootstrap_private_ip = "${aws_instance.bootstrap.private_ip}"
     # Only allow upgrade and install as installation mode
     dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"

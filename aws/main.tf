@@ -4,6 +4,10 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+locals {
+  tf_dcos_core = "${format("%s%s", "github.com/dcos/tf_dcos_core?ref=", var.tf_dcos_core_branch)}"
+}
+
 # Runs a local script to return the current user in bash
 data "external" "whoami" {
   program = ["scripts/local/whoami.sh"]

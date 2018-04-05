@@ -64,7 +64,7 @@ resource "google_compute_instance" "bootstrap" {
 
 # Create DCOS Mesos Master Scripts to execute
 module "dcos-bootstrap" {
-    source = "github.com/dcos/tf_dcos_core"
+    source = "${local.tf_dcos_core_branch}"
     bootstrap_private_ip = "${google_compute_instance.bootstrap.network_interface.0.address}"
     # Only allow upgrade and install as installation mode
     dcos_install_mode = "${var.state == "upgrade" ? "upgrade" : "install"}"

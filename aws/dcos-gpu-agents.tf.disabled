@@ -84,7 +84,7 @@ resource "aws_instance" "gpu-agent" {
 
 # Create DCOS Mesos Agent Scripts to execute
 module "dcos-mesos-gpu-agent" {
-  source               = "github.com/dcos/tf_dcos_core"
+  source               = "${local.tf_dcos_core}"
   bootstrap_private_ip = "${aws_instance.bootstrap.private_ip}"
   dcos_install_mode    = "${var.state}"
   dcos_version         = "${var.dcos_version}"

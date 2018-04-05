@@ -3,6 +3,10 @@ data "external" "whoami" {
   program = ["scripts/local/whoami.sh"]
 }
 
+locals {
+  tf_dcos_core = "${format("%s%s", "github.com/dcos/tf_dcos_core?ref=", var.tf_dcos_core_branch)}"
+}
+
 # Provides a unique ID throughout the livespan of the cluster
 resource "random_id" "cluster" {
   keepers = {
