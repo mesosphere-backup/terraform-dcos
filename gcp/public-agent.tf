@@ -83,14 +83,14 @@ resource "google_compute_instance_group" "public-agent" {
     port = "22"
   }
 
-  zone = "${data.google_compute_zones.available.names[0]}"
+  zone = "${local.gcp_zone}"
 }
 
 # deploy image
 resource "google_compute_instance" "public-agent" {
    name         = "${data.template_file.cluster-name.rendered}-public-agent-${count.index + 1}"
    machine_type = "${var.gcp_public_agent_instance_type}"
-   zone         = "${data.google_compute_zones.available.names[0]}"
+   zone         = "${local.gcp_zone}"
    count        = "${var.num_of_public_agents}"
 
   labels {
@@ -109,6 +109,8 @@ resource "google_compute_instance" "public-agent" {
 
   connection {
     user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
   }
 
   network_interface {
@@ -176,6 +178,8 @@ resource "null_resource" "public-agent" {
   connection {
     host = "${element(google_compute_instance.public-agent.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
     user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
   }
 
   count = "${var.num_of_public_agents}"
@@ -202,10 +206,10 @@ resource "null_resource" "public-agent" {
   }
 }
 
-output "Public Agent ELB Address" {
+output "Public Agent ELB Public IP" {
   value = "${google_compute_forwarding_rule.external-public-agent-forwarding-rule-http.ip_address}"
 }
 
-output "Mesos Public Agent Public IP" {
+output "Public Agent Public IPs" {
   value = ["${google_compute_instance.public-agent.*.network_interface.0.access_config.0.assigned_nat_ip}"]
 }

@@ -26,6 +26,8 @@ resource "aws_instance" "gpu-agent" {
   connection {
     # The default username for our AMI
     user = "centos"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
 
     # The connection will use the local SSH agent for authentication.
   }
@@ -104,6 +106,8 @@ resource "null_resource" "gpu-agent" {
   connection {
     host = "${element(aws_instance.gpu-agent.*.public_ip, count.index)}"
     user = "centos"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
   }
 
   count = "${var.num_of_gpu_agents}"
@@ -130,7 +134,6 @@ resource "null_resource" "gpu-agent" {
   }
 }
 
-output "GPU Private Public IP Address" {
+output "GPU Public IPs" {
   value = ["${aws_instance.gpu-agent.*.public_ip}"]
 }
-

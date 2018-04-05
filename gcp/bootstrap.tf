@@ -2,7 +2,7 @@
 resource "google_compute_instance" "bootstrap" {
    name         = "${data.template_file.cluster-name.rendered}-bootstrap"
    machine_type = "${var.gcp_bootstrap_instance_type}"
-   zone         = "${data.google_compute_zones.available.names[0]}"
+   zone         = "${local.gcp_zone}"
 
   labels {
    owner = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
@@ -30,6 +30,8 @@ resource "google_compute_instance" "bootstrap" {
 
   connection {
     user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
   }
 
   # OS init script
@@ -233,6 +235,8 @@ resource "null_resource" "bootstrap" {
   connection {
     host = "${element(google_compute_instance.bootstrap.*.network_interface.0.access_config.0.assigned_nat_ip, 0)}"
     user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
   }
 
   # DCOS ip detect script
@@ -260,6 +264,6 @@ resource "null_resource" "bootstrap" {
   }
 }
 
-output "Bootstrap Public IP Address" {
+output "Bootstrap Host Public IP" {
   value = "${google_compute_instance.bootstrap.network_interface.0.access_config.0.assigned_nat_ip}"
 }

@@ -2,6 +2,10 @@ variable "gcp_project" {
  default = "massive-bliss-781"
 }
 
+variable "gcp_zone" {
+ default = ""
+}
+
 variable "gcp_region" {
  default = "us-west1"
 }
@@ -29,6 +33,13 @@ variable "gcp_compute_subnetwork_private" {
 variable "gcp_ssh_pub_key_file" {
  default = "~/.ssh/key.pub"
  description = "Your ssh public key to log into your the DC/OS cluster"
+}
+
+variable "ssh_private_key_filename" {
+ # cannot leave this empty as the file() interpolation will fail later on for the private_key local variable
+ # https://github.com/hashicorp/terraform/issues/15605
+ default = "/dev/null"
+ description = "Path to file containing your ssh private key"
 }
 
 variable "gcp_ssh_user" {

@@ -151,14 +151,14 @@ resource "google_compute_instance_group" "master" {
     port = "22"
   }
 
-  zone = "${data.google_compute_zones.available.names[0]}"
+  zone = "${local.gcp_zone}"
 }
 
 # deploy image
 resource "google_compute_instance" "master" {
    name         = "${data.template_file.cluster-name.rendered}-master-${count.index + 1}"
    machine_type = "${var.gcp_master_instance_type}"
-   zone         = "${data.google_compute_zones.available.names[0]}"
+   zone         = "${local.gcp_zone}"
    count        = "${var.num_of_masters}"
 
   labels {
@@ -177,6 +177,8 @@ resource "google_compute_instance" "master" {
 
   connection {
     user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
   }
 
   network_interface {
@@ -244,6 +246,8 @@ resource "null_resource" "master" {
   connection {
     host = "${element(google_compute_instance.master.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
     user = "${coalesce(var.gcp_ssh_user, module.dcos-tested-gcp-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
   }
 
   count = "${var.num_of_masters}"
@@ -277,10 +281,10 @@ resource "null_resource" "master" {
   }
 }
 
-output "Master ELB Address" {
+output "Master ELB Public IP" {
   value = "${google_compute_forwarding_rule.external-master-forwarding-rule-http.ip_address}"
 }
 
-output "Mesos Master Public IP" {
+output "Master Public IPs" {
   value = ["${google_compute_instance.master.*.network_interface.0.access_config.0.assigned_nat_ip}"]
 }

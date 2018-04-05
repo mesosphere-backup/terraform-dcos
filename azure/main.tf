@@ -3,6 +3,11 @@ data "external" "whoami" {
   program = ["scripts/local/whoami.sh"]
 }
 
+locals {
+  private_key = "${file(var.ssh_private_key_filename)}"
+  agent = "${var.ssh_private_key_filename == "/dev/null" ? true : false}"
+}
+
 # Privdes a unique ID thoughout the livespan of the cluster
 resource "random_id" "cluster" {
   keepers = {
@@ -115,4 +120,8 @@ resource "azurerm_network_security_rule" "public-subnet-httpsRule" {
     destination_address_prefix  = "*"
     resource_group_name         = "${azurerm_resource_group.dcos.name}"
     network_security_group_name = "${azurerm_network_security_group.public_subnet_security_group.name}"
+}
+
+output "ssh_user" {
+ value = "${module.azure-tested-oses.user}"
 }

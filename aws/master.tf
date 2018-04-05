@@ -119,6 +119,8 @@ resource "aws_instance" "master" {
   connection {
     # The default username for our AMI
     user = "${module.aws-tested-oses.user}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
 
     # The connection will use the local SSH agent for authentication.
   }
@@ -200,6 +202,8 @@ resource "null_resource" "master" {
   connection {
     host = "${element(aws_instance.master.*.public_ip, count.index)}"
     user = "${module.aws-tested-oses.user}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
   }
 
   count = "${var.num_of_masters}"
@@ -233,10 +237,10 @@ resource "null_resource" "master" {
   }
 }
 
-output "Master ELB Address" {
+output "Master ELB Public IP" {
   value = "${aws_elb.public-master-elb.dns_name}"
 }
 
-output "Mesos Master Public IP" {
+output "Master Public IPs" {
   value = ["${aws_instance.master.*.public_ip}"]
 }

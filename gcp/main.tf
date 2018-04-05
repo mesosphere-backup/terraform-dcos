@@ -3,6 +3,17 @@ data "external" "whoami" {
   program = ["scripts/local/whoami.sh"]
 }
 
+locals {
+    gcp_zone = "${var.gcp_zone == "" ? data.google_compute_zones.available.names[0] : format("%s-%s", var.gcp_region, var.gcp_zone)}"
+    private_key = "${file(var.ssh_private_key_filename)}"
+    agent = "${var.ssh_private_key_filename == "/dev/null" ? true : false}"
+}
+
+resource "null_resource" "gcp_zone_check" {
+  count = "${length(var.gcp_zone) > 1 ? 1 : 0}"
+  "Invalid gcp_zone: gcp_zone variable should be a single letter" = true
+}
+
 # Provides a unique ID throughout the livespan of the cluster
 resource "random_id" "cluster" {
   keepers = {
@@ -94,4 +105,8 @@ resource "google_compute_firewall" "ssh" {
 
     source_ranges = ["${var.admin_cidr}"]
     description   = "Used to allow SSH access to any instance from the outside world specified by the user source range."
+}
+
+output "ssh_user" {
+ value = "${module.dcos-tested-gcp-oses.user}"
 }

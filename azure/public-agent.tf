@@ -324,6 +324,8 @@ resource "azurerm_virtual_machine" "public-agent" {
     type = "ssh"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
     host = "${element(azurerm_public_ip.public_agent_public_ip.*.fqdn, count.index)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
     }
  }
 
@@ -340,6 +342,8 @@ resource "azurerm_virtual_machine" "public-agent" {
     type = "ssh"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
     host = "${element(azurerm_public_ip.public_agent_public_ip.*.fqdn, count.index)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
    }
  }
 
@@ -373,6 +377,8 @@ resource "null_resource" "public-agent" {
   connection {
     host = "${element(azurerm_public_ip.public_agent_public_ip.*.fqdn, count.index)}"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
   }
 
   count = "${var.num_of_public_agents}"
@@ -397,4 +403,12 @@ resource "null_resource" "public-agent" {
       "sudo ./run.sh",
     ]
   }
+}
+
+output "Public Agent ELB Public IP" {
+  value = "${azurerm_public_ip.public_agent_load_balancer_public_ip.fqdn}"
+}
+
+output "Public Agent Public IPs" {
+  value = ["${azurerm_public_ip.public_agent_public_ip.*.fqdn}"]
 }

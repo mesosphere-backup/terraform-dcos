@@ -4,6 +4,11 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+locals {
+  private_key = "${file(var.ssh_private_key_filename)}"
+  agent = "${var.ssh_private_key_filename == "/dev/null" ? true : false}"
+}
+
 # Runs a local script to return the current user in bash
 data "external" "whoami" {
   program = ["scripts/local/whoami.sh"]
@@ -324,4 +329,8 @@ resource "aws_security_group" "private_slave" {
       source   = "./modules/dcos-tested-aws-oses"
       os       = "${var.os}"
       region   = "${var.aws_region}"
+}
+
+output "ssh_user" {
+   value = "${module.aws-tested-oses.user}"
 }

@@ -431,6 +431,8 @@ resource "azurerm_virtual_machine" "master" {
     type = "ssh"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
     host = "${element(azurerm_public_ip.master_public_ip.*.fqdn, count.index)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
     }
  }
 
@@ -447,6 +449,8 @@ resource "azurerm_virtual_machine" "master" {
     type = "ssh"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
     host = "${element(azurerm_public_ip.master_public_ip.*.fqdn, count.index)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
    }
  }
 
@@ -480,6 +484,8 @@ resource "null_resource" "master" {
   connection {
     host = "${element(azurerm_public_ip.master_public_ip.*.fqdn, count.index)}"
     user = "${coalesce(var.azure_admin_username, module.azure-tested-oses.user)}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
   }
 
   count = "${var.num_of_masters}"
@@ -511,4 +517,12 @@ resource "null_resource" "master" {
       "until $(curl --output /dev/null --silent --head --fail http://${element(azurerm_network_interface.master_nic.*.private_ip_address, count.index)}/); do printf 'loading DC/OS...'; sleep 10; done"
     ]
   }
+}
+
+output "Master ELB Public IP" {
+  value = "${azurerm_public_ip.master_load_balancer_public_ip.fqdn}"
+}
+
+output "Master Public IPs" {
+  value = ["${azurerm_public_ip.master_public_ip.*.fqdn}"]
 }

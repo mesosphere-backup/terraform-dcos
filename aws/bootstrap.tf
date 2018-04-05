@@ -5,6 +5,8 @@ resource "aws_instance" "bootstrap" {
   connection {
     # The default username for our AMI
     user = "${module.aws-tested-oses.user}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
 
     # The connection will use the local SSH agent for authentication.
   }
@@ -236,6 +238,8 @@ resource "null_resource" "bootstrap" {
   connection {
     host = "${element(aws_instance.bootstrap.*.public_ip, 0)}"
     user = "${module.aws-tested-oses.user}"
+    private_key = "${local.private_key}"
+    agent = "${local.agent}"
   }
 
   # Generate and upload bootstrap script to node
@@ -257,6 +261,6 @@ resource "null_resource" "bootstrap" {
   }
 }
 
-output "Bootstrap Public IP Address" {
+output "Bootstrap Host Public IP" {
   value = "${aws_instance.bootstrap.public_ip}"
 }
