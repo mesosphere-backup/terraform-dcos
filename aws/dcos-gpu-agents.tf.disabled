@@ -16,7 +16,7 @@ variable "aws_gpu_agent_instance_type" {
 
 # AMI Zone US-WEST-2
 variable "aws_gpu_ami" {
- default = "ami-9b5d97fb"
+ default = "ami-d54a2cad"
 }
 
 # AWS Resourece Agent for GPUs
@@ -60,21 +60,21 @@ resource "aws_instance" "gpu-agent" {
   # backend instances.
   subnet_id = "${aws_subnet.private.id}"
 
-  # OS init script
-  provisioner "file" {
-   source = "modules/dcos-tested-aws-oses/platform/cloud/aws/centos_7.2/setup.sh"
-   destination = "/tmp/os-setup.sh"
-   }
-
- # We run a remote provisioner on the instance after creating it.
-  # In this case, we just install nginx and start it. By default,
-  # this should be on port 80
-    provisioner "remote-exec" {
-    inline = [
-      "sudo chmod +x /tmp/os-setup.sh",
-      "sudo bash /tmp/os-setup.sh",
-    ]
-  }
+#  # OS init script
+#  provisioner "file" {
+#   source = "modules/dcos-tested-aws-oses/platform/cloud/aws/centos_7.2/setup.sh"
+#   destination = "/tmp/os-setup.sh"
+#   }
+#
+# # We run a remote provisioner on the instance after creating it.
+#  # In this case, we just install nginx and start it. By default,
+#  # this should be on port 80
+#    provisioner "remote-exec" {
+#    inline = [
+#      "sudo chmod +x /tmp/os-setup.sh",
+#      "sudo bash /tmp/os-setup.sh",
+#    ]
+#  }
 
   lifecycle {
     ignore_changes = ["tags.Name"]
@@ -130,7 +130,6 @@ resource "null_resource" "gpu-agent" {
   }
 }
 
-output "GPU Private Public IP Address" {
+output "GPU Public IPs" {
   value = ["${aws_instance.gpu-agent.*.public_ip}"]
 }
-
