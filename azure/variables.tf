@@ -125,7 +125,7 @@ variable "dcos_master_external_loadbalancer" {
 }
 
 variable "dcos_master_discovery" {
- default = "static"
+ default = "master_http_loadbalancer"
  description = "Ability to use an ELB or a static list for master descovery"
 }
 
@@ -160,7 +160,7 @@ variable "dcos_aws_template_storage_secret_access_key" {
 }
 
 variable "dcos_exhibitor_storage_backend" {
- default = "static"
+ default = "azure"
  description = "specify an external storage system (static, zookeeper, azure, and aws_s3)"
 }
 
