@@ -191,7 +191,7 @@ terraform apply \
 
 If you want to redeploy a problematic agent (i.e., storage filled up, not responsive, etc.), you can tell terraform to redeploy during the next cycle.
 
-**NOTE:** This only applies to DC/OS clusters that have set their `dcos_master_discovery` to `master_http_loadbalancer` and not `static`.
+**NOTE:** This only applies to DC/OS clusters that have set their `dcos_master_discovery` to `master_http_loadbalancer` and not `static`. Unfortunately, unlike AWS or Azure, there is no exhibitor_storage_backend for Google Cloud Storage, so this feature is only available today if you have used a zookeeper setting.
 
 ### Master Node
 
