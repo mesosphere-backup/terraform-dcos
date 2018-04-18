@@ -40,6 +40,7 @@ variable "dcos_download_path" {
    "1.11.0-rc1" = "https://downloads.mesosphere.com/dcos-enterprise/EarlyAccess/1.11.0-rc1/dcos_generate_config.ee.sh"
    "1.11.0-rc4" = "https://downloads.mesosphere.com/dcos-enterprise/EarlyAccess/1.11.0-rc4/dcos_generate_config.ee.sh"
    "1.11.0"     = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.11.0/dcos_generate_config.ee.sh"
+   "1.11.1"     = "https://downloads.mesosphere.com/dcos-enterprise/stable/1.11.1/dcos_generate_config.ee.sh"
    "master"     = "https://downloads.mesosphere.com/dcos-enterprise/testing/master/dcos_generate_config.ee.sh"
   }
 }
