@@ -217,7 +217,7 @@ variable "dcos_aws_secret_access_key" {
 }
 
 variable "dcos_exhibitor_explicit_keys" {
- default = ""
+ default = "false"
  description = "This parameter specifies whether you are using AWS API keys to grant Exhibitor access to S3."
 }
 
