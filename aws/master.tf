@@ -161,7 +161,7 @@ resource "aws_instance" "master" {
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
   # backend instances.
-  subnet_id = "${aws_subnet.public.*.id[count.index]}"
+  subnet_id = "${element(aws_subnet.public.*.id, count.index)}"
 
  # We run a remote provisioner on the instance after creating it.
   # In this case, we just install nginx and start it. By default,
