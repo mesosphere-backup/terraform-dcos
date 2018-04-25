@@ -84,7 +84,6 @@ resource "aws_instance" "public-agent" {
   # We're going to launch into the same subnet as our ELB. In a production
   # environment it's more common to have a separate private subnet for
   # backend instances.
-  count = "${var.num_of_masters}"
   subnet_id = "${element(aws_subnet.public.*.id, count.index)}"
 
   # OS init script
