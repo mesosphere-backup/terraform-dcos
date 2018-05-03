@@ -14,7 +14,7 @@ resource "null_resource" "gcp_zone_check" {
   "Invalid gcp_zone: gcp_zone variable should be a single letter" = true
 }
 
-# Provides a unique ID throughout the livespan of the cluster
+# Provides a unique ID throughout the lifespan of the cluster
 resource "random_id" "cluster" {
   keepers = {
     # Generate a new id each time we switch to a new AMI id
