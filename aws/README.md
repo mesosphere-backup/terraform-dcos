@@ -54,7 +54,7 @@ _*Note:* Create a new directory before the command below as terraform will write
 
 ```bash
 terraform init -from-module github.com/dcos/terraform-dcos//aws
-terraform apply 
+terraform apply
 ```
 ###### Choosing Different AWS Credential Profiles
 
@@ -66,7 +66,7 @@ The default variables are tracked in the [variables.tf](/aws/variables.tf) file.
 
 ###### Supported Operating Systems
 
-For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/oss/custom/system-requirements/). You can find the list that Terraform for this repo [here](/aws/modules/dcos-tested-aws-oses/platform/cloud/aws).
+For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/version-policy/). You can find the list that Terraform for this repo [here](/aws/modules/dcos-tested-aws-oses/platform/cloud/aws).
 
 ###### Supported DC/OS Versions
 
@@ -93,7 +93,7 @@ os = "centos_7.3"
 num_of_masters = "3"
 num_of_private_agents = "2"
 num_of_public_agents = "1"
-expiration = "6h"  
+expiration = "6h"
 dcos_security = "permissive"
 dcos_cluster_docker_credentials_enabled =  "true"
 dcos_cluster_docker_credentials_write_to_etc = "true"
@@ -127,6 +127,7 @@ dcos_cluster_docker_credentials = <<EOF
     'https://index.docker.io/v1/':
       auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
 EOF
+dcos_license_key_contents = "<INSERT_LICENSE_HERE>"
 ```
 _Note: The YAML comment is required for the DC/OS specific YAML settings._
 
@@ -223,6 +224,20 @@ terraform taint aws_instance.public-agent.0 # The number represents the agent in
 ```
 
 **Redeploy Agent**
+
+```bash
+terraform apply -var-file desired_cluster_profile
+```
+
+### Bootstrap Node
+
+**Taint Bootstrap Node**
+
+```bash
+terraform taint aws_instance.bootstrap
+```
+
+**Redeploy Bootstrap Node**
 
 ```bash
 terraform apply -var-file desired_cluster_profile

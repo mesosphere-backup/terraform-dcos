@@ -81,7 +81,13 @@ terraform apply -var gcp_project="your_existing_project"
 
 The default variables are tracked in the [variables.tf](/gcp/variables.tf) file. Since this file can be overwritten during updates when you may run `terraform get --update` when you want to fetch new releases of DC/OS to upgrade too, its best to use the [desired_cluster_profile.tfvars](/gcp/desired_cluster_profile.tfvars.example) and set your custom terraform and DC/OS flags there. This way you can keep track of a single file that you can use manage the lifecycle of your cluster.
 
-For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/oss/custom/system-requirements/). You can find the list that Terraform for this repo [here](http://github.com/dcos/tf_dcos_core).
+For an expanding list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/version-policy/). You can find the list for this repo [here](/gcp/modules/dcos-tested-gcp-oses/platform/cloud/gcp).
+
+###### Supported DC/OS Versions
+
+For a list of all the DC/OS versions that this repository supports, you can find them at the `tf_dcos_core` module [here](https://github.com/dcos/tf_dcos_core/tree/master/dcos-versions).
+
+_*Note*: Master DC/OS version is not meant for production use. It is only for CI/CD testing._
 
 To apply the configuration file, you can use this command below.
 
@@ -93,7 +99,7 @@ terraform apply -var-file desired_cluster_profile.tfvars
 
 We have designed this project to be flexible. Here are the example working variables that allows very deep customization by using a single `tfvars` file.
 
-For advance users with stringent requirements, here are the DC/OS flags examples where you can simply paste your YAML configuration in your desired_cluster_profile.tfvars. The alternative to YAML is to convert it to JSON.  
+For advance users with stringent requirements, here are the DC/OS flags examples where you can simply paste your YAML configuration in your desired_cluster_profile.tfvars. The alternative to YAML is to convert it to JSON.
 
 ```bash
 $ cat desired_cluster_profile.tfvars
@@ -102,7 +108,7 @@ os = "centos_7.3"
 num_of_masters = "3"
 num_of_private_agents = "2"
 num_of_public_agents = "1"
-expiration = "6h"  
+expiration = "6h"
 dcos_security = "permissive"
 dcos_cluster_docker_credentials_enabled =  "true"
 dcos_cluster_docker_credentials_write_to_etc = "true"
@@ -136,11 +142,12 @@ dcos_cluster_docker_credentials = <<EOF
     'https://index.docker.io/v1/':
       auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
 EOF
+dcos_license_key_contents = "<INSERT_LICENSE_HERE>"
 gcp_ssh_pub_key_file = "INSERT_PUBLIC_KEY_PATH_HERE"
 ```
 _Note: The YAML comment is required for the DC/OS specific YAML settings._
 
-## Upgrading DC/OS  
+## Upgrading DC/OS
 
 You can upgrade your DC/OS cluster with a single command. This terraform script was built to perform installs and upgrades from the inception of this project. With the upgrade procedures below, you can also have finer control on how masters or agents upgrade at a given time. This will give you the ability to change the parallelism of master or agent upgrades.
 
