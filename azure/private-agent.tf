@@ -87,6 +87,7 @@ resource "azurerm_network_interface" "agent_nic" {
   resource_group_name       = "${azurerm_resource_group.dcos.name}"
   network_security_group_id = "${azurerm_network_security_group.agent_security_group.id}"
   count                     = "${var.num_of_private_agents}"
+  internal_dns_name_label   = "${data.template_file.cluster-name.rendered}-private-agent-${count.index}"
 
   ip_configuration {
    name                                    = "${data.template_file.cluster-name.rendered}-${count.index}-ipConfig"

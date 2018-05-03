@@ -97,8 +97,8 @@ resource "azurerm_lb_rule" "public_load_balancer_http_rule" {
   loadbalancer_id                = "${azurerm_lb.master_public_load_balancer.id}"
   name                           = "HTTPRule"
   protocol                       = "Tcp"
-  frontend_port                  = 80
-  backend_port                   = 80
+  frontend_port                  = "80"
+  backend_port                   = "80"
   frontend_ip_configuration_name = "${data.template_file.cluster-name.rendered}-public-ip-config"
   backend_address_pool_id        = "${azurerm_lb_backend_address_pool.public_master_backend_pool.id}"
   probe_id                       = "${azurerm_lb_probe.load_balancer_http_probe.id}"
@@ -196,7 +196,7 @@ resource "azurerm_lb_probe" "load_balancer_http_probe" {
   resource_group_name = "${azurerm_resource_group.dcos.name}"
   loadbalancer_id     = "${azurerm_lb.master_public_load_balancer.id}"
   name                = "HTTP"
-  port                = 80
+  port                = "80"
 }
 
 #LB Probe - Checks to see which VMs are healthy and available
@@ -204,7 +204,7 @@ resource "azurerm_lb_probe" "load_balancer_https_probe" {
   resource_group_name = "${azurerm_resource_group.dcos.name}"
   loadbalancer_id     = "${azurerm_lb.master_public_load_balancer.id}"
   name                = "HTTPS"
-  port                = 443
+  port                = "443"
 }
 
 
@@ -241,7 +241,7 @@ resource "azurerm_network_security_rule" "master-httpRule" {
     direction                   = "Inbound"
     access                      = "Allow"
     protocol                    = "Tcp"
-    source_port_range           = "80"
+    source_port_range           = "*"
     destination_port_range      = "80"
     source_address_prefix       = "*"
     destination_address_prefix  = "*"
@@ -255,7 +255,7 @@ resource "azurerm_network_security_rule" "master-httpsRule" {
     direction                   = "Inbound"
     access                      = "Allow"
     protocol                    = "Tcp"
-    source_port_range           = "443"
+    source_port_range           = "*"
     destination_port_range      = "443"
     source_address_prefix       = "*"
     destination_address_prefix  = "*"
@@ -342,6 +342,7 @@ resource "azurerm_network_interface" "master_nic" {
   resource_group_name       = "${azurerm_resource_group.dcos.name}"
   network_security_group_id = "${azurerm_network_security_group.master_security_group.id}"
   count                     = "${var.num_of_masters}"
+  internal_dns_name_label   = "${data.template_file.cluster-name.rendered}-master-${count.index}"
 
   ip_configuration {
    name                                    = "${data.template_file.cluster-name.rendered}-${count.index}-ipConfig"
