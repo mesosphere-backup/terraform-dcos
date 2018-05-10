@@ -11,7 +11,7 @@ variable "num_of_gpu_agents" {
 }
 
 variable "aws_gpu_agent_instance_type" {
-  default = "g2.2xlarge"
+  default = "g3.4xlarge"
 }
 
 # AMI Zone US-WEST-2
