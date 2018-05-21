@@ -477,6 +477,11 @@ variable "dcos_rexray_config" {
  default = ""
 }
 
+variable "dcos_config" {
+ description = "User populated flags meant for undocumented dcos config"
+ default = ""
+}
+
 variable "state" {
  default = "install"
  description = "Support installing or Upgrading DC/OS"

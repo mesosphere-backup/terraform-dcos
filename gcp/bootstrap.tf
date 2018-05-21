@@ -149,6 +149,7 @@ module "dcos-bootstrap" {
     dcos_enable_docker_gc = "${var.dcos_enable_docker_gc}"
     dcos_staged_package_storage_uri = "${var.dcos_staged_package_storage_uri}"
     dcos_package_storage_uri = "${var.dcos_package_storage_uri}"
+    dcos_config = "${var.dcos_config}"
 }
 
 resource "null_resource" "bootstrap" {
@@ -228,6 +229,7 @@ resource "null_resource" "bootstrap" {
     dcos_enable_docker_gc = "${var.dcos_enable_docker_gc}"
     dcos_staged_package_storage_uri = "${var.dcos_staged_package_storage_uri}"
     dcos_package_storage_uri = "${var.dcos_package_storage_uri}"
+    dcos_config = "${var.dcos_config}"
   }
 
   # Bootstrap script can run on any instance of the cluster
