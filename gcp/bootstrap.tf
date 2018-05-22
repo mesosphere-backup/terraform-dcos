@@ -107,6 +107,7 @@ module "dcos-bootstrap" {
     dcos_exhibitor_storage_backend = "${var.dcos_exhibitor_storage_backend}"
     dcos_exhibitor_zk_hosts = "${var.dcos_exhibitor_zk_hosts}"
     dcos_exhibitor_zk_path = "${var.dcos_exhibitor_zk_path}"
+    dcos_license_key_contents= "${var.dcos_license_key_contents}"
     dcos_gc_delay = "${var.dcos_gc_delay}"
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
@@ -179,6 +180,7 @@ resource "null_resource" "bootstrap" {
     dcos_cluster_docker_credentials_dcos_owned = "${var.dcos_cluster_docker_credentials_dcos_owned}"
     dcos_cluster_docker_credentials_enabled = "${var.dcos_cluster_docker_credentials_enabled}"
     dcos_cluster_docker_credentials_write_to_etc = "${var.dcos_cluster_docker_credentials_write_to_etc}"
+    dcos_cluster_name  = "${coalesce(var.dcos_cluster_name, data.template_file.cluster-name.rendered)}"
     dcos_customer_key = "${var.dcos_customer_key}"
     dcos_dns_search = "${var.dcos_dns_search}"
     dcos_docker_remove_delay = "${var.dcos_docker_remove_delay}"
@@ -190,6 +192,7 @@ resource "null_resource" "bootstrap" {
     dcos_exhibitor_storage_backend = "${var.dcos_exhibitor_storage_backend}"
     dcos_exhibitor_zk_hosts = "${var.dcos_exhibitor_zk_hosts}"
     dcos_exhibitor_zk_path = "${var.dcos_exhibitor_zk_path}"
+    dcos_license_key_contents= "${var.dcos_license_key_contents}"
     dcos_gc_delay = "${var.dcos_gc_delay}"
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
@@ -246,6 +249,12 @@ resource "null_resource" "bootstrap" {
    source = "${var.ip-detect["gcp"]}"
    destination = "/tmp/ip-detect"
   }
+
+  # DCOS fault domain detect script
+  provisioner "file" {
+   source = "${var.dcos_fault_domain_detect_filename}"
+   destination = "/tmp/fault-domain-detect"
+   }
 
   # Generate and upload bootstrap script to node
   provisioner "file" {

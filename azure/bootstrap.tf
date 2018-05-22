@@ -113,6 +113,7 @@ resource "azurerm_network_interface" "bootstrap_nic" {
   location                  = "${var.azure_region}"
   resource_group_name       = "${azurerm_resource_group.dcos.name}"
   network_security_group_id = "${azurerm_network_security_group.bootstrap_security_group.id}"
+  internal_dns_name_label   = "${data.template_file.cluster-name.rendered}-bootstrap"
 
   ip_configuration {
    name                                    = "${data.template_file.cluster-name.rendered}-bootstrap-ipConfig"
@@ -242,7 +243,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
     dcos_cluster_docker_credentials_write_to_etc = "${var.dcos_cluster_docker_credentials_write_to_etc}"
     dcos_cluster_name  = "${coalesce(var.dcos_cluster_name, data.template_file.cluster-name.rendered)}"
     dcos_customer_key = "${var.dcos_customer_key}"
-    dcos_dns_search = "${var.dcos_dns_search}"
+    dcos_dns_search = "${join(".",slice(split(".","${azurerm_network_interface.bootstrap_nic.internal_fqdn}"),1,6))} ${var.dcos_dns_search}"
     dcos_docker_remove_delay = "${var.dcos_docker_remove_delay}"
     dcos_exhibitor_address = "${azurerm_lb.master_internal_load_balancer.private_ip_address}"
     dcos_exhibitor_azure_account_key = "${coalesce(var.dcos_exhibitor_azure_account_key, azurerm_storage_account.dcos-exhibitor-account.primary_access_key)}"
@@ -252,6 +253,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
     dcos_exhibitor_storage_backend = "${var.dcos_exhibitor_storage_backend}"
     dcos_exhibitor_zk_hosts = "${var.dcos_exhibitor_zk_hosts}"
     dcos_exhibitor_zk_path = "${var.dcos_exhibitor_zk_path}"
+    dcos_license_key_contents= "${var.dcos_license_key_contents}"
     dcos_gc_delay = "${var.dcos_gc_delay}"
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
@@ -325,7 +327,7 @@ resource "null_resource" "bootstrap" {
     dcos_cluster_docker_credentials_write_to_etc = "${var.dcos_cluster_docker_credentials_write_to_etc}"
     dcos_cluster_name  = "${coalesce(var.dcos_cluster_name, data.template_file.cluster-name.rendered)}"
     dcos_customer_key = "${var.dcos_customer_key}"
-    dcos_dns_search = "${var.dcos_dns_search}"
+    dcos_dns_search = "${join(".",slice(split(".","${azurerm_network_interface.bootstrap_nic.internal_fqdn}"),1,6))} ${var.dcos_dns_search}"
     dcos_docker_remove_delay = "${var.dcos_docker_remove_delay}"
     dcos_exhibitor_address = "${azurerm_lb.master_internal_load_balancer.private_ip_address}"
     dcos_exhibitor_azure_account_key = "${coalesce(var.dcos_exhibitor_azure_account_key, azurerm_storage_account.dcos-exhibitor-account.primary_access_key)}"
@@ -335,6 +337,7 @@ resource "null_resource" "bootstrap" {
     dcos_exhibitor_storage_backend = "${var.dcos_exhibitor_storage_backend}"
     dcos_exhibitor_zk_hosts = "${var.dcos_exhibitor_zk_hosts}"
     dcos_exhibitor_zk_path = "${var.dcos_exhibitor_zk_path}"
+    dcos_license_key_contents= "${var.dcos_license_key_contents}"
     dcos_gc_delay = "${var.dcos_gc_delay}"
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
@@ -390,6 +393,12 @@ resource "null_resource" "bootstrap" {
   provisioner "file" {
    source = "${var.ip-detect["azure"]}"
    destination = "/tmp/ip-detect"
+   }
+
+  # DCOS fault domain detect script
+  provisioner "file" {
+   source = "${var.dcos_fault_domain_detect_filename}"
+   destination = "/tmp/fault-domain-detect"
    }
 
   # Generate and upload bootstrap script to node

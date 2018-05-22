@@ -40,12 +40,6 @@ resource "aws_instance" "bootstrap" {
   # backend instances.
   subnet_id = "${aws_subnet.public.id}"
 
-  # DCOS ip detect script
-  provisioner "file" {
-   source = "${var.ip-detect["aws"]}"
-   destination = "/tmp/ip-detect"
-   }
-
   # OS init script
   provisioner "file" {
    content = "${module.aws-tested-oses.os-setup}"
@@ -110,6 +104,7 @@ resource "aws_instance" "bootstrap" {
     dcos_exhibitor_storage_backend = "${var.dcos_exhibitor_storage_backend}"
     dcos_exhibitor_zk_hosts = "${var.dcos_exhibitor_zk_hosts}"
     dcos_exhibitor_zk_path = "${var.dcos_exhibitor_zk_path}"
+    dcos_license_key_contents= "${var.dcos_license_key_contents}"
     dcos_gc_delay = "${var.dcos_gc_delay}"
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
@@ -193,6 +188,7 @@ resource "null_resource" "bootstrap" {
     dcos_exhibitor_storage_backend = "${var.dcos_exhibitor_storage_backend}"
     dcos_exhibitor_zk_hosts = "${var.dcos_exhibitor_zk_hosts}"
     dcos_exhibitor_zk_path = "${var.dcos_exhibitor_zk_path}"
+    dcos_license_key_contents= "${var.dcos_license_key_contents}"
     dcos_gc_delay = "${var.dcos_gc_delay}"
     dcos_http_proxy = "${var.dcos_http_proxy}"
     dcos_https_proxy = "${var.dcos_https_proxy}"
@@ -243,6 +239,18 @@ resource "null_resource" "bootstrap" {
     private_key = "${local.private_key}"
     agent = "${local.agent}"
   }
+
+  # DCOS ip detect script
+  provisioner "file" {
+   source = "${var.ip-detect["aws"]}"
+   destination = "/tmp/ip-detect"
+   }
+
+  # DCOS fault domain detect script
+  provisioner "file" {
+   source = "${var.dcos_fault_domain_detect_filename}"
+   destination = "/tmp/fault-domain-detect"
+   }
 
   # Generate and upload bootstrap script to node
   provisioner "file" {

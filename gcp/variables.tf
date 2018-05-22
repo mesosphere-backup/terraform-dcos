@@ -111,6 +111,15 @@ variable "ip-detect" {
  }
 }
 
+variable "dcos_license_key_contents" {
+ default = ""
+ description = "Used to privide the license key of DC/OS for Enterprise Edition"
+}
+
+variable "dcos_fault_domain_detect_filename" {
+ default = "scripts/cloud/gcp/fault-domain-detect"
+}
+
 variable "os-init-script" {
  description = "Init Scripts that runs post-AMI deployment and pre-DC/OS install"
  type = "map"
