@@ -303,11 +303,6 @@ variable "dcos_superuser_password" {
   description = "This required parameter specifies the plaintext superuser password (EE only). NOTE: THIS MUST NOT BE STORED ANYWHERE, NOR USED FOR ANYTHING OTHER THAN GENERATING dcos_superuser_password_hash. USE AN ENVIRONMENT VARIABLE."
 }
 
-variable "dcos_superuser_password_hash" {
-  default     = "${sha512("${dcos_superuser_password}")}"
-  description = "This required parameter specifies the hashed superuser password. (EE only)"
-}
-
 variable "dcos_cluster_name" {
   default     = ""
   description = "Name of the DC/OS Cluster"
