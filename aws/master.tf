@@ -248,6 +248,10 @@ resource "null_resource" "dcos-login" {
     interpreter = ["/bin/bash"]
     command     = "dcos-auth-login.sh"
   }
+
+  environment {
+    DCOS_CLUSTER_URL = "https://${aws_elb.public-master-elb.dns_name}"
+  }
 }
 
 resource "null_resource" "install-kubernetes" {
