@@ -1,12 +1,13 @@
 # Specify the provider and access details
 provider "aws" {
   profile = "${var.aws_profile}"
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
 }
 
 locals {
-  private_key = "${file(var.ssh_private_key_filename)}"
-  agent = "${var.ssh_private_key_filename == "/dev/null" ? true : false}"
+  private_key                  = "${file(var.ssh_private_key_filename)}"
+  agent                        = "${var.ssh_private_key_filename == "/dev/null" ? true : false}"
+  dcos_superuser_password_hash = "${sha512("${var.dcos_superuser_password}")}"
 }
 
 # Runs a local script to return the current user in bash
@@ -16,42 +17,42 @@ data "external" "whoami" {
 
 # Create a VPC to launch our instances into
 resource "aws_vpc" "default" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = "true"
 
-tags {
-   Name = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
+  tags {
+    Name = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
   }
 }
 
 # Addressable Cluster UUID
 data "template_file" "cluster_uuid" {
- template = "tf$${uuid}"
+  template = "tf$${uuid}"
 
- vars {
+  vars {
     uuid = "${substr(md5(aws_vpc.default.id),0,4)}"
   }
 }
 
 # Allow overrides of the owner variable or default to whoami.sh
 data "template_file" "cluster-name" {
- template = "$${username}-tf$${uuid}"
+  template = "$${username}-tf$${uuid}"
 
   vars {
-    uuid = "${substr(md5(aws_vpc.default.id),0,4)}"
+    uuid     = "${substr(md5(aws_vpc.default.id),0,4)}"
     username = "${format("%.10s", coalesce(var.owner, data.external.whoami.result["owner"]))}"
   }
 }
 
 # Create DCOS Bucket regardless of what exhibitor backend was chosen
 resource "aws_s3_bucket" "dcos_bucket" {
-  bucket = "${data.template_file.cluster-name.rendered}-bucket"
-  acl    = "private"
+  bucket        = "${data.template_file.cluster-name.rendered}-bucket"
+  acl           = "private"
   force_destroy = "true"
 
   tags {
-   Name = "${data.template_file.cluster-name.rendered}-bucket"
-   cluster = "${data.template_file.cluster-name.rendered}"
+    Name    = "${data.template_file.cluster-name.rendered}-bucket"
+    cluster = "${data.template_file.cluster-name.rendered}"
   }
 }
 
@@ -87,20 +88,20 @@ resource "aws_security_group" "any_access_internal" {
   description = "Manage all ports cluster level"
   vpc_id      = "${aws_vpc.default.id}"
 
- # full access internally
- ingress {
-  from_port = 0
-  to_port = 0
-  protocol = "-1"
-  cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  # full access internally
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
   }
 
- # full access internally
- egress {
-  from_port = 0
-  to_port = 0
-  protocol = "-1"
-  cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  # full access internally
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
   }
 }
 
@@ -173,7 +174,7 @@ resource "aws_security_group" "internet-outbound" {
   description = "Security group to control outbound internet access only."
   vpc_id      = "${aws_vpc.default.id}"
 
- # outbound internet access
+  # outbound internet access
   egress {
     from_port   = 0
     to_port     = 0
@@ -189,53 +190,53 @@ resource "aws_security_group" "master" {
   description = "Security group for masters"
   vpc_id      = "${aws_vpc.default.id}"
 
- # Mesos Master access from within the vpc
- ingress {
-   to_port = 5050
-   from_port = 5050
-   protocol = "tcp"
-   cidr_blocks = ["${aws_vpc.default.cidr_block}"]
- }
+  # Mesos Master access from within the vpc
+  ingress {
+    to_port     = 5050
+    from_port   = 5050
+    protocol    = "tcp"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  }
 
- # Adminrouter access from within the vpc
- ingress {
-   to_port = 80
-   from_port = 80
-   protocol = "tcp"
-   cidr_blocks = ["${var.admin_cidr}"]
- }
+  # Adminrouter access from within the vpc
+  ingress {
+    to_port     = 80
+    from_port   = 80
+    protocol    = "tcp"
+    cidr_blocks = ["${var.admin_cidr}"]
+  }
 
- # Adminrouter SSL access from anywhere
- ingress {
-   to_port = 443
-   from_port = 443
-   protocol = "tcp"
-   cidr_blocks = ["${var.admin_cidr}"]
- }
+  # Adminrouter SSL access from anywhere
+  ingress {
+    to_port     = 443
+    from_port   = 443
+    protocol    = "tcp"
+    cidr_blocks = ["${var.admin_cidr}"]
+  }
 
- # Marathon access from within the vpc
- ingress {
-   to_port = 8080
-   from_port = 8080
-   protocol = "tcp"
-   cidr_blocks = ["${aws_vpc.default.cidr_block}"]
- }
+  # Marathon access from within the vpc
+  ingress {
+    to_port     = 8080
+    from_port   = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  }
 
- # Exhibitor access from within the vpc
- ingress {
-   to_port = 8181
-   from_port = 8181
-   protocol = "tcp"
-   cidr_blocks = ["${aws_vpc.default.cidr_block}"]
- }
+  # Exhibitor access from within the vpc
+  ingress {
+    to_port     = 8181
+    from_port   = 8181
+    protocol    = "tcp"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  }
 
- # Zookeeper Access from within the vpc
- ingress {
-   to_port = 2181
-   from_port = 2181
-   protocol = "tcp"
-   cidr_blocks = ["${aws_vpc.default.cidr_block}"]
- }
+  # Zookeeper Access from within the vpc
+  ingress {
+    to_port     = 2181
+    from_port   = 2181
+    protocol    = "tcp"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  }
 }
 
 # A security group for public slave so it is accessible via the web
@@ -246,49 +247,49 @@ resource "aws_security_group" "public_slave" {
 
   # Allow ports within range
   ingress {
-    to_port = 21
-    from_port = 0
-    protocol = "tcp"
+    to_port     = 21
+    from_port   = 0
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Allow ports within range
   ingress {
-    to_port = 5050
-    from_port = 23
-    protocol = "tcp"
+    to_port     = 5050
+    from_port   = 23
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Allow ports within range
   ingress {
-    to_port = 32000
-    from_port = 5052
-    protocol = "tcp"
+    to_port     = 32000
+    from_port   = 5052
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Allow ports within range
   ingress {
-    to_port = 21
-    from_port = 0
-    protocol = "udp"
+    to_port     = 21
+    from_port   = 0
+    protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Allow ports within range
   ingress {
-    to_port = 5050
-    from_port = 23
-    protocol = "udp"
+    to_port     = 5050
+    from_port   = 23
+    protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Allow ports within range
   ingress {
-    to_port = 32000
-    from_port = 5052
-    protocol = "udp"
+    to_port     = 32000
+    from_port   = 5052
+    protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -305,19 +306,19 @@ resource "aws_security_group" "private_slave" {
 
   # full access internally
   ingress {
-   from_port = 0
-   to_port = 0
-   protocol = "-1"
-   cidr_blocks = ["${aws_vpc.default.cidr_block}"]
-   }
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  }
 
   # full access internally
   egress {
-   from_port = 0
-   to_port = 0
-   protocol = "-1"
-   cidr_blocks = ["${aws_vpc.default.cidr_block}"]
-   }
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${aws_vpc.default.cidr_block}"]
+  }
 
   tags {
     KubernetesCluster = "${var.kubernetes_cluster}"
@@ -325,12 +326,12 @@ resource "aws_security_group" "private_slave" {
 }
 
 # Provide tested AMI and user from listed region startup commands
-  module "aws-tested-oses" {
-      source   = "./modules/dcos-tested-aws-oses"
-      os       = "${var.os}"
-      region   = "${var.aws_region}"
+module "aws-tested-oses" {
+  source = "./modules/dcos-tested-aws-oses"
+  os     = "${var.os}"
+  region = "${var.aws_region}"
 }
 
 output "ssh_user" {
-   value = "${module.aws-tested-oses.user}"
+  value = "${module.aws-tested-oses.user}"
 }
