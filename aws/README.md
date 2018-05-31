@@ -19,7 +19,7 @@ mkdir {DIR}
 cd {DIR}
 ```
 
-Run this command below to have terraform initialize from this repository. There is no git clone of this repo required as terraform performs this in behalf of you.
+Run this command below to have terraform initialized from this repository. There is no git clone of this repo required as terraform performs this in behalf of you.
 
 ```
 terraform init -from-module github.com/dcos/terraform-dcos//aws
