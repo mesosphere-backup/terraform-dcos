@@ -2,6 +2,12 @@
 
 # Open DC/OS on AWS with Terraform
 
+
+## Prerequisites
+- [Terraform 0.11.x](https://www.terraform.io/downloads.html)
+- AWS SSH Keys 
+- AWS IAM Keys
+
 ## Getting Started
 
 ### Install Terraform
@@ -18,7 +24,7 @@ If you want to leverage the terraform installer, feel free to check out https://
 
 ##### Configure your AWS ssh Keys
 
-In the `variable.tf` there is a `ssh_key_name` variable. This key must be added to your host machine running your terraform script as it will be used to log into the machines to run setup scripts. The default is `default`. You can find aws documentation that talks about this [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws).
+In the `variable.tf` there is a `ssh_key_name` variable. This key must be added to your host machine running your terraform script as it will be used to log into the machines to run setup scripts. The default is `default`. You can find aws documentation that talks about this [https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws).
 
 When you have your key available, you can use ssh-add.
 
@@ -26,11 +32,11 @@ When you have your key available, you can use ssh-add.
 ssh-add ~/.ssh/path_to_you_key.pem
 ```
 
-_*NOTE*: When using an ssh agent it is best to add it the command above to your `~/.bash_profile`, next time your terminal gets reopened, it will reload your keys automatically._
+*NOTE*: When using an ssh agent it is best to add it the command above to your `~/.bash_profile`, next time your terminal gets reopened, it will reload your keys automatically.
 
 ##### Configure your IAM AWS Keys
 
-You will need your AWS aws_access_key_id and aws_secret_access_key. If you don't have one yet, you can get them from the AWS documentation [here](
+You will need your AWS aws_access_key_id and aws_secret_access_key. If you don't have one yet, you can get them from the AWS documentation [http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html](
 http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). When you finally get them, you can install it in your home directory. The default location is `$HOME/.aws/credentials` on Linux and OS X, or `"%USERPROFILE%\.aws\credentials"` for Windows users.
 
 Here is an example of the output when you're done:
@@ -42,37 +48,34 @@ aws_access_key_id = ACHEHS71DG712w7EXAMPLE
 aws_secret_access_key = /R8SHF+SHFJaerSKE83awf4ASyrF83sa471DHSEXAMPLE
 ```
 
-## Example Terraform Deployments
+*Note*: `[default]` is the name of the `aws_profile`. You may select a different profile to use in terraform by adding it into this entry `aws_profile="<INSERT_CREDENTIAL_PROFILE_NAME_HERE>"` into your [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example).
 
-### Quick Start
+## Deploying with Default Variables
 
 We've provided all the sensible defaults that you would want to play around with DC/OS. Just run this command to deploy a multi-master setup in the cloud. Three agents will be deployed for you. Two private agents, one public agent.
 
 - There is no git clone of this repo required. Terraform does this for you under the hood.
 
-_*Note:* Create a new directory before the command below as terraform will write its files within the current directory.
+*Note:* Create a new directory before the command below as terraform will write its files within the current directory.
 
 ```bash
 terraform init -from-module github.com/dcos/terraform-dcos//aws
 terraform apply 
 ```
-###### Choosing Different AWS Credential Profiles
 
-If you have different types of AWS profiles that you use within your organization, you can specify which credentials/keys you want terraform to use by appending this flag to terraform apply `-var aws_profile="default_or_custom_profile"`
-
-### Custom terraform-dcos variables
+### Deploying with Custom Variables
 
 The default variables are tracked in the [variables.tf](/aws/variables.tf) file. Since this file can be overwritten during updates when you may run `terraform get --update` when you want to fetch new releases of DC/OS to upgrade too, its best to use the [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example) and set your custom terraform and DC/OS flags there. This way you can keep track of a single file that you can use manage the lifecycle of your cluster.
 
 ###### Supported Operating Systems
 
-For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/oss/custom/system-requirements/). You can find the list that Terraform for this repo [here](/aws/modules/dcos-tested-aws-oses/platform/cloud/aws).
+You can find the list that Terraform for this repo [https://github.com/dcos/terraform-dcos/blob/master/aws/modules/dcos-tested-aws-oses/platform/cloud/aws](/aws/modules/dcos-tested-aws-oses/platform/cloud/aws). For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/oss/custom/system-requirements/). 
 
 ###### Supported DC/OS Versions
 
 For a list of all the DC/OS versions that this repository supports, you can find them at the `tf_dcos_core` module [here](https://github.com/dcos/tf_dcos_core/tree/master/dcos-versions).
 
-_*Note*: Master DC/OS version is not meant for production use. It is only for CI/CD testing._
+*Note*: Master DC/OS version is not meant for production use. It is only for CI/CD testing.
 
 To apply the configuration file, you can use this command below.
 
