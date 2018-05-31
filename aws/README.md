@@ -10,21 +10,36 @@
 
 ## Getting Started
 
-### Install Terraform
+### Creating Terraform Cluster Directory
 
-If you're on a Mac environment with homebrew installed, run this command.
+Make your directory where terraform will download and place your terraform infrastructure files.
 
 ```bash
-brew install terraform
+mkdir {DIR}
+cd {DIR}
 ```
 
-If you want to leverage the terraform installer, feel free to check out https://www.terraform.io/downloads.html.
+Run this command below to have terraform initialize from this repository. There is no git clone of this repo required as terraform performs this in behalf of you.
+
+```
+terraform init -from-module github.com/dcos/terraform-dcos//aws
+```
 
 ### Configure your Cloud Provider Credentials
 
 ##### Configure your AWS ssh Keys
 
-In the `variable.tf` there is a `ssh_key_name` variable. This key must be added to your host machine running your terraform script as it will be used to log into the machines to run setup scripts. The default is `default`. You can find aws documentation that talks about this [https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws).
+You can either upload your existing ssh keys or use an SSH key already created on AWS. 
+
+* Upload existing key:
+    To create upload your own key not stored on AWS, you go through this documentation:  [https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws)  
+    
+* Create new key:
+    To create a new via AWS, you go through this documentation: [https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair) 
+    
+When complete, retrieve the key-pair name and ensure that the name matches the `ssh_key_name` in your [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example) or [variables.tf](/aws/variables.tf). 
+
+*Note*: The [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example) always takes precedence over the [variables.tf](/aws/variables.tf) and its **best practice** to use [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example) for any variable changes that are specific to your cluster. 
 
 When you have your key available, you can use ssh-add.
 
@@ -48,18 +63,14 @@ aws_access_key_id = ACHEHS71DG712w7EXAMPLE
 aws_secret_access_key = /R8SHF+SHFJaerSKE83awf4ASyrF83sa471DHSEXAMPLE
 ```
 
-*Note*: `[default]` is the name of the `aws_profile`. You may select a different profile to use in terraform by adding it into this entry `aws_profile="<INSERT_CREDENTIAL_PROFILE_NAME_HERE>"` into your [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example).
+*Note*: `[default]` is the name of the `aws_profile`. You may select a different profile to use in terraform by adding it into this entry `aws_profile = "<INSERT_CREDENTIAL_PROFILE_NAME_HERE>"` into your [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example).
 
 ### Deploying with Default Variables
 
-We've provided all the sensible defaults that you would want to play around with DC/OS. Just run this command to deploy a multi-master setup in the cloud. Three agents will be deployed for you. Two private agents, one public agent.
+We've provided all the sensible defaults that you would want to play around with DC/OS. The default variables are tracked in the [variables.tf](/aws/variables.tf) file. Just run this command to deploy a multi-master setup in the cloud. Three agents will be deployed for you. Two private agents, one public agent.
 
-- There is no git clone of this repo required. Terraform does this for you under the hood.
-
-*Note:* Create a new directory before the command below as terraform will write its files within the current directory.
 
 ```bash
-terraform init -from-module github.com/dcos/terraform-dcos//aws
 terraform apply 
 ```
 
@@ -96,8 +107,7 @@ os = "centos_7.3"
 num_of_masters = "3"
 num_of_private_agents = "2"
 num_of_public_agents = "1"
-expiration = "6h"  
-dcos_security = "permissive"
+ssh_key_name = "default" 
 dcos_cluster_docker_credentials_enabled =  "true"
 dcos_cluster_docker_credentials_write_to_etc = "true"
 dcos_cluster_docker_credentials_dcos_owned = "false"
