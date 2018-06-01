@@ -14,7 +14,7 @@
 5. Apply Terraform
 
 
-## Creating Terraform Cluster Directory
+## Create Installer Directory
 
 Make your directory where Terraform will download and place your Terraform infrastructure files.
 
