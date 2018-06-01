@@ -14,7 +14,7 @@
 5. Apply Terraform
 
 
-### Creating Terraform Cluster Directory
+## Creating Terraform Cluster Directory
 
 Make your directory where Terraform will download and place your Terraform infrastructure files.
 
@@ -29,7 +29,7 @@ Run this command below to have Terraform initialized from this repository. There
 terraform init -from-module github.com/dcos/terraform-dcos/aws
 ```
 
-### Configure AWS SSH Keys
+## Configure AWS SSH Keys
 
 You can either upload your existing SSH keys or use an SSH key already created on AWS. 
 
@@ -51,7 +51,7 @@ ssh-add ~/.ssh/path_to_you_key.pem
 
 **Note**: When using an SSH agent it is best to add the command above to your `~/.bash_profile`. Next time your terminal gets reopened, it will reload your keys automatically.
 
-### Configure IAM AWS Keys
+## Configure IAM AWS Keys
 
 You will need your AWS `aws_access_key_id` and `aws_secret_access_key`. If you don't have one yet, you can get them from the [AWS access keys documentation](
 http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). 
@@ -69,9 +69,9 @@ aws_secret_access_key = /R8SHF+SHFJaerSKE83awf4ASyrF83sa471DHSEXAMPLE
 
 **Note**: `[default]` is the name of the `aws_profile`. You may select a different profile to use in Terraform by adding it to your `desired_cluster_profile.tfvars` as `aws_profile = "<INSERT_CREDENTIAL_PROFILE_NAME_HERE>"`.
 
-### Deploying DC/OS
+## Deploy DC/OS
 
-#### Deploying with Default Configuration
+### Deploying with Default Configuration
 
 We've provided sensible defaults if you would want to play around with Mesosphere DC/OS. The default variables are tracked in  [variables.tf](/aws/variables.tf). 
 
@@ -81,15 +81,15 @@ Just run this command to deploy a multi-master setup in the cloud. **3 agents wi
 terraform apply 
 ```
 
-#### Deploying with Custom Configuration
+### Deploying with Custom Configuration
 
 The default variables are tracked in the [variables.tf](/aws/variables.tf) file. Since this file can be overwritten during updates when you may run `terraform get --update` when you fetch new releases of DC/OS to upgrade to, it's best to use the [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example) and set your custom Terraform and DC/OS flags there. This way you can keep track of a single file that you can use manage the lifecycle of your cluster.
 
-##### Supported Operating Systems
+#### Supported Operating Systems
 
 Here is the [list of operating systems supported](/aws/modules/dcos-tested-aws-oses/platform/cloud/aws).
 
-##### Supported DC/OS Versions
+#### Supported DC/OS Versions
 
 Here is the [list of DC/OS versions supported](https://github.com/dcos/tf_dcos_core/tree/master/dcos-versions).
 
@@ -101,7 +101,7 @@ To apply the configuration file, you can use this command below.
 terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
-### Advanced YAML Configuration
+## Advanced YAML Configuration
 
 We have designed this project to be flexible. Here are the example working variables that allows very deep customization by using a single `tfvars` file.
 
@@ -254,9 +254,9 @@ Redeploy agent:
 terraform apply -var-file desired_cluster_profile
 ```
 
-### Experimental
+## Experimental
 
-#### Adding GPU Private Agents
+### Adding GPU Private Agents
 
 **Note: Best used with DC/OS 1.9 and above**
 
@@ -264,7 +264,7 @@ As of Mesos 1.0, which now supports GPU agents, you can experiment with them imm
 
 
 
-##### Add GPU Private Agents
+#### Add GPU Private Agents
 
 ```bash
 mv dcos-gpu-agents.tf.disabled dcos-gpu-agents.tf
@@ -272,7 +272,7 @@ terraform get
 terraform apply -var-file desired_cluster_profile --var num_of_gpu_agents=3
 ```
 
-##### Remove GPU Private Agents
+#### Remove GPU Private Agents
 
 ```bash
 mv dcos-gpu-agents.tf dcos-gpu-agents.tf.disabled
@@ -280,7 +280,7 @@ terraform apply -var-file desired_cluster_profile
 ```
 
 
-### Destroy Cluster
+## Destroy Cluster
 
 You can shutdown/destroy all resources from your environment by running this command below:
 
@@ -288,7 +288,7 @@ You can shutdown/destroy all resources from your environment by running this com
 terraform destroy -var-file desired_cluster_profile
 ```
 
-  # Roadmaps
+  ## Roadmap
 
   - [X] Support for AWS
   - [X] Support for CoreOS
