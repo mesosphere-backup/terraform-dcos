@@ -149,7 +149,7 @@ resource "google_compute_instance" "public-agent" {
   }
 
   service_account {
-      scopes = ["https://www.googleapis.com/auth/compute.readonly"]
+      scopes = "${var.gcp_sa_scopes}"
  }
 }
 
