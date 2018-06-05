@@ -163,6 +163,7 @@ module "dcos-mesos-public-agent" {
   dcos_version         = "${var.dcos_version}"
   dcos_skip_checks     = "${var.dcos_skip_checks}"
   role                 = "dcos-mesos-agent-public"
+  dcos_dns_search = "${var.dcos_dns_search}"
 }
 
 resource "null_resource" "public-agent" {
