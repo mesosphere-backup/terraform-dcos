@@ -1,7 +1,7 @@
 # Install Mesosphere DC/OS on AWS
 
 ## Prerequisites
-- [Terraform 0.11.x](https://www.terraform.io/downloads.html) (`brew install terraform`)
+- [Terraform 0.11.x](https://www.terraform.io/downloads.html)
 - AWS SSH Keys 
 - AWS IAM Keys
 
