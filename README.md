@@ -1,6 +1,4 @@
-&#x1F4D9; **Disclaimer: Community supported repository. Not supported by Mesosphere directly.**
-
-# Deploy Open DC/OS using Terraform
+# Install Mesosphere DC/OS using Terraform
 
 The purpose of this tool is to automate most of the manual efforts of managing and maintaining distributed systems. This project has a few important goals in mind since the inception of the project.
 
@@ -10,21 +8,9 @@ The dcos-core module has all the DC/OS unique install and upgrade instructions. 
 
 If you want to use this in your own environment, feel free to fork this and customize it to your specifications. This will be built so everybody can take advantage of deploying and manage DC/OS clusters.
 
-## Getting Started
-
-### Install Terraform
-
-If you're on a Mac environment with homebrew installed, run this command.
-
-```bash
-brew install terraform
-```
-
-If you want to leverage the terraform installer, feel free to check out https://www.terraform.io/downloads.html.
-
 ## Cloud Providers
 
-You can find `terraform` instructions for the respective clouds below:
+Select your provider below for instructions:
 
  - [AWS Terraform](./aws/README.md)
  - [Azure Terraform](./azure/README.md)

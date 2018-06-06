@@ -1,45 +1,47 @@
-&#x1F4D9; **Disclaimer: Community supported repository. Not supported by Mesosphere directly.**
-
-# Open DC/OS on AWS with Terraform
-
+# Install Mesosphere DC/OS on AWS
 
 ## Prerequisites
-- [Terraform 0.11.x](https://www.terraform.io/downloads.html)
+- [Terraform 0.11.x](https://www.terraform.io/downloads.html) (`brew install terraform`)
 - AWS SSH Keys 
 - AWS IAM Keys
 
 ## Getting Started
 
-### Creating Terraform Cluster Directory
+1. Create directory
+2. Initialize Terraform
+3. Configure AWS SSH and IAM keys
+4. Configure settings
+5. Apply Terraform
 
-Make your directory where terraform will download and place your terraform infrastructure files.
+
+## Create Installer Directory
+
+Make your directory where Terraform will download and place your Terraform infrastructure files.
 
 ```bash
-mkdir {DIR}
-cd {DIR}
+mkdir dcos-installer
+cd dcos-installer
 ```
 
-Run this command below to have terraform initialized from this repository. There is no git clone of this repo required as terraform performs this in behalf of you.
+Run this command below to have Terraform initialized from this repository. There is **no git clone of this repo required** as Terraform performs this for you.
 
 ```
-terraform init -from-module github.com/dcos/terraform-dcos//aws
+terraform init -from-module github.com/dcos/terraform-dcos/aws
 ```
 
-### Configure your Cloud Provider Credentials
+## Configure AWS SSH Keys
 
-##### Configure your AWS ssh Keys
+You can either upload your existing SSH keys or use an SSH key already created on AWS. 
 
-You can either upload your existing ssh keys or use an SSH key already created on AWS. 
-
-* Upload existing key:
-    To create upload your own key not stored on AWS, you go through this documentation:  [https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws)  
+* **Upload existing key**:
+    To upload your own key not stored on AWS, read [how to import your own key](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws)  
     
-* Create new key:
-    To create a new via AWS, you go through this documentation: [https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair) 
+* **Create new key**:
+    To create a new key via AWS, read [how to create a key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair) 
     
-When complete, retrieve the key-pair name and ensure that the name matches the `ssh_key_name` in your [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example) or [variables.tf](/aws/variables.tf). 
+When complete, retrieve the key pair name and ensure that it matches the `ssh_key_name` in your [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example). 
 
-*Note*: The [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example) always takes precedence over the [variables.tf](/aws/variables.tf) and its **best practice** to use [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example) for any variable changes that are specific to your cluster. 
+**Note**: The [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example) always takes precedence over the [variables.tf](/aws/variables.tf) and is **best practice** for any variable changes that are specific to your cluster. 
 
 When you have your key available, you can use ssh-add.
 
@@ -47,12 +49,14 @@ When you have your key available, you can use ssh-add.
 ssh-add ~/.ssh/path_to_you_key.pem
 ```
 
-*NOTE*: When using an ssh agent it is best to add it the command above to your `~/.bash_profile`, next time your terminal gets reopened, it will reload your keys automatically.
+**Note**: When using an SSH agent it is best to add the command above to your `~/.bash_profile`. Next time your terminal gets reopened, it will reload your keys automatically.
 
-##### Configure your IAM AWS Keys
+## Configure IAM AWS Keys
 
-You will need your AWS aws_access_key_id and aws_secret_access_key. If you don't have one yet, you can get them from the AWS documentation [http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html](
-http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). When you finally get them, you can install it in your home directory. The default location is `$HOME/.aws/credentials` on Linux and OS X, or `"%USERPROFILE%\.aws\credentials"` for Windows users.
+You will need your AWS `aws_access_key_id` and `aws_secret_access_key`. If you don't have one yet, you can get them from the [AWS access keys documentation](
+http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). 
+
+When you get them, you can install it in your home directory. The default location is `$HOME/.aws/credentials` on Linux and macOS, or `"%USERPROFILE%\.aws\credentials"` for Windows users.
 
 Here is an example of the output when you're done:
 
@@ -63,30 +67,33 @@ aws_access_key_id = ACHEHS71DG712w7EXAMPLE
 aws_secret_access_key = /R8SHF+SHFJaerSKE83awf4ASyrF83sa471DHSEXAMPLE
 ```
 
-*Note*: `[default]` is the name of the `aws_profile`. You may select a different profile to use in terraform by adding it into this entry `aws_profile = "<INSERT_CREDENTIAL_PROFILE_NAME_HERE>"` into your [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example).
+**Note**: `[default]` is the name of the `aws_profile`. You may select a different profile to use in Terraform by adding it to your `desired_cluster_profile.tfvars` as `aws_profile = "<INSERT_CREDENTIAL_PROFILE_NAME_HERE>"`.
 
-### Deploying with Default Variables
+## Deploy DC/OS
 
-We've provided all the sensible defaults that you would want to play around with DC/OS. The default variables are tracked in the [variables.tf](/aws/variables.tf) file. Just run this command to deploy a multi-master setup in the cloud. Three agents will be deployed for you. Two private agents, one public agent.
+### Deploying with Default Configuration
 
+We've provided sensible defaults if you would want to play around with Mesosphere DC/OS. The default variables are tracked in  [variables.tf](/aws/variables.tf). 
+
+Just run this command to deploy a multi-master setup in the cloud. **3 agents will be deployed** for you; 2 private agents, 1 public agent.
 
 ```bash
 terraform apply 
 ```
 
-### Deploying with Custom Variables
+### Deploying with Custom Configuration
 
-The default variables are tracked in the [variables.tf](/aws/variables.tf) file. Since this file can be overwritten during updates when you may run `terraform get --update` when you want to fetch new releases of DC/OS to upgrade too, its best to use the [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example) and set your custom terraform and DC/OS flags there. This way you can keep track of a single file that you can use manage the lifecycle of your cluster.
+The default variables are tracked in the [variables.tf](/aws/variables.tf) file. Since this file can be overwritten during updates when you may run `terraform get --update` when you fetch new releases of DC/OS to upgrade to, it's best to use the [desired_cluster_profile.tfvars](/aws/desired_cluster_profile.tfvars.example) and set your custom Terraform and DC/OS flags there. This way you can keep track of a single file that you can use manage the lifecycle of your cluster.
 
-###### Supported Operating Systems
+#### Supported Operating Systems
 
-You can find the list that Terraform for this repo [https://github.com/dcos/terraform-dcos/blob/master/aws/modules/dcos-tested-aws-oses/platform/cloud/aws](/aws/modules/dcos-tested-aws-oses/platform/cloud/aws). For a list of supported operating systems for this repo, see the ones that DC/OS recommends [here](https://docs.mesosphere.com/1.10/installing/oss/custom/system-requirements/). 
+Here is the [list of operating systems supported](/aws/modules/dcos-tested-aws-oses/platform/cloud/aws).
 
-###### Supported DC/OS Versions
+#### Supported DC/OS Versions
 
-For a list of all the DC/OS versions that this repository supports, you can find them at the `tf_dcos_core` module [here](https://github.com/dcos/tf_dcos_core/tree/master/dcos-versions).
+Here is the [list of DC/OS versions supported](https://github.com/dcos/tf_dcos_core/tree/master/dcos-versions).
 
-*Note*: Master DC/OS version is not meant for production use. It is only for CI/CD testing.
+**Note**: Master DC/OS version is not meant for production use. It is only for CI/CD testing.
 
 To apply the configuration file, you can use this command below.
 
@@ -94,20 +101,21 @@ To apply the configuration file, you can use this command below.
 terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
-#### Advance YAML Configuration
+## Advanced YAML Configuration
 
 We have designed this project to be flexible. Here are the example working variables that allows very deep customization by using a single `tfvars` file.
 
-For advance users with stringent requirements, here are the DC/OS flags examples where you can simply paste your YAML configuration in your desired_cluster_profile.tfvars. The alternative to YAML is to convert it to JSON.  
+For advanced users with stringent requirements, here are DC/OS flag examples you can simply paste in `desired_cluster_profile.tfvars`.
 
 ```bash
 $ cat desired_cluster_profile.tfvars
-dcos_version = "1.10.2"
+dcos_version = "1.11.1"
 os = "centos_7.3"
 num_of_masters = "3"
 num_of_private_agents = "2"
 num_of_public_agents = "1"
 ssh_key_name = "default" 
+dcos_cluster_name = "DC/OS Cluster"
 dcos_cluster_docker_credentials_enabled =  "true"
 dcos_cluster_docker_credentials_write_to_etc = "true"
 dcos_cluster_docker_credentials_dcos_owned = "false"
@@ -141,25 +149,28 @@ dcos_cluster_docker_credentials = <<EOF
       auth: Ze9ja2VyY3licmljSmVFOEJrcTY2eTV1WHhnSkVuVndjVEE=
 EOF
 ```
-_Note: The YAML comment is required for the DC/OS specific YAML settings._
+**Note**: The YAML comment is required for the DC/OS specific YAML settings.
 
 ## Upgrading DC/OS  
 
-You can upgrade your DC/OS cluster with a single command. This terraform script was built to perform installs and upgrades from the inception of this project. With the upgrade procedures below, you can also have finer control on how masters or agents upgrade at a given time. This will give you the ability to change the parallelism of master or agent upgrades.
+You can upgrade your DC/OS cluster with a single command. This Terraform script was built to perform installs and upgrades from the inception of this project. 
 
-### DC/OS Upgrades
+With the upgrade procedures below, you can also have finer control on how masters or agents upgrade at a given time. This will give you the ability to change the parallelism of master or agent upgrades.
 
-#### Rolling Upgrade
-###### Supported upgraded by dcos.io
+###  Rolling Upgrade
 
-##### Masters Sequentially, Agents Parellel:
+#### Masters Sequentially, Agents Parellel
+
+Supported upgraded by dcos.io.
+
 ```bash
 terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade -target null_resource.bootstrap -target null_resource.master -parallelism=1
 terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade
 ```
 
-##### All Roles Simultaniously
-###### Not supported by dcos.io but it works without dcos_skip_checks enabled.
+#### All Roles Simultaniously
+
+Not supported by dcos.io but it works without dcos_skip_checks enabled.
 
 ```bash
 terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade
@@ -167,7 +178,9 @@ terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade
 
 ## Maintenance
 
-If you would like to add more or remove (private) agents or public agents from your cluster, you can do so by telling terraform your desired state and it will make sure it gets you there. For example, if I have 2 private agents and 1 public agent in my `-var-file` I can always override that flag by specifying the `-var` flag. It has higher priority than the `-var-file`.
+If you would like to add more or remove agents from your cluster, you can do so by telling Terraform your desired state and it will make sure it gets you there. 
+
+For example, if I have 2 private agents and 1 public agent in my `-var-file` I can override that flag by specifying the `-var` flag. It has higher priority than the `-var-file`.
 
 ### Adding Agents
 
@@ -187,40 +200,40 @@ terraform apply \
 --var num_of_public_agents=1
 ```
 
-## Redeploy an existing Master
+## Redeploy an Existing Master
 
-If you wanted to redeploy a problematic master (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle.
+If you wanted to redeploy a problematic master (ie. storage filled up, not responsive, etc), you can tell Terraform to redeploy during the next cycle.
 
-**NOTE:** This only applies to DC/OS clusters that have set their `dcos_master_discovery` to `master_http_loadbalancer` and not `static`.
+**Note:** This only applies to DC/OS clusters that have set their `dcos_master_discovery` to `master_http_loadbalancer` and not `static`.
 
 ### Master Node
 
-**Taint Master Node**
+Taint master node:
 
 ```bash
 terraform taint aws_instance.master.0 # The number represents the agent in the list
 ```
 
-**Redeploy Master Node**
+Redeploy master node:
 
 ```bash
 terraform apply -var-file desired_cluster_profile
 ```
 
-## Redeploy an existing Agent
+## Redeploy an Existing Agent
 
 If you wanted to redeploy a problematic agent, (ie. storage filled up, not responsive, etc), you can tell terraform to redeploy during the next cycle.
 
 
 ### Private Agents
 
-**Taint Private Agent**
+Taint private agent:
 
 ```bash
 terraform taint aws_instance.agent.0 # The number represents the agent in the list
 ```
 
-**Redeploy Agent**
+Redeploy agent:
 
 ```bash
 terraform apply -var-file desired_cluster_profile
@@ -229,29 +242,29 @@ terraform apply -var-file desired_cluster_profile
 
 ### Public Agents
 
-**Taint Private Agent**
+Taint private agent:
 
 ```bash
 terraform taint aws_instance.public-agent.0 # The number represents the agent in the list
 ```
 
-**Redeploy Agent**
+Redeploy agent:
 
 ```bash
 terraform apply -var-file desired_cluster_profile
 ```
 
-### Experimental
+## Experimental
 
-#### Adding GPU Private Agents
+### Adding GPU Private Agents
 
-*NOTE: Best used with DC/OS 1.9 and above*
+**Note: Best used with DC/OS 1.9 and above**
 
 As of Mesos 1.0, which now supports GPU agents, you can experiment with them immediately by simply removing `.disabled` from `dcos-gpu-agents.tf.disabled`. Once you do that, you can simply perform `terraform apply` and the agents will be deployed and configure and automatically join your mesos cluster. The default of `num_of_gpu_agents` is `1`. You can also remove GPU agents by simply adding `.disabled` and it will exit as well.
 
 
 
-##### Add GPU Private Agents
+#### Add GPU Private Agents
 
 ```bash
 mv dcos-gpu-agents.tf.disabled dcos-gpu-agents.tf
@@ -259,7 +272,7 @@ terraform get
 terraform apply -var-file desired_cluster_profile --var num_of_gpu_agents=3
 ```
 
-##### Remove GPU Private Agents
+#### Remove GPU Private Agents
 
 ```bash
 mv dcos-gpu-agents.tf dcos-gpu-agents.tf.disabled
@@ -267,15 +280,15 @@ terraform apply -var-file desired_cluster_profile
 ```
 
 
-### Destroy Cluster
+## Destroy Cluster
 
-You can shutdown/destroy all resources from your environment by running this command below
+You can shutdown/destroy all resources from your environment by running this command below:
 
 ```bash
 terraform destroy -var-file desired_cluster_profile
 ```
 
-  # Roadmaps
+  ## Roadmap
 
   - [X] Support for AWS
   - [X] Support for CoreOS
