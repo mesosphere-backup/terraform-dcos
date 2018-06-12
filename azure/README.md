@@ -112,6 +112,14 @@ dcos_cluster_docker_credentials_enabled =  "true"
 dcos_cluster_docker_credentials_write_to_etc = "true"
 dcos_cluster_docker_credentials_dcos_owned = "false"
 dcos_cluster_docker_registry_url = "https://index.docker.io"
+dcos_use_proxy = "yes"
+dcos_http_proxy = "example.com"
+dcos_https_proxy = "example.com"
+dcos_no_proxy = <<EOF
+# YAML
+ - "internal.net"
+ - "168.63.129.16"
+EOF
 dcos_overlay_network = <<EOF
 # YAML
     vtep_subnet: 44.128.0.0/20
