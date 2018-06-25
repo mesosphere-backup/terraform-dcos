@@ -74,7 +74,7 @@ We've provided all the sensible defaults that you would want to play around with
 
 ```bash
 terraform init -from-module github.com/dcos/terraform-dcos//gcp
-terraform apply -var gcp_project="your_existing_project"
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 ### Custom terraform-dcos variables
