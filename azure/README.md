@@ -44,6 +44,7 @@ export ARM_TENANT_ID=45ef06c1-a57b-40d5-967f-88cf8example
 export ARM_CLIENT_SECRET=Lqw0kyzWXyEjfha9hfhs8dhasjpJUIGQhNFExAmPLE
 export ARM_CLIENT_ID=80f99c3a-cd7d-4931-9405-8b614example
 export ARM_SUBSCRIPTION_ID=846d9e22-a320-488c-92d5-41112example
+$ source ~/.azure/credentials
 ```
 
 #### Source Credentials
