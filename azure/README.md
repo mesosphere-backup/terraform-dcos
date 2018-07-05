@@ -2,7 +2,19 @@
 
 # Open DC/OS on Azure with Terraform
 
+## Prerequisites
+- [Terraform 0.11.x](https://www.terraform.io/downloads.html)
+- Azure SSH Private Key
+- Azure SSH Public Key
+- Azure ID Keys
+
 ## Getting Started
+
+1. Create directory
+2. Initialize Terraform
+3. Configure Azure SSH and Azure ID keys
+4. Configure settings
+5. Apply Terraform
 
 ### Install Terraform
 
@@ -13,6 +25,20 @@ brew install terraform
 ```
 
 If you want to leverage the terraform installer, feel free to check out https://www.terraform.io/downloads.html.
+### Create Installer Directory
+
+Make your directory where Terraform will download and place your Terraform infrastructure files.
+
+```bash
+mkdir dcos-installer
+cd dcos-installer
+```
+
+Run this command below to have Terraform initialized from this repository. There is **no git clone of this repo required** as Terraform performs this for you.
+```
+terraform init -from-module github.com/dcos/terraform-dcos/azure
+cp desired_cluster_profile.tfvars.example desired_cluster_profile.tfvars
+```
 
 ### Configure your Cloud Provider Credentials
 
@@ -25,10 +51,8 @@ ssh-add ~/.ssh/your_private_key.pem
 ```
 
 ```bash
-cat desired_cluster_profile
-...
+cat desired_cluster_profile.tfvars
 ssh_pub_key = "INSERT_PUBLIC_KEY_HERE"
-...
 ```
 
 #### Configure your Azure ID Keys
@@ -56,23 +80,6 @@ $ source ~/.azure/credentials
 ```
 
 
-## Example Terraform Deployments
-#### Pull down the DC/OS terraform scripts below
-
-There is a module called `dcos-tested-azure-oses` that contains all the tested scripts per operating system. The deployment strategy is based on a bare image coupled with a prereq `script.sh` to get it ready to install dcos-core components. Its simple to add other operating systems by adding the AMI, region, and install scripts to meet the dcos specifications that can be found [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/) and [here](https://dcos.io/docs/1.9/installing/custom/system-requirements/install-docker-centos/) as an example.
-
-### Quick Start
-
-We've provided all the sensible defaults that you would want to play around with DC/OS. Just run this command to deploy a multi-master setup in the cloud. Three agents will be deployed for you. Two private agents, one public agent.
-
-- There is no git clone of this repo required. Terraform does this for you under the hood.
-
-_*Note:* Create a new directory before the command below as terraform will write its files within the current directory._
-
-```bash
-terraform init -from-module github.com/dcos/terraform-dcos//azure
-terraform apply 
-```
 
 ### Custom terraform-dcos variables
 
@@ -162,6 +169,13 @@ You can upgrade your DC/OS cluster with a single command. This terraform script 
 #### Rolling Upgrade
 ###### Supported upgraded by dcos.io
 
+##### Prerequisite:
+Update your terraform scripts to gain access to the latest DC/OS version with this command below:
+
+```
+terraform get --update
+```
+
 ##### Masters Sequentially, Agents Parellel:
 ```bash
 terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade -target null_resource.bootstrap -target null_resource.master -parallelism=1
@@ -182,22 +196,18 @@ If you would like to add more or remove (private) agents or public agents from y
 ### Adding Agents
 
 ```bash
-terraform apply \
--var-file desired_cluster_profile \
---var num_of_private_agents=5 \
---var num_of_public_agents=3
+# update num_of_private_agents = "5" in desired_cluster_profile.tfvars
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 ### Removing Agents
 
 ```bash
-terraform apply \
--var-file desired_cluster_profile \
---var num_of_private_agents=1 \
---var num_of_public_agents=1
+# update num_of_private_agents = "2" in desired_cluster_profile.tfvars
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
-**Important**: Always remember to save your desired state in your `desired_cluster_profile`
+**Important**: Always remember to save your desired state in your `desired_cluster_profile.tfvars`
 
 ## Redeploy an existing Master
 
@@ -216,7 +226,7 @@ terraform taint azurerm_virtual_machine.master.0 # The number represents the age
 #### Redeploy Master Node
 
 ```bash
-terraform apply -var-file desired_cluster_profile
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 ## Redeploy an existing Agent
@@ -235,7 +245,7 @@ terraform taint azurerm_virtual_machine.agent.0 # The number represents the agen
 #### Redeploy Agent
 
 ```bash
-terraform apply -var-file desired_cluster_profile
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 
@@ -250,7 +260,7 @@ terraform taint azurerm_virtual_machine.public-agent.0 # The number represents t
 #### Redeploy Agent
 
 ```bash
-terraform apply -var-file desired_cluster_profile
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 ### Experimental
@@ -264,7 +274,7 @@ Coming soon!
 You can shutdown/destroy all resources from your environment by running this command below
 
 ```bash
-terraform destroy -var-file desired_cluster_profile
+terraform destroy -var-file desired_cluster_profile.tfvars
 ```
 
   # Roadmaps
