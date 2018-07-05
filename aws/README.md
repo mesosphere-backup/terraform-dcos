@@ -1,3 +1,4 @@
+&#x1F4D9; **Disclaimer: Community supported repository. Not supported by Mesosphere directly.**
 # Install Mesosphere DC/OS on AWS
 
 ## Prerequisites
