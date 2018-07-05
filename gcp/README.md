@@ -10,6 +10,23 @@ _Mission:  Allow for automated installs and upgrades for DC/OS on GCP._
 - SSH Keys
 - Existing Google Project. Soon automated with Terraform using project creation as documented [here.](https://cloud.google.com/community/tutorials/managing-gcp-projects-with-terraform)
 
+
+## Create Installer Directory
+
+Make your directory where Terraform will download and place your Terraform infrastructure files.
+
+```bash
+mkdir dcos-installer
+cd dcos-installer
+```
+
+Run this command below to have Terraform initialized from this repository. There is **no git clone of this repo required** as Terraform performs this for you.
+
+```
+terraform init -from-module github.com/dcos/terraform-dcos/gcp
+cp desired_cluster_profile.tfvars.example desired_cluster_profile.tfvars
+```
+
 ## Setting up access to GCP Project
 
 To access your GCP Project from terraform you have two options:
@@ -62,19 +79,6 @@ Currently terraform-dcos assumes a project already exist in GCP to start deployi
 $ cat desired_cluster_profile.tfvars
 gcp_project = "massive-bliss-781"
 ...
-```
-
-## Example Terraform Deployments
-
-### Quick Start
-
-We've provided all the sensible defaults that you would want to play around with DC/OS. Just run this command to deploy a multi-master setup in the cloud. Three agents will be deployed for you. Two private agents, one public agent.
-
-- There is no git clone of this repo required. Terraform does this for you under the hood.
-
-```bash
-terraform init -from-module github.com/dcos/terraform-dcos//gcp
-terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 ### Custom terraform-dcos variables
@@ -157,6 +161,13 @@ You can upgrade your DC/OS cluster with a single command. This terraform script 
 #### Rolling Upgrade
 ###### Supported upgraded by dcos.io
 
+##### Prerequisite:
+Update your terraform scripts to gain access to the latest DC/OS version with this command below:
+
+```
+terraform get --update
+```
+
 ##### Masters Sequentially, Agents Parellel:
 ```bash
 terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade -target null_resource.bootstrap -target null_resource.master -parallelism=1
@@ -170,27 +181,22 @@ terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade
 terraform apply -var-file desired_cluster_profile.tfvars -var state=upgrade
 ```
 
-
 ## Maintenance
 
-If you would like to add or remove (private) agents or public agents from your cluster, you can do so by telling terraform your desired state and it will make sure it gets you there. For example, if I have 2 private agents and 1 public agent in my `-var-file` I can always override that flag by specifying the `-var` flag. It has higher priority than the `-var-file`.
+If you would like to add more or remove (private) agents or public agents from your cluster, you can do so by telling terraform your desired state and it will make sure it gets you there.
 
 ### Adding Agents
 
 ```bash
-terraform apply \
--var-file desired_cluster_profile.tfvars \
--var num_of_private_agents=5 \
--var num_of_public_agents=3
+# update num_of_private_agents = "5" in desired_cluster_profile.tfvars
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 ### Removing Agents
 
 ```bash
-terraform apply \
--var-file desired_cluster_profile.tfvars \
--var num_of_private_agents=1 \
--var num_of_public_agents=1
+# update num_of_private_agents = "2" in desired_cluster_profile.tfvars
+terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 **Important**: Always remember to save your desired state in your `desired_cluster_profile.tfvars`
