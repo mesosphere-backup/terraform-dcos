@@ -27,6 +27,7 @@ Run this command below to have Terraform initialized from this repository. There
 
 ```
 terraform init -from-module github.com/dcos/terraform-dcos/aws
+cp desired_cluster_profile.tfvars.example desired_cluster_profile.tfvars
 ```
 
 ## Configure AWS SSH Keys
@@ -70,16 +71,6 @@ aws_secret_access_key = /R8SHF+SHFJaerSKE83awf4ASyrF83sa471DHSEXAMPLE
 **Note**: `[default]` is the name of the `aws_profile`. You may select a different profile to use in Terraform by adding it to your `desired_cluster_profile.tfvars` as `aws_profile = "<INSERT_CREDENTIAL_PROFILE_NAME_HERE>"`.
 
 ## Deploy DC/OS
-
-### Deploying with Default Configuration
-
-We've provided sensible defaults if you would want to play around with Mesosphere DC/OS. The default variables are tracked in  [variables.tf](/aws/variables.tf). 
-
-Just run this command to deploy a multi-master setup in the cloud. **3 agents will be deployed** for you; 2 private agents, 1 public agent.
-
-```bash
-terraform apply 
-```
 
 ### Deploying with Custom Configuration
 
