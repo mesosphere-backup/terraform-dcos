@@ -174,6 +174,7 @@ Update your terraform scripts to gain access to the latest DC/OS version with th
 
 ```
 terraform get --update
+# change dcos_version = "<desired_version>" in desired_cluster_profile.tfvars
 ```
 
 ##### Masters Sequentially, Agents Parellel:
