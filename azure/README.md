@@ -170,7 +170,7 @@ You can upgrade your DC/OS cluster with a single command. This terraform script 
 ###### Supported upgraded by dcos.io
 
 ##### Prerequisite:
-Update your terraform scripts to gain access to the latest DC/OS version with this command below:
+Update your terraform scripts to gain access to the latest DC/OS version with this command below. Please make sure you meet the current upgrade version conditions here [https://docs.mesosphere.com/1.11/installing/oss/upgrading/#supported-upgrade-paths](https://docs.mesosphere.com/1.11/installing/oss/upgrading/#supported-upgrade-paths).
 
 ```
 terraform get --update
