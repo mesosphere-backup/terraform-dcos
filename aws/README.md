@@ -3,16 +3,15 @@
 
 ## Prerequisites
 - [Terraform 0.11.x](https://www.terraform.io/downloads.html)
-- AWS SSH Keys 
-- AWS IAM Keys
+- [AWS SSH Keys](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
+- [AWS IAM Keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)
 
 ## Getting Started
 
-1. Create directory
-2. Initialize Terraform
-3. Configure AWS SSH and IAM keys
-4. Configure settings
-5. Apply Terraform
+1. [Create installer directory](#create-installer-directory)
+2. [Initialize Terraform](#initialize-terraform)
+3. [Configure AWS keys](#configure-aws-ssh-keys)
+4. [Configure and deploy DC/OS](#configure-and-deploy-dcos)
 
 
 ## Create Installer Directory
@@ -23,6 +22,8 @@ Make your directory where Terraform will download and place your Terraform infra
 mkdir dcos-installer
 cd dcos-installer
 ```
+
+## Initialize Terraform
 
 Run this command below to have Terraform initialized from this repository. There is **no git clone of this repo required** as Terraform performs this for you.
 
@@ -53,7 +54,7 @@ ssh-add ~/.ssh/path_to_you_key.pem
 
 **Note**: When using an SSH agent it is best to add the command above to your `~/.bash_profile`. Next time your terminal gets reopened, it will reload your keys automatically.
 
-## Configure IAM AWS Keys
+## Configure AWS IAM Keys
 
 You will need your AWS `aws_access_key_id` and `aws_secret_access_key`. If you don't have one yet, you can get them from the [AWS access keys documentation](
 http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). 
@@ -71,7 +72,7 @@ aws_secret_access_key = /R8SHF+SHFJaerSKE83awf4ASyrF83sa471DHSEXAMPLE
 
 **Note**: `[default]` is the name of the `aws_profile`. You may select a different profile to use in Terraform by adding it to your `desired_cluster_profile.tfvars` as `aws_profile = "<INSERT_CREDENTIAL_PROFILE_NAME_HERE>"`.
 
-## Deploy DC/OS
+## Configure And Deploy DC/OS
 
 ### Deploying with Custom Configuration
 
