@@ -22,6 +22,7 @@ EOF
 sudo yum install -y docker-engine-1.11.2
 sudo systemctl start docker
 sudo systemctl enable docker
+sudo yum install -y bind-utils
 sudo yum install -y wget
 sudo yum install -y git
 sudo yum install -y unzip

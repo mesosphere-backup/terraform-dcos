@@ -22,6 +22,7 @@ sudo systemctl start docker
 sudo systemctl enable docker
 sudo systemctl stop dnsmasq.service
 sudo systemctl disable dnsmasq.service
+sudo yum install -y bind-utils
 sudo yum install -y wget
 sudo yum install -y git
 sudo yum install -y unzip
