@@ -60,7 +60,7 @@ resource "google_compute_instance" "bootstrap" {
   }
 
   service_account {
-      scopes = ["https://www.googleapis.com/auth/compute.readonly"]
+      scopes = "${var.gcp_sa_scopes}"
   }
 }
 

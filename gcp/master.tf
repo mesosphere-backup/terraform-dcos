@@ -217,7 +217,7 @@ resource "google_compute_instance" "master" {
   }
 
   service_account {
-      scopes = ["https://www.googleapis.com/auth/compute.readonly"]
+      scopes = "${var.gcp_sa_scopes}"
  }
 }
 
@@ -231,6 +231,7 @@ module "dcos-mesos-master" {
   dcos_version         = "${var.dcos_version}"
   dcos_skip_checks     = "${var.dcos_skip_checks}"
   role                 = "dcos-mesos-master"
+  dcos_dns_search = "${var.dcos_dns_search}"
 }
 
 resource "null_resource" "master" {
