@@ -244,7 +244,7 @@ terraform apply -var-file desired_cluster_profile.tfvars
 
 ### Public Agents
 
-#### Taint Private Agent
+#### Taint Public Agent
 
 ```bash
 terraform taint google_compute_instance.public-agent.0 # The number represents the agent in the list
