@@ -19,7 +19,7 @@ resource "aws_vpc" "default" {
   cidr_block = "10.0.0.0/16"
   enable_dns_hostnames = "true"
 
-tags {
+  tags {
    Name = "${coalesce(var.owner, data.external.whoami.result["owner"])}"
   }
 }
@@ -67,17 +67,24 @@ resource "aws_route" "internet_access" {
   gateway_id             = "${aws_internet_gateway.default.id}"
 }
 
-# Create a subnet to launch public nodes into
+# Get the list of availability zones for the region
+data "aws_availability_zones" "available" {}
+
+# Create subnets to launch public nodes into
 resource "aws_subnet" "public" {
+  count                   = "${var.num_of_masters}"
   vpc_id                  = "${aws_vpc.default.id}"
-  cidr_block              = "10.0.0.0/22"
+  cidr_block              = "${cidrsubnet(aws_vpc.default.cidr_block, 8, count.index)}"
+  availability_zone       = "${data.aws_availability_zones.available.names[count.index]}"
   map_public_ip_on_launch = true
 }
 
-# Create a subnet to launch slave private node into
+# Create subnets to launch slave private node into
 resource "aws_subnet" "private" {
+  count                   = "${var.num_of_masters}"
   vpc_id                  = "${aws_vpc.default.id}"
-  cidr_block              = "10.0.4.0/22"
+  cidr_block              = "${cidrsubnet(aws_vpc.default.cidr_block, 8, count.index + 3)}"
+  availability_zone       = "${data.aws_availability_zones.available.names[count.index]}"
   map_public_ip_on_launch = true
 }
 
