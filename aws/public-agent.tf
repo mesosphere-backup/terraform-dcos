@@ -11,7 +11,7 @@ resource "aws_elb" "public-agent-elb" {
   name = "${data.template_file.cluster-name.rendered}-pub-agt-elb"
 
   subnets         = ["${aws_subnet.public.id}"]
-  security_groups = ["${aws_security_group.public_slave.id}", "${aws_security_group.http-https.id}"]
+  security_groups = ["${aws_security_group.http-https.id}", "${aws_security_group.internet-outbound.id}"]
   instances       = ["${aws_instance.public-agent.*.id}"]
 
   listener {
