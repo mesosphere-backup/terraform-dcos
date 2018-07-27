@@ -1,4 +1,4 @@
-dcos_version = "1.11.1"
+dcos_version = "1.11.4"
 num_of_masters = "3"
 num_of_private_agents = "2"
 num_of_public_agents = "1"
