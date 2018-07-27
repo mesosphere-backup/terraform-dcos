@@ -22,7 +22,7 @@ variable "aws_region" {
 
 variable "aws_profile" {
   description = "AWS profile to use"
-  default     = "default"
+  default     = ""
 }
 
 variable "admin_cidr" {
