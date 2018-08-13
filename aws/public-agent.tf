@@ -125,7 +125,7 @@ resource "null_resource" "public-agent" {
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
-    current_ec2_instance_id = "${aws_instance.public-agent.*.id[count.index]}"
+    current_ec2_instance_id = "${element(aws_instance.public-agent.*.id, count.index)}"
   }
 
   # Bootstrap script can run on any instance of the cluster

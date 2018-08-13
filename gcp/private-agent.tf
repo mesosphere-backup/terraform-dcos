@@ -121,7 +121,7 @@ resource "null_resource" "agent" {
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
-    current_ec2_instance_id = "${google_compute_instance.agent.*.id[count.index]}"
+    current_ec2_instance_id = "${element(google_compute_instance.agent.*.id, count.index)}"
   }
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case

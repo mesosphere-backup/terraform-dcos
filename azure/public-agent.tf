@@ -370,7 +370,7 @@ resource "null_resource" "public-agent" {
   # Changes to any instance of the cluster requires re-provisioning
   triggers {
     cluster_instance_ids = "${null_resource.bootstrap.id}"
-    current_virtual_machine_id = "${azurerm_virtual_machine.public-agent.*.id[count.index]}"
+    current_virtual_machine_id = "${element(azurerm_virtual_machine.public-agent.*.id, count.index)}"
   }
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case
