@@ -10,9 +10,14 @@ variable "ssh_private_key_filename" {
  description = "Path to file containing your ssh private key"
 }
 
-variable "user" {
-  description = "Username of the OS"
-  default = "core"
+variable "ssh_user" {
+  description = "Username of the OS. Overwrites the existing ssh user managed by tested oses module"
+  default = ""
+}
+
+variable "aws_ami" {
+  description = "Overwrites the existing ami managed by tested oses module. Requires that the AMI already meets the prerequisites."
+  default = ""
 }
 
 variable "aws_region" {

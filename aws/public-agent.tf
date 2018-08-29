@@ -46,7 +46,7 @@ resource "aws_instance" "public-agent" {
   # communicate with the resource (instance)
   connection {
     # The default username for our AMI
-    user = "${module.aws-tested-oses.user}"
+    user = "${coalesce(var.ssh_user, module.aws-tested-oses.user)}"
     private_key = "${local.private_key}"
     agent = "${local.agent}"
 
@@ -73,7 +73,7 @@ resource "aws_instance" "public-agent" {
 
   # Lookup the correct AMI based on the region
   # we specified
-  ami = "${module.aws-tested-oses.aws_ami}"
+  ami = "${coalesce(var.aws_ami, module.aws-tested-oses.aws_ami)}"
 
   # The name of our SSH keypair we created above.
   key_name = "${var.ssh_key_name}"
@@ -132,7 +132,7 @@ resource "null_resource" "public-agent" {
   # So we just choose the first in this case
   connection {
     host = "${element(aws_instance.public-agent.*.public_ip, count.index)}"
-    user = "${module.aws-tested-oses.user}"
+    user = "${coalesce(var.ssh_user, module.aws-tested-oses.user)}"
     private_key = "${local.private_key}"
     agent = "${local.agent}"
   }
