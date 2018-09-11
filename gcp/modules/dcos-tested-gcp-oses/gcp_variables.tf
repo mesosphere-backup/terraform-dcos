@@ -18,6 +18,7 @@ variable "gcp_os_image_version" {
  default = {
   "centos_7.2"                = ["centos-cloud","centos-7-v20170523"]
   "centos_7.3"                = ["centos-cloud","centos-7-v20170719"]
+  "centos_7.5"                = ["centos-cloud","centos-7-v20180815"]
   "coreos_stable"             = ["coreos-cloud", "coreos-stable"]
   "coreos_1576.5.0"           = ["coreos-cloud", "coreos-stable-1576-5-0-v20180105"]
   "rhel_7.3"                  = ["rhel-cloud", "rhel-7-v20170523"]
