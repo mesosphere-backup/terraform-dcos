@@ -106,12 +106,22 @@ variable "expiration" {
 }
 
 variable "ip-detect" {
- description = "Used to determine the private IP address of instances"
+  # default and final value are specified in local variables
+ description = "Override default ip-detect script by setting {aws=path}"
  type = "map"
 
  default = {
-  aws = "scripts/cloud/aws/ip-detect.aws.sh"
+  aws = ""
  }
+}
+
+locals {
+  default_ip_detect {
+    aws = "${path.module}/scripts/cloud/aws/ip-detect.aws.sh"
+  }
+  ip_detect {
+    aws = "${coalesce(var.ip-detect["aws"], local.default_ip_detect["aws"])}"
+  }
 }
 
 variable "os-init-script" {

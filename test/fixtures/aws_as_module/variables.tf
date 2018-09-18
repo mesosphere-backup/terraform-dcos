@@ -1,0 +1,11 @@
+variable "dcos_version" {}
+variable "num_of_masters" {}
+variable "num_of_private_agents" {}
+variable "num_of_public_agents" {}
+variable "aws_region" {}
+variable "aws_bootstrap_instance_type" {}
+variable "aws_master_instance_type" {}
+variable "aws_agent_instance_type" {}
+variable "aws_public_agent_instance_type" {}
+variable "ssh_key_name" {}
+variable "admin_cidr" {}

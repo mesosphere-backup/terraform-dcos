@@ -13,7 +13,7 @@ locals {
 
 # Runs a local script to return the current user in bash
 data "external" "whoami" {
-  program = ["scripts/local/whoami.sh"]
+  program = ["${path.module}/scripts/local/whoami.sh"]
 }
 
 # Create a VPC to launch our instances into

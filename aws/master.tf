@@ -237,10 +237,10 @@ resource "null_resource" "master" {
   }
 }
 
-output "Master ELB Public IP" {
+output "master_elb_public_ip" {
   value = "${aws_elb.public-master-elb.dns_name}"
 }
 
-output "Master Public IPs" {
+output "master_public_ips" {
   value = ["${aws_instance.master.*.public_ip}"]
 }

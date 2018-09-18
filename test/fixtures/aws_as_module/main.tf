@@ -1,0 +1,15 @@
+module "dcos_cluster_aws" {
+  source                         = "../../../aws"
+  dcos_version                   = "${var.dcos_version}"
+  num_of_masters                 = "${var.num_of_masters}"
+  num_of_private_agents          = "${var.num_of_private_agents}"
+  num_of_public_agents           = "${var.num_of_public_agents}"
+  aws_region                     = "${var.aws_region}"
+  aws_bootstrap_instance_type    = "${var.aws_bootstrap_instance_type}"
+  aws_master_instance_type       = "${var.aws_master_instance_type}"
+  aws_agent_instance_type        = "${var.aws_agent_instance_type}"
+  aws_public_agent_instance_type = "${var.aws_public_agent_instance_type}"
+  ssh_key_name                   = "${var.ssh_key_name}"
+  admin_cidr                     = "${var.admin_cidr}"
+  ssh_key_name                   = "${var.ssh_key_name}"
+}

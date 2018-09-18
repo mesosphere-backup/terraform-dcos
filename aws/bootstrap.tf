@@ -42,7 +42,7 @@ resource "aws_instance" "bootstrap" {
 
   # DCOS ip detect script
   provisioner "file" {
-   source = "${var.ip-detect["aws"]}"
+   source = "${local.ip_detect["aws"]}"
    destination = "/tmp/ip-detect"
    }
 
@@ -263,6 +263,6 @@ resource "null_resource" "bootstrap" {
   }
 }
 
-output "Bootstrap Host Public IP" {
+output "bootstrap_host_public_ip" {
   value = "${aws_instance.bootstrap.public_ip}"
 }
