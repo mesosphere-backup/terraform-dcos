@@ -411,6 +411,6 @@ resource "null_resource" "bootstrap" {
   }
 }
 
-output "Bootstrap Host Public IP" {
+output "bootstrap_host_public_ip" {
   value = "${azurerm_public_ip.bootstrap_public_ip.fqdn}"
 }
