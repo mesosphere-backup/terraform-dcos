@@ -41,14 +41,24 @@ ${TERRAFORM_PATH} plan
 ${TERRAFORM_PATH} validate -var-file desired_cluster_profile.tfvars.example
 ${TERRAFORM_PATH} plan -var-file desired_cluster_profile.tfvars.example
 
-cd ../azure
-${TERRAFORM_PATH} init
-${TERRAFORM_PATH} validate
-${TERRAFORM_PATH} plan
-${TERRAFORM_PATH} validate -var-file desired_cluster_profile.tfvars.example
-${TERRAFORM_PATH} plan -var-file desired_cluster_profile.tfvars.example
+# cd ../azure
+# ${TERRAFORM_PATH} init
+# ${TERRAFORM_PATH} validate
+# ${TERRAFORM_PATH} plan
+# ${TERRAFORM_PATH} validate -var-file desired_cluster_profile.tfvars.example
+# ${TERRAFORM_PATH} plan -var-file desired_cluster_profile.tfvars.example
 
-cd ../test/fixtures/aws_as_module
+cd ../test/fixtures/gcp_as_module
+${TERRAFORM_PATH} init
+${TERRAFORM_PATH} validate -var-file test.tfvars -var "gcp_project=${GCP_PROJECT}" -var "gcp_ssh_pub_key_file=${PWD}/../id_rsa.pub"
+${TERRAFORM_PATH} plan -var-file test.tfvars -var "gcp_project=${GCP_PROJECT}" -var "gcp_ssh_pub_key_file=${PWD}/../id_rsa.pub"
+
+cd ../aws_as_module
 ${TERRAFORM_PATH} init
 ${TERRAFORM_PATH} validate -var-file=test.tfvars
 ${TERRAFORM_PATH} plan -var-file=test.tfvars
+
+# cd ../azure_as_module
+# ${TERRAFORM_PATH} init
+# ${TERRAFORM_PATH} validate -var-file=test.tfvars
+# ${TERRAFORM_PATH} plan -var-file=test.tfvars
