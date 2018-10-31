@@ -11,4 +11,3 @@ aws_public_agent_instance_type = "m4.2xlarge"
 ssh_key_name = "default"
 # Inbound Master Access
 admin_cidr = "0.0.0.0/0"
-ssh_key_name = "default"
