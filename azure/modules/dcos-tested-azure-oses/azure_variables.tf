@@ -20,6 +20,7 @@ variable "azure_os_image_version" {
   "centos_7.3"        = ["CentOS","OpenLogic","7.3","7.3.20170707"]
   "coreos_835.13.0"   = ["CoreOS", "CoreOS", "Stable", "835.13.0"]
   "coreos_1235.9.0"   = ["CoreOS", "CoreOS", "Stable", "1235.9.0"]
+  "coreos_1855.5.0"   = ["CoreOS", "CoreOS", "Stable", "1855.5.0"]
   "rhel_7.3"          = ["RHEL", "RedHat", "7.3", "7.3.2017053118"]
  }
 }
