@@ -1,14 +1,12 @@
-dcos_version = "1.11.4"
+dcos_version = "1.11.7"
 num_of_masters = "3"
 num_of_private_agents = "3"
 num_of_public_agents = "1"
 #
-gcp_project = "YOUR_GCP_PROJECT"
 gcp_zone = "a"
 # If you want to use GCP service account key instead of GCP SDK
 # uncomment the line below and update it with the path to the key file
 #gcp_credentials_key_file = "PATH/YOUR_GCP_SERVICE_ACCOUNT_KEY.json"
-gcp_ssh_pub_key_file = "PATH/YOUR_GCP_SSH_PUBLIC_KEY.pub"
 #
 gcp_bootstrap_instance_type = "n1-standard-1"
 gcp_master_instance_type = "n1-standard-8"
@@ -23,3 +21,4 @@ admin_cidr = "0.0.0.0/0"
 
 # Uncomment the line below if you want short living cheap cluster for testing
 #gcp_scheduling_preemptible = "true"
+os = "coreos_1855.5.0"

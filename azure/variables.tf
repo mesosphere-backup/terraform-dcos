@@ -378,7 +378,7 @@ variable "dcos_process_timeout" {
 }
 
 variable "dcos_version" {
- default = "1.11.4"
+ default = "1.12.0"
  description = "DCOS Version"
 }
 
