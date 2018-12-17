@@ -84,7 +84,7 @@ Here is the [list of operating systems supported](/aws/modules/dcos-tested-aws-o
 
 #### Supported DC/OS Versions
 
-Here is the [list of DC/OS versions supported](https://github.com/dcos/tf_dcos_core/tree/master/dcos-versions).
+Here is the [list of DC/OS versions supported](https://github.com/dcos/tf_dcos_core/tree/master/open/dcos-versions).
 
 **Note**: Master DC/OS version is not meant for production use. It is only for CI/CD testing.
 
