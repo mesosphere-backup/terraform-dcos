@@ -13,6 +13,7 @@ resource "aws_instance" "bootstrap" {
 
   root_block_device {
     volume_size = "${var.aws_bootstrap_instance_disk_size}"
+    volume_type = "gp2"
   }
 
   instance_type = "${var.aws_bootstrap_instance_type}"
