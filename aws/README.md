@@ -1,4 +1,4 @@
-&#x1F4D9; **Disclaimer: Community supported repository. Not supported by Mesosphere directly.**
+&#x1F4D9; **Disclaimer: This is being deprecated for the Mesosphere Universal Installer located [here](https://docs.mesosphere.com/1.12/installing/evaluation/mesosphere-supported-methods/).**
 # Install Mesosphere DC/OS on AWS
 
 ## Prerequisites
