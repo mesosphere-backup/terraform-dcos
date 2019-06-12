@@ -494,3 +494,8 @@ variable "kubernetes_cluster" {
  default = "kubernetes-cluster"
  description = "Kubernetes cluster tag"
 }
+
+variable "enable_os_setup_script" {
+ default = true
+ description = "Call the os setup script"
+}

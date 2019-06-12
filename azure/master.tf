@@ -425,7 +425,7 @@ resource "azurerm_virtual_machine" "master" {
   # OS init script
   provisioner "file" {
    content = "${module.azure-tested-oses.os-setup}"
-   destination = "/tmp/os-setup.sh"
+   destination = "${var.enable_os_setup_script ? "/usr/local/sbin/os-setup.sh" : "/dev/null"}"
 
    connection {
     type = "ssh"
@@ -441,8 +441,7 @@ resource "azurerm_virtual_machine" "master" {
   # this should be on port 80
     provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x /tmp/os-setup.sh",
-      "sudo bash /tmp/os-setup.sh",
+      "if [ -f /usr/local/sbin/os-setup.sh ]; then sudo chmod +x /usr/local/sbin/os-setup.sh && sudo bash /usr/local/sbin/os-setup.sh; fi"
     ]
 
    connection {
