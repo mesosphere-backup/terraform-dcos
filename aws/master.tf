@@ -170,6 +170,9 @@ resource "aws_instance" "master" {
     inline = [
       "if [ -f /usr/local/sbin/os-setup.sh ]; then sudo chmod +x /usr/local/sbin/os-setup.sh && sudo bash /usr/local/sbin/os-setup.sh; fi"
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   lifecycle {
@@ -218,6 +221,9 @@ resource "null_resource" "master" {
     inline = [
      "until $(curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}:${var.custom_dcos_bootstrap_port}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   # Install Master Script
@@ -226,6 +232,9 @@ resource "null_resource" "master" {
       "sudo chmod +x run.sh",
       "sudo ./run.sh",
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   # Watch Master Nodes Start
@@ -233,6 +242,9 @@ resource "null_resource" "master" {
     inline = [
       "until $(curl --output /dev/null --silent --head --fail http://${element(aws_instance.master.*.private_ip, count.index)}/); do printf 'loading DC/OS...'; sleep 10; done"
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 }
 

@@ -343,6 +343,7 @@ resource "azurerm_virtual_machine" "public-agent" {
     host = "${element(azurerm_public_ip.public_agent_public_ip.*.fqdn, count.index)}"
     private_key = "${local.private_key}"
     agent = "${local.agent}"
+    script_path = "~/tmp_provision.sh"
    }
  }
 
@@ -393,6 +394,9 @@ resource "null_resource" "public-agent" {
     inline = [
      "until $(curl --output /dev/null --silent --head --fail http://${azurerm_network_interface.bootstrap_nic.private_ip_address}:${var.custom_dcos_bootstrap_port}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   # Install Public Agent Script
@@ -401,6 +405,9 @@ resource "null_resource" "public-agent" {
       "sudo chmod +x run.sh",
       "sudo ./run.sh",
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 }
 

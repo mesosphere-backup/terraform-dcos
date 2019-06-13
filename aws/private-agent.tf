@@ -57,6 +57,9 @@ resource "aws_instance" "agent" {
     inline = [
       "if [ -f /usr/local/sbin/os-setup.sh ]; then sudo chmod +x /usr/local/sbin/os-setup.sh && sudo bash /usr/local/sbin/os-setup.sh; fi"
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   lifecycle {
@@ -106,6 +109,9 @@ resource "null_resource" "agent" {
     inline = [
      "until $(curl --output /dev/null --silent --head --fail http://${aws_instance.bootstrap.private_ip}:${var.custom_dcos_bootstrap_port}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   # Install Slave Node
@@ -114,6 +120,9 @@ resource "null_resource" "agent" {
       "sudo chmod +x run.sh",
       "sudo ./run.sh",
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 }
 

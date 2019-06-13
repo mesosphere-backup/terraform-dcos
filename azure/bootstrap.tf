@@ -200,6 +200,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
     host = "${azurerm_public_ip.bootstrap_public_ip.fqdn}"
     private_key = "${local.private_key}"
     agent = "${local.agent}"
+    script_path = "~/tmp_provision.sh"
    }
  }
 
@@ -403,6 +404,9 @@ resource "null_resource" "bootstrap" {
       "sudo chmod +x run.sh",
       "sudo ./run.sh",
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   lifecycle {

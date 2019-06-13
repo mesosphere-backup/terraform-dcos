@@ -47,6 +47,9 @@ resource "google_compute_instance" "bootstrap" {
     inline = [
       "if [ -f /usr/local/sbin/os-setup.sh ]; then sudo chmod +x /usr/local/sbin/os-setup.sh && sudo bash /usr/local/sbin/os-setup.sh; fi"
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   lifecycle {
@@ -258,6 +261,9 @@ resource "null_resource" "bootstrap" {
       "sudo chmod +x run.sh",
       "sudo ./run.sh",
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   lifecycle {
