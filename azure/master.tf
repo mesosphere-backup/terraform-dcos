@@ -441,7 +441,7 @@ resource "azurerm_virtual_machine" "master" {
   # this should be on port 80
     provisioner "remote-exec" {
     inline = [
-      "if [ -f /usr/local/sbin/os-setup.sh ]; then sudo chmod +x /usr/local/sbin/os-setup.sh && sudo bash /usr/local/sbin/os-setup.sh; fi"
+      "if [ -f ~/os-setup.sh ]; then sudo chmod +x ~/os-setup.sh && sudo bash ~/os-setup.sh; fi"
     ]
 
    connection {

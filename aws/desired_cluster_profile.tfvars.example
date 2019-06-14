@@ -8,11 +8,10 @@ aws_bootstrap_instance_type = "m5.large"
 aws_master_instance_type = "m5.large"
 aws_agent_instance_type = "m5.large"
 aws_public_agent_instance_type = "m5.large"
-ssh_key_name = "cprovencher"
+ssh_key_name = "my_aws_ssh_key_name"
 # Inbound Master Access
 admin_cidr = "0.0.0.0/0"
 ssh_user = "centos"
 
 enable_os_setup_script = false
 aws_ami = "ami-0a80cc0a2ab2b090e"
-
