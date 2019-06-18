@@ -37,7 +37,7 @@ resource "google_compute_instance" "bootstrap" {
   # OS init script
   provisioner "file" {
    content = "${module.dcos-tested-gcp-oses.os-setup}"
-   destination = "/tmp/os-setup.sh"
+   destination = "${var.enable_os_setup_script ? "/usr/local/sbin/os-setup.sh" : "/dev/null"}"
  }
 
   # We run a remote provisioner on the instance after creating it.
@@ -45,9 +45,11 @@ resource "google_compute_instance" "bootstrap" {
   # this should be on port 80
     provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x /tmp/os-setup.sh",
-      "sudo bash /tmp/os-setup.sh",
+      "if [ -f ~/os-setup.sh ]; then sudo chmod +x ~/os-setup.sh && sudo bash ~/os-setup.sh; fi"
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   lifecycle {
@@ -259,6 +261,9 @@ resource "null_resource" "bootstrap" {
       "sudo chmod +x run.sh",
       "sudo ./run.sh",
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   lifecycle {

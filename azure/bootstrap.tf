@@ -175,7 +175,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
   # OS init script
   provisioner "file" {
    content = "${module.azure-tested-oses.os-setup}"
-   destination = "/tmp/os-setup.sh"
+   destination = "${var.enable_os_setup_script ? "/usr/local/sbin/os-setup.sh" : "/dev/null"}"
 
    connection {
     type = "ssh"
@@ -191,8 +191,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
   # this should be on port 80
     provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x /tmp/os-setup.sh",
-      "sudo bash /tmp/os-setup.sh",
+      "if [ -f ~/os-setup.sh ]; then sudo chmod +x ~/os-setup.sh && sudo bash ~/os-setup.sh; fi"
     ]
 
    connection {
@@ -201,6 +200,7 @@ resource "azurerm_virtual_machine" "bootstrap" {
     host = "${azurerm_public_ip.bootstrap_public_ip.fqdn}"
     private_key = "${local.private_key}"
     agent = "${local.agent}"
+    script_path = "~/tmp_provision.sh"
    }
  }
 
@@ -404,6 +404,9 @@ resource "null_resource" "bootstrap" {
       "sudo chmod +x run.sh",
       "sudo ./run.sh",
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   lifecycle {

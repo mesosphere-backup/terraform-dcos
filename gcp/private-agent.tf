@@ -76,7 +76,7 @@ resource "google_compute_instance" "agent" {
   # OS init script
   provisioner "file" {
    content = "${module.dcos-tested-gcp-oses.os-setup}"
-   destination = "/tmp/os-setup.sh"
+   destination = "${var.enable_os_setup_script ? "/usr/local/sbin/os-setup.sh" : "/dev/null"}"
    }
 
  # We run a remote provisioner on the instance after creating it.
@@ -84,9 +84,11 @@ resource "google_compute_instance" "agent" {
   # this should be on port 80
     provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x /tmp/os-setup.sh",
-      "sudo bash /tmp/os-setup.sh",
+      "if [ -f ~/os-setup.sh ]; then sudo chmod +x ~/os-setup.sh && sudo bash ~/os-setup.sh; fi"
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   lifecycle {
@@ -145,6 +147,9 @@ resource "null_resource" "agent" {
     inline = [
      "until $(curl --output /dev/null --silent --head --fail http://${google_compute_instance.bootstrap.network_interface.0.address}:${var.custom_dcos_bootstrap_port}/dcos_install.sh); do printf 'waiting for bootstrap node to serve...'; sleep 20; done"
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 
   # Install Agent Script
@@ -153,6 +158,9 @@ resource "null_resource" "agent" {
       "sudo chmod +x run.sh",
       "sudo ./run.sh",
     ]
+    connection {
+      script_path = "~/tmp_provision.sh"
+    }
   }
 }
 

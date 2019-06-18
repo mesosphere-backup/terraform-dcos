@@ -8,14 +8,11 @@ set -euxo pipefail
 ssh-keygen -f id_rsa -t rsa -N ''
 chmod 600 id_rsa
 
-# download the latest terraform binary in the current working directory
-terraform_latest_version=$(curl -s "https://api.github.com/repos/hashicorp/terraform/releases/latest" | grep "tag_name" | grep -Po "(\d|\.)+")
-base_url="https://releases.hashicorp.com/terraform/{version}/terraform_{version}_linux_amd64.zip"
-terraform_download_url=$(echo ${base_url} | sed "s/{version}/$terraform_latest_version/g")
-zip="terraform.zip"
-wget --output-document="$zip" "$terraform_download_url"
-unzip "$zip"
-rm "$zip"
+# Download the terraform binary in the current directory
+wget https://releases.hashicorp.com/terraform/0.11.14/terraform_0.11.14_linux_amd64.zip
+unzip ./terraform*.zip
+chmod +x terraform
+rm ./terraform*.zip
 
 if [[ ! -v TERRAFORM_PATH ]]
 then
