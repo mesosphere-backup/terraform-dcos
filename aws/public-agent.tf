@@ -161,7 +161,7 @@ resource "null_resource" "public-agent" {
   provisioner "remote-exec" {
     inline = [
       "sudo chmod +x run.sh",
-      "sudo ./run.sh",
+      "sudo ./run.sh --disable-preflight",
     ]
     connection {
       script_path = "~/tmp_provision.sh"
