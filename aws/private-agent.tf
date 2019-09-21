@@ -13,6 +13,7 @@ resource "aws_instance" "agent" {
 
   root_block_device {
     volume_size = "${var.aws_agent_instance_disk_size}"
+    volume_type = "gp2"
   }
 
   count = "${var.num_of_private_agents}"

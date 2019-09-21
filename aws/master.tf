@@ -127,6 +127,7 @@ resource "aws_instance" "master" {
 
   root_block_device {
     volume_size = "${var.aws_master_instance_disk_size}"
+    volume_type = "gp2"
   }
 
   count = "${var.num_of_masters}"
