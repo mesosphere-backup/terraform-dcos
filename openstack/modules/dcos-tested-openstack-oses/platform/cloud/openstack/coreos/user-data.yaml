@@ -1,0 +1,31 @@
+#cloud-config
+
+# This is a generic cloud config to be used for all the nodes
+# for the cloud init process. Top level terraforming should
+# inject a setup script.
+"write_files":
+- "path": "/opt/dcos-install/os-setup.sh"
+  "content": |-
+${os_setup_script}
+  "owner": "root"
+  "permissions": "0644"
+- "path": "/etc/systemd/timesyncd.conf"
+  "content": |-
+    [Time]
+    NTP=${ntp_servers}
+"coreos":
+  "units":
+  - "command": |-
+      start
+    "content": |
+      [Unit]
+      Description=Boot node dcos install for pull method
+      Requires=docker.service
+      [Service]
+      Type=oneshot
+      StandardOutput=journal+console
+      StandardError=journal+console
+      RemainAfterExit=yes
+      ExecStart=/bin/bash "/opt/dcos-install/os-setup.sh"
+    "name": |-
+      dcos-install.service
