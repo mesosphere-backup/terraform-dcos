@@ -1,0 +1,10 @@
+variable "dcos_version" {}
+variable "gcp_zone" {}
+variable "admin_cidr" {}
+variable "gcp_master_instance_type" {}
+variable "gcp_agent_instance_type" {}
+variable "gcp_public_agent_instance_type" {}
+variable "gcp_bootstrap_instance_type" {}
+variable "num_of_masters" {}
+variable "num_of_public_agents" {}
+variable "num_of_private_agents" {}

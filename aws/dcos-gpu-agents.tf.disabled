@@ -2,9 +2,9 @@
 ## State: Experimental
 #
 # This came out from an experiment to extend GPU support to DC/OS.
-# You can easily add this module by removing '.disabled' 
-# to the file name. You an always remove it at any time. The defaults 
-# variables are managed by this sinlge file for ease of integration. 
+# You can easily add this module by removing '.disabled'
+# to the file name. You an always remove it at any time. The defaults
+# variables are managed by this sinlge file for ease of integration.
 
 variable "num_of_gpu_agents" {
   default = "1"
@@ -49,7 +49,7 @@ resource "aws_instance" "gpu-agent" {
   }
   # Lookup the correct AMI based on the region
   # we specified
-  ami = "${var.aws_gpu_ami}"      
+  ami = "${var.aws_gpu_ami}"
 
   # The name of our SSH keypair we created above.
   key_name = "${var.ssh_key_name}"
@@ -142,6 +142,6 @@ resource "null_resource" "gpu-agent" {
   }
 }
 
-output "GPU Public IPs" {
+output "gpu_public_ips" {
   value = ["${aws_instance.gpu-agent.*.public_ip}"]
 }

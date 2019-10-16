@@ -254,6 +254,6 @@ resource "null_resource" "agent" {
   }
 }
 
-output "Private Agent Public IPs" {
+output "private_agent_public_ips" {
   value = ["${azurerm_public_ip.agent_public_ip.*.fqdn}"]
 }

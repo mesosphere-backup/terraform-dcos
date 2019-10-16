@@ -214,10 +214,10 @@ resource "null_resource" "public-agent" {
   }
 }
 
-output "Public Agent ELB Public IP" {
+output "public_agent_elb_public_ip" {
   value = "${google_compute_forwarding_rule.external-public-agent-forwarding-rule-http.ip_address}"
 }
 
-output "Public Agent Public IPs" {
+output "public_agent_public_ip" {
   value = ["${google_compute_instance.public-agent.*.network_interface.0.access_config.0.assigned_nat_ip}"]
 }

@@ -528,10 +528,10 @@ resource "null_resource" "master" {
   }
 }
 
-output "Master ELB Public IP" {
+output "master_elb_public_ip" {
   value = "${azurerm_public_ip.master_load_balancer_public_ip.fqdn}"
 }
 
-output "Master Public IPs" {
+output "master_public_ips" {
   value = ["${azurerm_public_ip.master_public_ip.*.fqdn}"]
 }
